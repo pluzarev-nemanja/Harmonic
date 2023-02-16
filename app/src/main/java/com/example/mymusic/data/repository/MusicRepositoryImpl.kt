@@ -1,19 +1,20 @@
 package com.example.mymusic.data.repository
 
-import androidx.lifecycle.LiveData
 import com.example.mymusic.data.data_source.MusicDao
 import com.example.mymusic.domain.model.Song
 import com.example.mymusic.domain.repository.MusicRepository
+import kotlinx.coroutines.flow.Flow
+import javax.inject.Inject
 
-class MusicRepositoryImpl(
+class MusicRepositoryImpl @Inject constructor(
     private val dao: MusicDao
 ) : MusicRepository {
 
-    override suspend fun insertSongs(songList: ArrayList<Song>) {
-        return dao.insertSongs(songList)
+    override suspend fun insertSongs(songList: MutableList<Song>) {
+        dao.insertSongs(songList)
     }
 
-    override fun getAllSongs(): LiveData<List<Song>> {
+    override fun getAllSongs(): Flow<List<Song>> {
         return dao.getAllSongs()
     }
 }

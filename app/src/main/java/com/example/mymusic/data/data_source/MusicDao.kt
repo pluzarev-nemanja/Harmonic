@@ -6,13 +6,14 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.example.mymusic.domain.model.Song
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface MusicDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertSongs(songList: ArrayList<Song>)
+    suspend fun insertSongs(songList: MutableList<Song>)
 
     @Query("SELECT * FROM song ORDER BY id ASC")
-    fun getAllSongs(): LiveData<List<Song>>
+    fun getAllSongs(): Flow<List<Song>>
 }
