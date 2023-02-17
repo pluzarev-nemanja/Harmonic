@@ -1,7 +1,6 @@
 package com.example.mymusic.presentation.songs
 
 import android.support.v4.media.MediaBrowserCompat
-import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -28,7 +27,6 @@ class SongsViewModel @Inject constructor(
 
 
     var songList = mutableStateListOf<Song>()
-
 
     val currentPlayingAudio = serviceConnection.currentPlayingAudio
     private val isConnected = serviceConnection.isConnected
@@ -88,6 +86,8 @@ class SongsViewModel @Inject constructor(
             }
         }
     }
+
+
 
 
     fun playAudio(currentAudio: Song) {

@@ -1,109 +1,150 @@
 package com.example.mymusic.presentation
 
 import android.Manifest
+import android.app.Activity
+import android.content.Intent
+import android.net.Uri
+import android.os.Build
 import android.os.Bundle
+import android.provider.Settings
 import android.util.Log
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.Box
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
-import androidx.compose.material.Text
-import androidx.compose.runtime.DisposableEffect
-import androidx.compose.ui.Alignment
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalLifecycleOwner
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.mymusic.presentation.permission.PermissionDialog
+import com.example.mymusic.presentation.permission.ReadStoragePermissionTextProvider
 import com.example.mymusic.presentation.songs.HomeScreen
 import com.example.mymusic.presentation.songs.SongsViewModel
-import com.example.mymusic.presentation.util.isPermanentlyDenied
 import com.example.mymusic.ui.theme.MyMusicTheme
-import com.google.accompanist.permissions.ExperimentalPermissionsApi
-import com.google.accompanist.permissions.rememberPermissionState
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-@OptIn(ExperimentalPermissionsApi::class)
 class MainActivity : ComponentActivity() {
+
+    private val permissionsToRequest = arrayOf(
+        Manifest.permission.READ_EXTERNAL_STORAGE
+    )
+
+    @RequiresApi(Build.VERSION_CODES.M)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             MyMusicTheme {
 
-                val permissionState = rememberPermissionState(
-                    permission = Manifest.permission.READ_EXTERNAL_STORAGE
+                val mainViewModel = viewModel<MainViewModel>()
+
+                val dialogQue = mainViewModel.visiblePermissionDialogQue
+                var granted by remember {
+                    mutableStateOf(false)
+                }
+
+                val readStoragePermissionResultLauncher = rememberLauncherForActivityResult(
+                    contract = ActivityResultContracts.RequestPermission(),
+                    onResult = { isGranted ->
+                        mainViewModel.onPermissionResult(
+                            permission = Manifest.permission.READ_EXTERNAL_STORAGE,
+                            isGranted = isGranted
+                        )
+                        granted = isGranted
+                    }
                 )
 
-                val lifecycleOwner = LocalLifecycleOwner.current
-
-                DisposableEffect(key1 = lifecycleOwner, effect = {
-                    val observer = LifecycleEventObserver { _, event ->
-                        if (event == Lifecycle.Event.ON_RESUME) {
-                            permissionState.launchPermissionRequest()
+                val multiplePermissionResultLauncher = rememberLauncherForActivityResult(
+                    contract = ActivityResultContracts.RequestMultiplePermissions(),
+                    onResult = { perms ->
+                        permissionsToRequest.forEach { permission ->
+                            mainViewModel.onPermissionResult(
+                                permission = permission,
+                                isGranted = perms[permission] == true
+                            )
+                            granted = perms[permission] == true
                         }
-
                     }
-                    lifecycleOwner.lifecycle.addObserver(observer)
-                    onDispose {
-                        lifecycleOwner.lifecycle.removeObserver(observer)
-                    }
-                })
+                )
+                SideEffect {
+                    readStoragePermissionResultLauncher.launch(
+                        Manifest.permission.READ_EXTERNAL_STORAGE
+                    )
+                }
 
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-                    when (permissionState.permission) {
-                        Manifest.permission.READ_EXTERNAL_STORAGE -> {
-                            when {
-                                permissionState.hasPermission -> {
 
-                                    val songsViewModel = viewModel(
-                                        modelClass = SongsViewModel::class.java
-                                    )
-                                    val songList = songsViewModel.songList
-
-                                    HomeScreen(
-                                        progress = songsViewModel.currentAudioProgress.value,
-                                        onProgressChange = {
-                                            songsViewModel.seekTo(it)
-                                        },
-                                        isAudioPlaying = songsViewModel.isAudioPlaying,
-                                        audioList = songList,
-                                        currentPlayingAudio = songsViewModel
-                                            .currentPlayingAudio.value,
-                                        onStart = {
-                                            songsViewModel.playAudio(it)
-                                        },
-                                        onItemClick = {
-                                            Log.d("MainActivity","On item click from MainA")
-                                            songsViewModel.playAudio(it)
-                                        },
-                                        onNext = {
-                                            songsViewModel.skipToNext()
-                                        }
-                                    )
-                                }
-                                permissionState.shouldShowRationale -> {
-                                    Box(contentAlignment = Alignment.Center) {
-                                        Text(text = "Grant permission first to use this app")
+                    dialogQue
+                        .reversed()
+                        .forEach { permission ->
+                            PermissionDialog(
+                                permissionTextProvider = when (permission) {
+                                    Manifest.permission.READ_EXTERNAL_STORAGE -> {
+                                        ReadStoragePermissionTextProvider()
                                     }
-                                }
-                                permissionState.isPermanentlyDenied() -> {
-                                    Text(
-                                        text = "Storage permission was permanently" +
-                                                "denied. You can enable it in the app" +
-                                                "settings."
+                                    else -> return@forEach
+                                },
+                                isPermanentlyDeclined = !shouldShowRequestPermissionRationale(
+                                    permission
+                                ),
+                                onDismiss = mainViewModel::dismissDialog,
+                                onOkClick = {
+                                    mainViewModel.dismissDialog()
+                                    multiplePermissionResultLauncher.launch(
+                                        arrayOf(permission)
                                     )
-                                }
-                            }
+                                },
+                                onGoToAppSettingsClick = ::openAppSettings
+                            )
                         }
+
+                    if(granted){
+                        val songsViewModel = viewModel(
+                            modelClass = SongsViewModel::class.java
+                        )
+
+                        val songList = songsViewModel.songList
+
+                        HomeScreen(
+                            progress = songsViewModel.currentAudioProgress.value,
+                            onProgressChange = {
+                                songsViewModel.seekTo(it)
+                            },
+                            isAudioPlaying = songsViewModel.isAudioPlaying,
+                            audioList = songList,
+                            currentPlayingAudio = songsViewModel
+                                .currentPlayingAudio.value,
+                            onStart = {
+                                songsViewModel.playAudio(it)
+                            },
+                            onItemClick = {
+                                Log.d("MainActivity", "On item click from MainA")
+                                songsViewModel.playAudio(it)
+                            },
+                            onNext = {
+                                songsViewModel.skipToNext()
+                            }
+                        )
+
                     }
+
+
                 }
             }
         }
     }
 }
+
+fun Activity.openAppSettings() {
+    Intent(
+        Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+        Uri.fromParts("package", packageName, null)
+    ).also(::startActivity)
+}
+
