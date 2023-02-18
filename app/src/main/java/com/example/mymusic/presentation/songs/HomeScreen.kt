@@ -6,59 +6,56 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.MusicNote
-import androidx.compose.material.icons.filled.Pause
-import androidx.compose.material.icons.filled.PlayArrow
-import androidx.compose.material.icons.filled.SkipNext
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
+import androidx.compose.material.icons.filled.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.mymusic.domain.model.Song
+import com.example.mymusic.presentation.util.Marquee
+import com.example.mymusic.presentation.util.defaultMarqueeParams
 import kotlin.math.floor
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun HomeScreen(
-    progress: Float,
-    onProgressChange: (Float) -> Unit,
     isAudioPlaying: Boolean,
     audioList: List<Song>,
     currentPlayingAudio: Song?,
     onStart: (Song) -> Unit,
     onItemClick: (Song) -> Unit,
-    onNext: () -> Unit
 ) {
     val scaffoldState = rememberBottomSheetScaffoldState()
 
     val animatedHeight by animateDpAsState(
         targetValue = if (currentPlayingAudio == null) 0.dp
-        else BottomSheetScaffoldDefaults.SheetPeekHeight
+        else 80.dp
     )
+
+    val isSongPlaying by remember{
+        mutableStateOf(isAudioPlaying)
+    }
 
     BottomSheetScaffold(
         sheetContent = {
             currentPlayingAudio?.let { currentPlayingAudio ->
                 BottomBarPlayer(
-                    progress = progress,
-                    onProgressChange = onProgressChange,
                     song = currentPlayingAudio,
-                    isAudioPlaying = isAudioPlaying,
-                    onStart = { onStart.invoke(currentPlayingAudio) },
-                    onNext = { onNext.invoke() }
+                    isSongPlaying = isSongPlaying,
+                    onStart = { onStart.invoke(currentPlayingAudio) }
                 )
 
             }
         },
+        sheetShape = RoundedCornerShape(topEnd = 26.dp, topStart = 26.dp),
         scaffoldState = scaffoldState,
         sheetPeekHeight = animatedHeight
     ) {
@@ -93,6 +90,9 @@ fun AudioItem(
         backgroundColor = MaterialTheme.colors.surface.copy(alpha = .5f)
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
+
+            //here image
+
             Column(
                 modifier = Modifier
                     .weight(1f)
@@ -102,22 +102,41 @@ fun AudioItem(
                 Text(
                     text = audio.displayName,
                     style = MaterialTheme.typography.h6,
-                    overflow = TextOverflow.Clip,
+                    overflow = TextOverflow.Ellipsis,
                     maxLines = 1
                 )
                 Spacer(modifier = Modifier.size(4.dp))
-                Text(
-                    text = audio.artist,
-                    style = MaterialTheme.typography.subtitle1,
-                    maxLines = 1,
-                    overflow = TextOverflow.Clip,
-                    color = MaterialTheme.colors
-                        .onSurface
-                        .copy(alpha = .5f)
-                )
+                Row(verticalAlignment = Alignment.CenterVertically) {
 
+                    Text(
+                        text = audio.artist,
+                        style = MaterialTheme.typography.subtitle1,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        color = MaterialTheme.colors
+                            .onSurface
+                            .copy(alpha = .5f)
+                    )
+
+                    Text(
+                        text = " · " + timeStampToDuration(audio.duration.toLong()),
+                        style = MaterialTheme.typography.subtitle1,
+                        color = MaterialTheme.colors
+                            .onSurface
+                            .copy(alpha = .5f)
+                    )
+                }
             }
-            Text(text = timeStampToDuration(audio.duration.toLong()))
+            IconButton(onClick = { }) {
+                Icon(
+                    imageVector = Icons.Default.MoreHoriz,
+                    contentDescription = "More options",
+                    tint = MaterialTheme.colors
+                        .onSurface
+                        .copy(alpha = .5f),
+
+                    )
+            }
             Spacer(modifier = Modifier.size(8.dp))
         }
 
@@ -140,73 +159,62 @@ private fun timeStampToDuration(position: Long): String {
 
 @Composable
 fun BottomBarPlayer(
-    progress: Float,
-    onProgressChange: (Float) -> Unit,
     song: Song,
-    isAudioPlaying: Boolean,
+    isSongPlaying: Boolean,
     onStart: () -> Unit,
-    onNext: () -> Unit
 ) {
-    Column {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(56.dp),
+                .height(70.dp),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
             ArtistInfo(
                 audio = song,
-                modifier = Modifier.weight(1f),
+                modifier = Modifier
+                    .weight(1f)
             )
             MediaPlayerController(
-                isAudioPlaying = isAudioPlaying,
+                isSongPlaying = isSongPlaying,
                 onStart = { onStart.invoke() },
-                onNext = { onNext.invoke() }
             )
+            Spacer(modifier = Modifier.width(20.dp))
         }
-        Slider(
-            value = progress,
-            onValueChange = { onProgressChange.invoke(it) },
-            valueRange = 0f..100f
-        )
-
-
-    }
-
-
 }
 
 @Composable
 fun MediaPlayerController(
-    isAudioPlaying: Boolean,
+    modifier: Modifier = Modifier,
+    isSongPlaying: Boolean,
     onStart: () -> Unit,
-    onNext: () -> Unit
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier
-            .height(56.dp)
-            .padding(4.dp)
+        horizontalArrangement = Arrangement.Center,
+        modifier = modifier
+            .height(60.dp)
+            .padding(1.dp)
     ) {
         PlayerIconItem(
-            icon = if (isAudioPlaying) Icons.Default.Pause
+            icon = Icons.Default.Favorite,
+            color = Color.White,
+            modifier = Modifier
+                .size(60.dp)
+                .padding(end = 6.dp)
+        ) {
+            //on like button click
+        }
+        PlayerIconItem(
+            icon = if (isSongPlaying) Icons.Default.Pause
             else Icons.Default.PlayArrow,
-            backgroundColor = MaterialTheme.colors.primary
+            backgroundColor = MaterialTheme.colors.primary,
+            modifier = Modifier
+                .size(50.dp)
         ) {
             onStart.invoke()
         }
-        Spacer(modifier = Modifier.size(8.dp))
-        Icon(
-            imageVector = Icons.Default.SkipNext,
-            contentDescription = null,
-            modifier = Modifier.clickable {
-                onNext.invoke()
-            }
-        )
     }
-
-
 }
 
 
@@ -216,7 +224,7 @@ fun ArtistInfo(
     audio: Song
 ) {
     Row(
-        modifier = modifier.padding(4.dp),
+        modifier = modifier.padding(start = 7.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
 
@@ -226,32 +234,36 @@ fun ArtistInfo(
                 width = 1.dp,
                 color = MaterialTheme.colors.onSurface
             ),
+            modifier = Modifier.size(60.dp)
         ) {}
         Spacer(modifier = Modifier.size(4.dp))
 
-        Column {
-            Text(
-                text = audio.title,
-                fontWeight = FontWeight.Bold,
-                style = MaterialTheme.typography.h6,
-                overflow = TextOverflow.Clip,
-                modifier = Modifier.weight(1f),
-                maxLines = 1
-            )
+        Column{
+            Marquee(
+                modifier = Modifier,
+                params = defaultMarqueeParams(),
+            ) {
+                Text(
+                    text = audio.title,
+                    overflow = TextOverflow.Ellipsis,
+                    fontWeight = FontWeight.Bold,
+                    style = MaterialTheme.typography.h6,
+                    maxLines = 1,
+                    fontSize = 15.sp
+                )
+            }
             Spacer(modifier = Modifier.size(4.dp))
             Text(
                 text = audio.artist,
                 fontWeight = FontWeight.Normal,
                 style = MaterialTheme.typography.subtitle1,
-                overflow = TextOverflow.Clip,
-                maxLines = 1
+                overflow = TextOverflow.Ellipsis,
+                maxLines = 1,
+                fontSize = 10.sp
             )
+            Spacer(modifier = Modifier.size(4.dp))
         }
-
-
     }
-
-
 }
 
 
@@ -266,10 +278,9 @@ fun PlayerIconItem(
 ) {
 
     Surface(
-        shape = CircleShape,
+        shape = RoundedCornerShape(15.dp),
         border = border,
-        modifier = Modifier
-            .clip(CircleShape)
+        modifier = modifier
             .clickable {
                 onClick.invoke()
             },

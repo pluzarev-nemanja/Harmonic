@@ -5,6 +5,7 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.support.v4.media.session.MediaControllerCompat
 import android.support.v4.media.session.MediaSessionCompat
+import androidx.core.app.NotificationCompat
 import com.example.mymusic.R
 import com.example.mymusic.presentation.util.Constants
 import com.google.android.exoplayer2.Player
@@ -40,8 +41,10 @@ internal class MusicPlayerNotificationManager(
         with(notificationManager) {
             setMediaSessionToken(sessionToken)
             setSmallIcon(com.google.android.exoplayer2.ui.R.drawable.exo_ic_audiotrack)
-            setUseRewindAction(false)
-            setUseFastForwardAction(false)
+            setUseRewindAction(true)
+            setUseFastForwardAction(true)
+            setPriority(NotificationCompat.PRIORITY_HIGH)
+            setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
         }
 
 

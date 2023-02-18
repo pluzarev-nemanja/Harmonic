@@ -91,5 +91,8 @@ dependencies {
     implementation 'androidx.media:media:1.5.0'
     implementation 'com.google.android.exoplayer:exoplayer:2.17.0'
     implementation 'com.google.android.exoplayer:extension-mediasession:2.17.0'
+    //extended material icons
+    implementation "androidx.compose.material:material-icons-extended:$compose_ui_version"
+
 
 }

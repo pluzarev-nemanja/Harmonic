@@ -8,6 +8,7 @@ import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
@@ -112,10 +113,6 @@ class MainActivity : ComponentActivity() {
                         val songList = songsViewModel.songList
 
                         HomeScreen(
-                            progress = songsViewModel.currentAudioProgress.value,
-                            onProgressChange = {
-                                songsViewModel.seekTo(it)
-                            },
                             isAudioPlaying = songsViewModel.isAudioPlaying,
                             audioList = songList,
                             currentPlayingAudio = songsViewModel
@@ -124,21 +121,16 @@ class MainActivity : ComponentActivity() {
                                 songsViewModel.playAudio(it)
                             },
                             onItemClick = {
-                                Log.d("MainActivity", "On item click from MainA")
                                 songsViewModel.playAudio(it)
-                            },
-                            onNext = {
-                                songsViewModel.skipToNext()
                             }
                         )
-
                     }
-
 
                 }
             }
         }
     }
+
 }
 
 fun Activity.openAppSettings() {
@@ -147,4 +139,6 @@ fun Activity.openAppSettings() {
         Uri.fromParts("package", packageName, null)
     ).also(::startActivity)
 }
+
+
 
