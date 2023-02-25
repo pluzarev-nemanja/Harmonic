@@ -7,8 +7,6 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
-import android.util.Log
-import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
@@ -22,7 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.mymusic.presentation.permission.PermissionDialog
 import com.example.mymusic.presentation.permission.ReadStoragePermissionTextProvider
-import com.example.mymusic.presentation.songs.HomeScreen
+import com.example.mymusic.presentation.songs.SongsScreen
 import com.example.mymusic.presentation.songs.SongsViewModel
 import com.example.mymusic.ui.theme.MyMusicTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -112,7 +110,9 @@ class MainActivity : ComponentActivity() {
 
                         val songList = songsViewModel.songList
 
-                        HomeScreen(
+
+
+                        SongsScreen(
                             isAudioPlaying = songsViewModel.isAudioPlaying,
                             audioList = songList,
                             currentPlayingAudio = songsViewModel

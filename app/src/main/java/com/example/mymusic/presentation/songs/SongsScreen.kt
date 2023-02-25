@@ -6,6 +6,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -22,11 +23,12 @@ import androidx.compose.ui.unit.sp
 import com.example.mymusic.domain.model.Song
 import com.example.mymusic.presentation.util.Marquee
 import com.example.mymusic.presentation.util.defaultMarqueeParams
+import com.example.mymusic.presentation.util.scrollbar
 import kotlin.math.floor
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun HomeScreen(
+fun SongsScreen(
     isAudioPlaying: Boolean,
     audioList: List<Song>,
     currentPlayingAudio: Song?,
@@ -40,16 +42,16 @@ fun HomeScreen(
         else 80.dp
     )
 
-    val isSongPlaying by remember{
-        mutableStateOf(isAudioPlaying)
-    }
+    val scrollState = rememberLazyListState()
+
+
 
     BottomSheetScaffold(
         sheetContent = {
             currentPlayingAudio?.let { currentPlayingAudio ->
                 BottomBarPlayer(
                     song = currentPlayingAudio,
-                    isSongPlaying = isSongPlaying,
+                    isAudioPlaying = isAudioPlaying,
                     onStart = { onStart.invoke(currentPlayingAudio) }
                 )
 
@@ -60,7 +62,16 @@ fun HomeScreen(
         sheetPeekHeight = animatedHeight
     ) {
         LazyColumn(
-            contentPadding = PaddingValues(bottom = 56.dp)
+            contentPadding = PaddingValues(bottom = 56.dp),
+            modifier = Modifier.scrollbar(
+                scrollState,
+                thickness = 10.dp,
+                knobColor = Color.Cyan,
+                trackColor = Color.LightGray,
+                padding = 6.dp,
+                fixedKnobRatio = 0.07f
+            ),
+            state = scrollState
         ) {
             items(audioList) { song: Song ->
                 AudioItem(
@@ -160,7 +171,7 @@ private fun timeStampToDuration(position: Long): String {
 @Composable
 fun BottomBarPlayer(
     song: Song,
-    isSongPlaying: Boolean,
+    isAudioPlaying: Boolean,
     onStart: () -> Unit,
 ) {
         Row(
@@ -176,7 +187,7 @@ fun BottomBarPlayer(
                     .weight(1f)
             )
             MediaPlayerController(
-                isSongPlaying = isSongPlaying,
+                isAudioPlaying = isAudioPlaying,
                 onStart = { onStart.invoke() },
             )
             Spacer(modifier = Modifier.width(20.dp))
@@ -186,7 +197,7 @@ fun BottomBarPlayer(
 @Composable
 fun MediaPlayerController(
     modifier: Modifier = Modifier,
-    isSongPlaying: Boolean,
+    isAudioPlaying: Boolean,
     onStart: () -> Unit,
 ) {
     Row(
@@ -206,7 +217,7 @@ fun MediaPlayerController(
             //on like button click
         }
         PlayerIconItem(
-            icon = if (isSongPlaying) Icons.Default.Pause
+            icon = if (isAudioPlaying) Icons.Default.Pause
             else Icons.Default.PlayArrow,
             backgroundColor = MaterialTheme.colors.primary,
             modifier = Modifier

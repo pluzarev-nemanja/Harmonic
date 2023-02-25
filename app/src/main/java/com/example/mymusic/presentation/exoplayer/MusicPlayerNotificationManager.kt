@@ -3,16 +3,20 @@ package com.example.mymusic.presentation.exoplayer
 import android.app.PendingIntent
 import android.content.Context
 import android.graphics.Bitmap
+import android.graphics.drawable.Drawable
 import android.support.v4.media.session.MediaControllerCompat
 import android.support.v4.media.session.MediaSessionCompat
 import androidx.core.app.NotificationCompat
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.target.CustomTarget
+import com.bumptech.glide.request.transition.Transition
 import com.example.mymusic.R
 import com.example.mymusic.presentation.util.Constants
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.ui.PlayerNotificationManager
 
 internal class MusicPlayerNotificationManager(
-    context: Context,
+    private val context: Context,
     sessionToken: MediaSessionCompat.Token,
     notificationListener: PlayerNotificationManager.NotificationListener
 ) {
@@ -76,6 +80,18 @@ internal class MusicPlayerNotificationManager(
             player: Player,
             callback: PlayerNotificationManager.BitmapCallback
         ): Bitmap? {
+            Glide.with(context).asBitmap()
+                .load(controller.metadata.description.iconUri)
+                .into(object : CustomTarget<Bitmap>() {
+                    override fun onResourceReady(
+                        resource: Bitmap,
+                        transition: Transition<in Bitmap>?
+                    ) {
+                        callback.onBitmap(resource)
+                    }
+
+                    override fun onLoadCleared(placeholder: Drawable?)= Unit
+                })
             return null
         }
     }
