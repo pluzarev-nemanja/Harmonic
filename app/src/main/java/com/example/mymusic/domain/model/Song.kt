@@ -13,5 +13,8 @@ data class Song(
     val artist:String,
     val data:String,
     val duration:Int,
-    val title:String
+    val title:String,
+    val album: String,
+    val artUri: String,
+    val dateAdded: String
 )

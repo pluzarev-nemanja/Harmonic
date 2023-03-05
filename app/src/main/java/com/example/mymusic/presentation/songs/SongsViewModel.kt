@@ -65,15 +65,14 @@ class SongsViewModel @Inject constructor(
                     val displayName = it.displayName.substringBefore(".")
                     val artist = if (it.artist.contains("<unknown>"))
                         "Unknown Artist" else it.artist
+
                     it.copy(
                         displayName = displayName,
                         artist = artist
-
                     )
                 }
             }
         }
-
         viewModelScope.launch {
             isConnected.collect {
                 if (it) {
@@ -86,8 +85,6 @@ class SongsViewModel @Inject constructor(
             }
         }
     }
-
-
 
 
     fun playAudio(currentAudio: Song) {
@@ -166,6 +163,5 @@ class SongsViewModel @Inject constructor(
         )
         updatePosition = false
     }
-
-
 }
+

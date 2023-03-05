@@ -7,6 +7,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
@@ -111,7 +112,6 @@ class MainActivity : ComponentActivity() {
                         val songList = songsViewModel.songList
 
 
-
                         SongsScreen(
                             isAudioPlaying = songsViewModel.isAudioPlaying,
                             audioList = songList,
@@ -122,6 +122,8 @@ class MainActivity : ComponentActivity() {
                             },
                             onItemClick = {
                                 songsViewModel.playAudio(it)
+                                Log.d("Slika", it.artUri)
+                                //4210738371465246769
                             }
                         )
                     }

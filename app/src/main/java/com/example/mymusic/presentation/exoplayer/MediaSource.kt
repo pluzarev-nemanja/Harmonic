@@ -68,6 +68,18 @@ class MediaSource
                             MediaMetadataCompat.METADATA_KEY_DURATION,
                             song.duration.toLong()
                         )
+                        .putString(
+                            MediaMetadataCompat.METADATA_KEY_ALBUM,
+                            song.album
+                        )
+                        .putString(
+                            MediaMetadataCompat.METADATA_KEY_ALBUM_ART_URI,
+                            song.artUri
+                        )
+                        .putString(
+                            MediaMetadataCompat.METADATA_KEY_DATE,
+                            song.dateAdded
+                        )
                         .build()
                 }
                 state = AudioSourceState.STATE_INITIALIZED

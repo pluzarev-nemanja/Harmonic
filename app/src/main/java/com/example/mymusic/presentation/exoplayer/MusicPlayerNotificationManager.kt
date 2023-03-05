@@ -80,6 +80,7 @@ internal class MusicPlayerNotificationManager(
             player: Player,
             callback: PlayerNotificationManager.BitmapCallback
         ): Bitmap? {
+
             Glide.with(context).asBitmap()
                 .load(controller.metadata.description.iconUri)
                 .into(object : CustomTarget<Bitmap>() {
@@ -90,7 +91,7 @@ internal class MusicPlayerNotificationManager(
                         callback.onBitmap(resource)
                     }
 
-                    override fun onLoadCleared(placeholder: Drawable?)= Unit
+                    override fun onLoadCleared(placeholder: Drawable?) = Unit
                 })
             return null
         }

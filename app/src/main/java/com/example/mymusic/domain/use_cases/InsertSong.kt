@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.ContentUris
 import android.content.Context
 import android.database.Cursor
+import android.net.Uri
 import android.provider.MediaStore
 import android.util.Log
 import com.example.mymusic.domain.model.Song
@@ -23,10 +24,13 @@ class InsertSong @Inject constructor(
         MediaStore.Audio.AudioColumns.DATA,
         MediaStore.Audio.AudioColumns.DURATION,
         MediaStore.Audio.AudioColumns.TITLE,
+        MediaStore.Audio.AudioColumns.ALBUM,
+        MediaStore.Audio.AudioColumns.ALBUM_ID,
+        MediaStore.Audio.AudioColumns.DATE_ADDED,
     )
 
     private var selectionClause: String? =
-        "${MediaStore.Audio.AudioColumns.IS_MUSIC} = ?"
+        "${MediaStore.Audio.AudioColumns.IS_MUSIC} = ?" + ">= 60000"
     private var selectionArg = arrayOf("1")
 
     private val sortOrder = "${MediaStore.Audio.AudioColumns.DISPLAY_NAME} ASC"
@@ -62,6 +66,12 @@ class InsertSong @Inject constructor(
                 cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.DURATION)
             val titleColumn =
                 cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.TITLE)
+            val albumColumn =
+                cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.ALBUM)
+            val albumIdColumn =
+                cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.ALBUM_ID)
+            val dateAddedColumn =
+                cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.DATE_ADDED)
 
 
             cursor.apply {
@@ -79,8 +89,22 @@ class InsertSong @Inject constructor(
                             MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
                             id
                         )
-                        songList += Song(
-                            uri, displayName, id, artist, data, duration, title
+                        val album = getString(albumColumn) ?: "Unknown"
+                        val albumId = getLong(albumIdColumn).toString()
+                        val albumUri = Uri.parse("content://media/external/audio/albumart")
+                        val artUri = Uri.withAppendedPath(albumUri, albumId).toString()
+                        val dateAdded = getString(dateAddedColumn)
+                        songList+=Song(
+                           uri=  uri,
+                            displayName = displayName,
+                            id = id,
+                            artist = artist,
+                            data = data,
+                            duration = duration,
+                            title = title,
+                            album= album,
+                            artUri = artUri,
+                           dateAdded =  dateAdded
                         )
                     }
                 }
