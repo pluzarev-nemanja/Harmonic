@@ -20,7 +20,7 @@ class MediaSource
     private val onReadyListeners: MutableList<OnReadyListener> = mutableListOf()
 
     var audioMediaMetaData: List<MediaMetadataCompat> = emptyList()
-    var data : List<Song> = emptyList()
+    var data: List<Song> = emptyList()
 
     private var state: AudioSourceState = AudioSourceState.STATE_CREATED
         set(value) {
@@ -45,7 +45,7 @@ class MediaSource
         state = AudioSourceState.STATE_INITIALIZING
 
         CoroutineScope(Dispatchers.IO).launch {
-            musicUseCases.getAllSongs().collect {
+            musicUseCases.getAllSongsAsc().collect {
                 data = it
                 audioMediaMetaData = data.map { song ->
                     MediaMetadataCompat.Builder()

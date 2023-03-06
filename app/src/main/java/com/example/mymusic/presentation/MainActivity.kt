@@ -122,8 +122,9 @@ class MainActivity : ComponentActivity() {
                             },
                             onItemClick = {
                                 songsViewModel.playAudio(it)
-                                Log.d("Slika", it.artUri)
-                                //4210738371465246769
+                            },
+                            sortOrderChange = {
+                                songsViewModel.changeSortOrderSongs(it)
                             }
                         )
                     }

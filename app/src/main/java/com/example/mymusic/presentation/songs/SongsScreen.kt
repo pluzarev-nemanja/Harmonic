@@ -45,7 +45,13 @@ fun SongsScreen(
     currentPlayingAudio: Song?,
     onStart: (Song) -> Unit,
     onItemClick: (Song) -> Unit,
+    sortOrderChange : (SortOrder) -> Unit
 ) {
+
+    val sortOrder by remember{
+        mutableStateOf(SortOrder.ASCENDING)
+    }
+
     val scaffoldState = rememberBottomSheetScaffoldState()
 
     val animatedHeight by animateDpAsState(
@@ -109,7 +115,11 @@ fun SongsScreen(
                         }
 
                     }
-                    TopBar(lazyListState = scrollState)
+                    TopBar(
+                        lazyListState = scrollState,
+                        sortOrder,
+                        onSortOrderChange = {sortOrderChange.invoke(it)}
+                    )
                 }
             }
         )
@@ -117,11 +127,17 @@ fun SongsScreen(
 }
 
 @Composable
-fun TopBar(lazyListState: LazyListState) {
+fun TopBar(
+    lazyListState: LazyListState,
+    sortOrdering : SortOrder,
+    onSortOrderChange : (SortOrder) -> Unit
+) {
 
     var showMenu by remember { mutableStateOf(false) }
     var showNestedMenu by remember { mutableStateOf(false) }
-    var sortOrder by remember { mutableStateOf(SortOrder.ASCENDING) }
+    val sortOrder = remember{
+        mutableStateOf(sortOrdering)
+    }
 
     TopAppBar(
         modifier = Modifier
@@ -199,62 +215,72 @@ fun TopBar(lazyListState: LazyListState) {
                             )
                         }
                         DropdownMenuItem(onClick = {
-                            sortOrder = SortOrder.ASCENDING
+                            sortOrder.value = SortOrder.ASCENDING
+                            onSortOrderChange.invoke(sortOrder.value)
                             showNestedMenu = false
                         }) {
                             SortOrderItem(
                                 sortOrder = "Ascending",
-                                isSelected = sortOrder == SortOrder.ASCENDING
+                                isSelected = sortOrder.value == SortOrder.ASCENDING
                             ){
-                                sortOrder = SortOrder.ASCENDING
+                                sortOrder.value = SortOrder.ASCENDING
+                                onSortOrderChange.invoke(sortOrder.value)
                                 showNestedMenu = false
                             }
                         }
                         DropdownMenuItem(onClick = {
-                            sortOrder = SortOrder.DESCENDING
+                            sortOrder.value = SortOrder.DESCENDING
+                            onSortOrderChange.invoke(sortOrder.value)
                             showNestedMenu = false
                         }) {
                             SortOrderItem(
                                 sortOrder = "Descending",
-                                isSelected = sortOrder == SortOrder.DESCENDING
+                                isSelected = sortOrder.value == SortOrder.DESCENDING
                             ){
-                                sortOrder = SortOrder.DESCENDING
+                                sortOrder.value = SortOrder.DESCENDING
+                                onSortOrderChange.invoke(sortOrder.value)
                                 showNestedMenu = false
                             }
                         }
                         DropdownMenuItem(onClick = {
-                            sortOrder = SortOrder.ARTIST
+                            sortOrder.value = SortOrder.ARTIST
+                            onSortOrderChange.invoke(sortOrder.value)
                             showNestedMenu = false
                         }) {
                             SortOrderItem(
                                 sortOrder = "Artist",
-                                isSelected = sortOrder == SortOrder.ARTIST
+                                isSelected = sortOrder.value == SortOrder.ARTIST
                             ){
-                                sortOrder = SortOrder.ARTIST
+                                sortOrder.value = SortOrder.ARTIST
+                                onSortOrderChange.invoke(sortOrder.value)
                                 showNestedMenu = false
                             }
                         }
                         DropdownMenuItem(onClick = {
-                            sortOrder = SortOrder.ALBUM
+                            sortOrder.value = SortOrder.ALBUM
+                            onSortOrderChange.invoke(sortOrder.value)
                             showNestedMenu = false
                         }) {
                             SortOrderItem(
                                 sortOrder = "Album",
-                                isSelected = sortOrder == SortOrder.ALBUM
+                                isSelected = sortOrder.value == SortOrder.ALBUM
                             ){
-                                sortOrder = SortOrder.ALBUM
+                                sortOrder.value = SortOrder.ALBUM
+                                onSortOrderChange.invoke(sortOrder.value)
                                 showNestedMenu = false
                             }
                         }
                         DropdownMenuItem(onClick = {
-                            sortOrder = SortOrder.DATE_ADDED
+                            sortOrder.value = SortOrder.DATE_ADDED
+                            onSortOrderChange.invoke(sortOrder.value)
                             showNestedMenu = false
                         }) {
                             SortOrderItem(
                                 sortOrder = "Date added",
-                                isSelected = sortOrder == SortOrder.DATE_ADDED
+                                isSelected = sortOrder.value == SortOrder.DATE_ADDED
                             ){
-                                sortOrder = SortOrder.DATE_ADDED
+                                sortOrder.value = SortOrder.DATE_ADDED
+                                onSortOrderChange.invoke(sortOrder.value)
                                 showNestedMenu = false
                             }
                         }

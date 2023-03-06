@@ -1,14 +1,13 @@
 package com.example.mymusic.presentation.songs
 
 import android.support.v4.media.MediaBrowserCompat
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
+import android.util.Log
+import androidx.compose.runtime.*
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.mymusic.domain.model.Song
 import com.example.mymusic.domain.use_cases.MusicUseCases
+import com.example.mymusic.domain.util.SortOrder
 import com.example.mymusic.presentation.exoplayer.MediaPlayerServiceConnection
 import com.example.mymusic.presentation.exoplayer.currentPosition
 import com.example.mymusic.presentation.exoplayer.isPlaying
@@ -27,6 +26,7 @@ class SongsViewModel @Inject constructor(
 
 
     var songList = mutableStateListOf<Song>()
+
 
     val currentPlayingAudio = serviceConnection.currentPlayingAudio
     private val isConnected = serviceConnection.isConnected
@@ -60,7 +60,7 @@ class SongsViewModel @Inject constructor(
             musicUseCases.insertSong()
         }
         viewModelScope.launch {
-            musicUseCases.getAllSongs().collect { songsList ->
+            musicUseCases.getAllSongsAsc().collect { songsList ->
                 songList += songsList.map {
                     val displayName = it.displayName.substringBefore(".")
                     val artist = if (it.artist.contains("<unknown>"))
@@ -86,6 +86,95 @@ class SongsViewModel @Inject constructor(
         }
     }
 
+    fun changeSortOrderSongs(sortOrder: SortOrder) {
+        when (sortOrder) {
+            SortOrder.ASCENDING -> {
+                viewModelScope.launch {
+                    musicUseCases.getAllSongsAsc().collect{ songsList ->
+                        songList.clear()
+                        songList += songsList.map {
+                            val displayName = it.displayName.substringBefore(".")
+                            val artist = if (it.artist.contains("<unknown>"))
+                                "Unknown Artist" else it.artist
+
+                            it.copy(
+                                displayName = displayName,
+                                artist = artist
+                            )
+                        }
+                    }
+                }
+            }
+            SortOrder.DESCENDING -> {
+                viewModelScope.launch {
+                    musicUseCases.getAllSongsDesc().collect{ songsList ->
+                        songList.clear()
+                        songList += songsList.map {
+                            val displayName = it.displayName.substringBefore(".")
+                            val artist = if (it.artist.contains("<unknown>"))
+                                "Unknown Artist" else it.artist
+
+                            it.copy(
+                                displayName = displayName,
+                                artist = artist
+                            )
+                        }
+                    }
+                }
+            }
+            SortOrder.ARTIST -> {
+                viewModelScope.launch {
+                    musicUseCases.getAllSongsArtist().collect{ songsList ->
+                        songList.clear()
+                        songList += songsList.map {
+                            val displayName = it.displayName.substringBefore(".")
+                            val artist = if (it.artist.contains("<unknown>"))
+                                "Unknown Artist" else it.artist
+
+                            it.copy(
+                                displayName = displayName,
+                                artist = artist
+                            )
+                        }
+                    }
+                }
+            }
+            SortOrder.ALBUM -> {
+                viewModelScope.launch {
+                    musicUseCases.getAllSongsAlbum().collect{ songsList ->
+                        songList.clear()
+                        songList += songsList.map {
+                            val displayName = it.displayName.substringBefore(".")
+                            val artist = if (it.artist.contains("<unknown>"))
+                                "Unknown Artist" else it.artist
+
+                            it.copy(
+                                displayName = displayName,
+                                artist = artist
+                            )
+                        }
+                    }
+                }
+            }
+            SortOrder.DATE_ADDED -> {
+                viewModelScope.launch {
+                    musicUseCases.getAllSongsDate().collect{ songsList ->
+                        songList.clear()
+                        songList += songsList.map {
+                            val displayName = it.displayName.substringBefore(".")
+                            val artist = if (it.artist.contains("<unknown>"))
+                                "Unknown Artist" else it.artist
+
+                            it.copy(
+                                displayName = displayName,
+                                artist = artist
+                            )
+                        }
+                    }
+                }
+            }
+        }
+    }
 
     fun playAudio(currentAudio: Song) {
         serviceConnection.playAudio(songList)

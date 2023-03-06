@@ -5,11 +5,11 @@ import com.example.mymusic.domain.repository.MusicRepository
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
-class GetAllSongs @Inject constructor(
+class GetAllSongsDate @Inject constructor(
     private val repository: MusicRepository
 ) {
 
     operator fun invoke(): Flow<List<Song>> {
-        return repository.getAllSongs()
+        return repository.getAllSongsDate()
     }
 }

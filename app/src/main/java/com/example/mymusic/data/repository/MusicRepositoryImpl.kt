@@ -14,7 +14,23 @@ class MusicRepositoryImpl @Inject constructor(
         dao.insertSongs(songList)
     }
 
-    override fun getAllSongs(): Flow<List<Song>> {
-        return dao.getAllSongs()
+    override fun getAllSongsAsc(): Flow<List<Song>> {
+        return dao.getAllSongsAsc()
+    }
+
+    override fun getAllSongsDesc(): Flow<List<Song>> {
+        return dao.getAllSongsDesc()
+    }
+
+    override fun getAllSongsArtist(): Flow<List<Song>> {
+        return dao.getAllSongsArtist()
+    }
+
+    override fun getAllSongsAlbum(): Flow<List<Song>> {
+        return dao.getAllSongsAlbum()
+    }
+
+    override fun getAllSongsDate(): Flow<List<Song>> {
+        return dao.getAllSongsDate()
     }
 }
