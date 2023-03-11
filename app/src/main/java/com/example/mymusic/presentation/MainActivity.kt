@@ -112,20 +112,14 @@ class MainActivity : ComponentActivity() {
                         val songList = songsViewModel.songList
 
 
-                        SongsScreen(
-                            isAudioPlaying = songsViewModel.isAudioPlaying,
+                        MainScreen(
                             audioList = songList,
-                            currentPlayingAudio = songsViewModel
-                                .currentPlayingAudio.value,
                             onStart = {
                                 songsViewModel.playAudio(it)
                             },
-                            onItemClick = {
-                                songsViewModel.playAudio(it)
-                            },
-                            sortOrderChange = {
-                                songsViewModel.changeSortOrderSongs(it)
-                            }
+                            currentPlayingAudio = songsViewModel
+                                .currentPlayingAudio.value,
+                            isAudioPlaying = songsViewModel.isAudioPlaying
                         )
                     }
 

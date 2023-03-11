@@ -25,6 +25,6 @@ interface MusicDao {
     @Query("SELECT * FROM song ORDER BY album ASC")
     fun getAllSongsAlbum(): Flow<List<Song>>
 
-    @Query("SELECT * FROM song ORDER BY dateAdded ASC")
+    @Query("SELECT * FROM song ORDER BY dateAdded DESC")
     fun getAllSongsDate(): Flow<List<Song>>
 }

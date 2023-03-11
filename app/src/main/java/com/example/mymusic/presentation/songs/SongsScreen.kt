@@ -19,7 +19,11 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawWithContent
+import androidx.compose.ui.graphics.BlendMode
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.TextStyle
@@ -37,22 +41,18 @@ import com.skydoves.landscapist.ImageOptions
 import com.skydoves.landscapist.glide.GlideImage
 import kotlin.math.floor
 
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun SongsScreen(
     isAudioPlaying: Boolean,
     audioList: List<Song>,
     currentPlayingAudio: Song?,
-    onStart: (Song) -> Unit,
     onItemClick: (Song) -> Unit,
-    sortOrderChange : (SortOrder) -> Unit
+    sortOrderChange: (SortOrder) -> Unit
 ) {
 
-    val sortOrder by remember{
+    val sortOrder by remember {
         mutableStateOf(SortOrder.ASCENDING)
     }
-
-    val scaffoldState = rememberBottomSheetScaffoldState()
 
     val animatedHeight by animateDpAsState(
         targetValue = if (currentPlayingAudio == null) 0.dp
@@ -71,71 +71,54 @@ fun SongsScreen(
         animationSpec = tween(durationMillis = 300)
     )
 
-    BottomSheetScaffold(
-        sheetContent = {
-            currentPlayingAudio?.let { currentPlayingAudio ->
 
-                BottomBarPlayer(
-                    song = currentPlayingAudio,
-                    isAudioPlaying = isAudioPlaying,
-                    onStart = { onStart.invoke(currentPlayingAudio) }
-                )
-
-            }
-        },
-        sheetShape = RoundedCornerShape(topEnd = 26.dp, topStart = 26.dp),
-        scaffoldState = scaffoldState,
-        sheetPeekHeight = animatedHeight
-    ) {
-        //here top bar
-        Scaffold(
-            content = { padding ->
-                Box(modifier = Modifier.fillMaxSize()) {
-                    LazyColumn(
-                        contentPadding = PaddingValues(bottom = animatedHeight),
-                        modifier = Modifier
-                            .scrollbar(
-                                scrollState,
-                                thickness = 10.dp,
-                                knobColor = Color.Cyan,
-                                trackColor = Color.LightGray,
-                                padding = scrollKnobPadding,
-                                fixedKnobRatio = 0.03f
-                            )
-                            .padding(top = paddingLazyList),
-                        state = scrollState
-                    ) {
-                        items(
-                            items = audioList
-                        ) { song: Song ->
-                            AudioItem(
-                                audio = song,
-                                onItemClick = { onItemClick.invoke(song) },
-                            )
-                        }
-
+    Scaffold(
+        content = { padding ->
+            Box(modifier = Modifier.fillMaxSize()) {
+                LazyColumn(
+                    contentPadding = PaddingValues(bottom = animatedHeight),
+                    modifier = Modifier
+                        .scrollbar(
+                            scrollState,
+                            thickness = 10.dp,
+                            knobColor = Color.Cyan,
+                            trackColor = Color.LightGray,
+                            padding = scrollKnobPadding,
+                            fixedKnobRatio = 0.03f
+                        )
+                        .padding(top = paddingLazyList),
+                    state = scrollState
+                ) {
+                    items(
+                        items = audioList
+                    ) { song: Song ->
+                        AudioItem(
+                            audio = song,
+                            onItemClick = { onItemClick.invoke(song) },
+                        )
                     }
-                    TopBar(
-                        lazyListState = scrollState,
-                        sortOrder,
-                        onSortOrderChange = {sortOrderChange.invoke(it)}
-                    )
+
                 }
+                TopBar(
+                    lazyListState = scrollState,
+                    sortOrder,
+                    onSortOrderChange = { sortOrderChange.invoke(it) }
+                )
             }
-        )
-    }
+        }
+    )
 }
 
 @Composable
 fun TopBar(
     lazyListState: LazyListState,
-    sortOrdering : SortOrder,
-    onSortOrderChange : (SortOrder) -> Unit
+    sortOrdering: SortOrder,
+    onSortOrderChange: (SortOrder) -> Unit
 ) {
 
     var showMenu by remember { mutableStateOf(false) }
     var showNestedMenu by remember { mutableStateOf(false) }
-    val sortOrder = remember{
+    val sortOrder = remember {
         mutableStateOf(sortOrdering)
     }
 
@@ -222,7 +205,7 @@ fun TopBar(
                             SortOrderItem(
                                 sortOrder = "Ascending",
                                 isSelected = sortOrder.value == SortOrder.ASCENDING
-                            ){
+                            ) {
                                 sortOrder.value = SortOrder.ASCENDING
                                 onSortOrderChange.invoke(sortOrder.value)
                                 showNestedMenu = false
@@ -236,7 +219,7 @@ fun TopBar(
                             SortOrderItem(
                                 sortOrder = "Descending",
                                 isSelected = sortOrder.value == SortOrder.DESCENDING
-                            ){
+                            ) {
                                 sortOrder.value = SortOrder.DESCENDING
                                 onSortOrderChange.invoke(sortOrder.value)
                                 showNestedMenu = false
@@ -250,7 +233,7 @@ fun TopBar(
                             SortOrderItem(
                                 sortOrder = "Artist",
                                 isSelected = sortOrder.value == SortOrder.ARTIST
-                            ){
+                            ) {
                                 sortOrder.value = SortOrder.ARTIST
                                 onSortOrderChange.invoke(sortOrder.value)
                                 showNestedMenu = false
@@ -264,7 +247,7 @@ fun TopBar(
                             SortOrderItem(
                                 sortOrder = "Album",
                                 isSelected = sortOrder.value == SortOrder.ALBUM
-                            ){
+                            ) {
                                 sortOrder.value = SortOrder.ALBUM
                                 onSortOrderChange.invoke(sortOrder.value)
                                 showNestedMenu = false
@@ -278,7 +261,7 @@ fun TopBar(
                             SortOrderItem(
                                 sortOrder = "Date added",
                                 isSelected = sortOrder.value == SortOrder.DATE_ADDED
-                            ){
+                            ) {
                                 sortOrder.value = SortOrder.DATE_ADDED
                                 onSortOrderChange.invoke(sortOrder.value)
                                 showNestedMenu = false
@@ -295,7 +278,7 @@ fun TopBar(
 fun SortOrderItem(
     sortOrder: String,
     isSelected: Boolean,
-    onItemClick : () -> Unit
+    onItemClick: () -> Unit
 ) {
 
     Row(
@@ -308,7 +291,7 @@ fun SortOrderItem(
             color = MaterialTheme.colors.onBackground,
             style = MaterialTheme.typography.body1
         )
-        RadioButton(selected = isSelected, onClick = {onItemClick.invoke()})
+        RadioButton(selected = isSelected, onClick = { onItemClick.invoke() })
     }
 }
 
@@ -408,32 +391,6 @@ private fun timeStampToDuration(position: Long): String {
 
 
 @Composable
-fun BottomBarPlayer(
-    song: Song,
-    isAudioPlaying: Boolean,
-    onStart: () -> Unit,
-) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(70.dp),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        ArtistInfo(
-            audio = song,
-            modifier = Modifier
-                .weight(1f)
-        )
-        MediaPlayerController(
-            isAudioPlaying = isAudioPlaying,
-            onStart = { onStart.invoke() },
-        )
-        Spacer(modifier = Modifier.width(20.dp))
-    }
-}
-
-@Composable
 fun MediaPlayerController(
     modifier: Modifier = Modifier,
     isAudioPlaying: Boolean,
@@ -445,15 +402,17 @@ fun MediaPlayerController(
         modifier = modifier
             .height(60.dp)
             .padding(1.dp)
+            .padding(bottom = 10.dp)
     ) {
-        PlayerIconItem(
-            icon = Icons.Default.Favorite,
-            color = Color.White,
-            modifier = Modifier
-                .size(60.dp)
-                .padding(end = 6.dp)
-        ) {
-            //on like button click
+
+        IconButton(onClick = {}) {
+            Icon(
+                imageVector = Icons.Default.Favorite,
+                contentDescription = "favorite",
+                tint = Color.White,
+                modifier = Modifier
+                    .padding(end = 2.dp)
+            )
         }
         PlayerIconItem(
             icon = if (isAudioPlaying) Icons.Default.Pause
@@ -474,7 +433,7 @@ fun ArtistInfo(
     audio: Song
 ) {
     Row(
-        modifier = modifier.padding(start = 7.dp),
+        modifier = modifier.padding(start = 0.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
 
@@ -485,9 +444,17 @@ fun ArtistInfo(
                 alignment = Alignment.Center
             ),
             modifier = Modifier
-                .size(60.dp)
-                .padding(2.dp)
-                .clip(RoundedCornerShape(10.dp))
+                .size(height = 90.dp, width = 100.dp)
+                .clip(RoundedCornerShape(topStart = 8.dp))
+                .graphicsLayer { alpha = 0.99F }
+                .drawWithContent {
+                    val colors = listOf(Color.Black, Color.Transparent)
+                    drawContent()
+                    drawRect(
+                        brush = Brush.horizontalGradient(colors,startX = 200f),
+                        blendMode = BlendMode.DstIn
+                    )
+                }
         )
         Spacer(modifier = Modifier.size(4.dp))
 
