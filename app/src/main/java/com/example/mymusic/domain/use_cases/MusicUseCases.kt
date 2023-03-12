@@ -6,5 +6,6 @@ val getAllSongsAsc: GetAllSongsAsc,
 val getAllSongsDesc: GetAllSongsDesc,
 val getAllSongsArtist: GetAllSongsArtist,
 val getAllSongsAlbum: GetAllSongsAlbum,
-val getAllSongsDate: GetAllSongsDate
+val getAllSongsDate: GetAllSongsDate,
+val searchBySongName: SearchBySongName
 )

@@ -33,4 +33,8 @@ class MusicRepositoryImpl @Inject constructor(
     override fun getAllSongsDate(): Flow<List<Song>> {
         return dao.getAllSongsDate()
     }
+
+    override fun searchBySongName(searchQuery: String): Flow<List<Song>> {
+        return dao.searchBySongName(searchQuery)
+    }
 }

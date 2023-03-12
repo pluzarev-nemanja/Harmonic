@@ -21,6 +21,7 @@ import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.mymusic.presentation.permission.PermissionDialog
 import com.example.mymusic.presentation.permission.ReadStoragePermissionTextProvider
+import com.example.mymusic.presentation.search.SearchViewModel
 import com.example.mymusic.presentation.songs.SongsScreen
 import com.example.mymusic.presentation.songs.SongsViewModel
 import com.example.mymusic.ui.theme.MyMusicTheme
@@ -108,8 +109,12 @@ class MainActivity : ComponentActivity() {
                         val songsViewModel = viewModel(
                             modelClass = SongsViewModel::class.java
                         )
+                        val searchViewModel = viewModel<SearchViewModel>()
 
                         val songList = songsViewModel.songList
+
+                        val searchText by searchViewModel.searchText.collectAsState()
+                        val songs by searchViewModel.songs.collectAsState()
 
 
                         MainScreen(
@@ -119,7 +124,12 @@ class MainActivity : ComponentActivity() {
                             },
                             currentPlayingAudio = songsViewModel
                                 .currentPlayingAudio.value,
-                            isAudioPlaying = songsViewModel.isAudioPlaying
+                            isAudioPlaying = songsViewModel.isAudioPlaying,
+                            searchText = searchText,
+                            songs = songs,
+                            onItemClick = {
+                                songsViewModel.playAudio(it)
+                            }
                         )
                     }
 

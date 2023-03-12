@@ -41,7 +41,8 @@ object AppModule {
             getAllSongsDesc = GetAllSongsDesc(repository),
             getAllSongsArtist = GetAllSongsArtist(repository),
             getAllSongsAlbum = GetAllSongsAlbum(repository),
-            getAllSongsDate = GetAllSongsDate(repository)
+            getAllSongsDate = GetAllSongsDate(repository),
+            searchBySongName = SearchBySongName(repository)
         )
     }
 }

@@ -17,4 +17,14 @@ data class Song(
     val album: String,
     val artUri: String,
     val dateAdded: String
-)
+){
+    fun doesMatchSearchQuery(query: String): Boolean {
+        val matchingCombinations = listOf(
+            displayName
+        )
+
+        return matchingCombinations.any {
+            it.contains(query, ignoreCase = true)
+        }
+    }
+}

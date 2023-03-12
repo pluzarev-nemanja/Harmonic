@@ -4,6 +4,7 @@ import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -32,8 +33,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.example.mymusic.domain.model.Song
 import com.example.mymusic.domain.util.SortOrder
+import com.example.mymusic.presentation.navigation.Screen
 import com.example.mymusic.presentation.util.Marquee
 import com.example.mymusic.presentation.util.defaultMarqueeParams
 import com.example.mymusic.presentation.util.scrollbar
@@ -41,13 +44,15 @@ import com.skydoves.landscapist.ImageOptions
 import com.skydoves.landscapist.glide.GlideImage
 import kotlin.math.floor
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun SongsScreen(
     isAudioPlaying: Boolean,
     audioList: List<Song>,
     currentPlayingAudio: Song?,
     onItemClick: (Song) -> Unit,
-    sortOrderChange: (SortOrder) -> Unit
+    sortOrderChange: (SortOrder) -> Unit,
+    navController : NavController
 ) {
 
     val sortOrder by remember {
@@ -84,17 +89,22 @@ fun SongsScreen(
                             knobColor = Color.Cyan,
                             trackColor = Color.LightGray,
                             padding = scrollKnobPadding,
-                            fixedKnobRatio = 0.03f
                         )
                         .padding(top = paddingLazyList),
                     state = scrollState
                 ) {
                     items(
-                        items = audioList
+                        items = audioList,
+                        key = {
+                            it.id
+                        }
                     ) { song: Song ->
                         AudioItem(
                             audio = song,
                             onItemClick = { onItemClick.invoke(song) },
+                            modifier = Modifier.animateItemPlacement(
+                                tween(durationMillis = 450)
+                            )
                         )
                     }
 
@@ -102,7 +112,8 @@ fun SongsScreen(
                 TopBar(
                     lazyListState = scrollState,
                     sortOrder,
-                    onSortOrderChange = { sortOrderChange.invoke(it) }
+                    onSortOrderChange = { sortOrderChange.invoke(it) },
+                    navController = navController
                 )
             }
         }
@@ -113,7 +124,8 @@ fun SongsScreen(
 fun TopBar(
     lazyListState: LazyListState,
     sortOrdering: SortOrder,
-    onSortOrderChange: (SortOrder) -> Unit
+    onSortOrderChange: (SortOrder) -> Unit,
+    navController: NavController
 ) {
 
     var showMenu by remember { mutableStateOf(false) }
@@ -128,14 +140,17 @@ fun TopBar(
             .background(color = MaterialTheme.colors.primary)
             .animateContentSize(animationSpec = tween(durationMillis = 300))
             .height(height = if (lazyListState.isScrolled) 0.dp else TOP_BAR_HEIGHT),
-        contentPadding = PaddingValues(start = 16.dp),
+
     ) {
         Row(
             modifier = Modifier.fillMaxSize(),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            IconButton(onClick = {}) {
+            IconButton(onClick = {
+                //navigate to search screen
+                navController.navigate(Screen.SearchScreen.route)
+            }) {
                 Icon(imageVector = Icons.Default.Search, contentDescription = "Search button")
             }
             Text(
@@ -146,7 +161,7 @@ fun TopBar(
                     fontStyle = FontStyle.Italic
                 )
             )
-            Box(modifier = Modifier.padding(end = 12.dp)) {
+            Box(modifier = Modifier.padding(end = 8.dp)) {
                 IconButton(onClick = {
                     showMenu = !showMenu
                 }) {
@@ -299,10 +314,11 @@ fun SortOrderItem(
 @Composable
 fun AudioItem(
     audio: Song,
-    onItemClick: (id: Long) -> Unit
+    onItemClick: (id: Long) -> Unit,
+    modifier: Modifier = Modifier
 ) {
     Card(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .padding(5.dp)
             .clickable {
@@ -328,7 +344,8 @@ fun AudioItem(
             Column(
                 modifier = Modifier
                     .weight(1f)
-                    .padding(8.dp)
+                    .padding(8.dp),
+                horizontalAlignment = Alignment.Start
             ) {
                 Spacer(modifier = Modifier.size(4.dp))
                 Text(
@@ -356,7 +373,10 @@ fun AudioItem(
                         style = MaterialTheme.typography.subtitle1,
                         color = MaterialTheme.colors
                             .onSurface
-                            .copy(alpha = .5f)
+                            .copy(alpha = .5f),
+                        modifier = Modifier
+                            .weight(1f),
+                        maxLines = 1,
                     )
                 }
             }

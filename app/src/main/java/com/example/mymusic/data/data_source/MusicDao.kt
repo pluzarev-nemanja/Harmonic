@@ -27,4 +27,7 @@ interface MusicDao {
 
     @Query("SELECT * FROM song ORDER BY dateAdded DESC")
     fun getAllSongsDate(): Flow<List<Song>>
+
+    @Query("SELECT * FROM song WHERE displayName LIKE :searchQuery")
+    fun searchBySongName(searchQuery: String): Flow<List<Song>>
 }

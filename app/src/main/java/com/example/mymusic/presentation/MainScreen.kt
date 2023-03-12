@@ -14,6 +14,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
@@ -23,6 +24,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.mymusic.domain.model.Song
 import com.example.mymusic.presentation.navigation.BottomBarScreen
 import com.example.mymusic.presentation.navigation.BottomNavGraph
+import com.example.mymusic.presentation.search.SearchViewModel
 import com.example.mymusic.presentation.songs.ArtistInfo
 import com.example.mymusic.presentation.songs.MediaPlayerController
 
@@ -34,6 +36,9 @@ fun MainScreen(
     currentPlayingAudio: Song?,
     isAudioPlaying: Boolean,
     onStart: (Song) -> Unit,
+    searchText: String,
+    songs: List<Song>,
+    onItemClick: (Song) -> Unit,
 ) {
 
     val navController = rememberNavController()
@@ -54,7 +59,7 @@ fun MainScreen(
                         sheetContent = {
                             currentPlayingAudio?.let { currentPlayingAudio ->
                                 Box(modifier = Modifier
-                                    .padding(bottom = innerPadding.calculateBottomPadding() - 16.dp)
+                                    .padding(bottom = innerPadding.calculateBottomPadding() - 18.dp)
                                 ){
                                     BottomBarPlayer(
                                         song = currentPlayingAudio,
@@ -73,7 +78,14 @@ fun MainScreen(
                         Box(modifier = Modifier
                             .padding(innerPadding)
                         ) {
-                            BottomNavGraph(navController = navController, songList = audioList)
+                            BottomNavGraph(
+                                navController = navController,
+                                songList = audioList,
+                                songs = songs,
+                                searchText = searchText,
+                                currentPlayingAudio = currentPlayingAudio,
+                                onItemClick = onItemClick
+                            )
                         }
                     }
             }

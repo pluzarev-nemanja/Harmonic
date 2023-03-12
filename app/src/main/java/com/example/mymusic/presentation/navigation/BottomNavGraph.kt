@@ -9,6 +9,8 @@ import com.example.mymusic.domain.model.Song
 import com.example.mymusic.presentation.album.AlbumScreen
 import com.example.mymusic.presentation.home.HomeScreen
 import com.example.mymusic.presentation.playlist.PlaylistScreen
+import com.example.mymusic.presentation.search.SearchScreen
+import com.example.mymusic.presentation.search.SearchViewModel
 import com.example.mymusic.presentation.songs.SongsScreen
 import com.example.mymusic.presentation.songs.SongsViewModel
 
@@ -16,7 +18,12 @@ import com.example.mymusic.presentation.songs.SongsViewModel
 fun BottomNavGraph(
     navController: NavHostController,
     songsViewModel: SongsViewModel = hiltViewModel(),
-    songList: List<Song>
+    songList: List<Song>,
+    searchViewModel: SearchViewModel = hiltViewModel(),
+    searchText: String,
+    songs: List<Song>,
+    currentPlayingAudio: Song?,
+    onItemClick: (Song) -> Unit,
 ) {
 
     NavHost(
@@ -37,7 +44,8 @@ fun BottomNavGraph(
                 },
                 sortOrderChange = {
                     songsViewModel.changeSortOrderSongs(it)
-                }
+                },
+                navController = navController
             )
         }
         composable(BottomBarScreen.Playlists.route) {
@@ -45,6 +53,15 @@ fun BottomNavGraph(
         }
         composable(BottomBarScreen.Album.route) {
             AlbumScreen()
+        }
+        composable(Screen.SearchScreen.route) {
+            SearchScreen(
+                searchText,
+                songs,
+                searchViewModel,
+                currentPlayingAudio,
+                onItemClick
+            )
         }
     }
 }

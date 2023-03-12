@@ -16,4 +16,6 @@ interface MusicRepository {
     fun getAllSongsAlbum(): Flow<List<Song>>
 
     fun getAllSongsDate(): Flow<List<Song>>
+
+    fun searchBySongName(searchQuery: String): Flow<List<Song>>
 }
