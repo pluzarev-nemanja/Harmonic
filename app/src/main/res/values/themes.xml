@@ -2,6 +2,7 @@
 <resources>
 
     <style name="Theme.MyMusic" parent="android:Theme.Material.Light.NoActionBar">
-        <item name="android:statusBarColor">@color/purple_700</item>
+        <item name="android:statusBarColor">#D21F3C</item>
     </style>
+
 </resources>

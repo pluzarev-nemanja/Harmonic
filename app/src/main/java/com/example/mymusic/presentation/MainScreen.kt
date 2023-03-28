@@ -3,10 +3,12 @@ package com.example.mymusic.presentation
 import android.annotation.SuppressLint
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -24,9 +26,12 @@ import androidx.navigation.compose.rememberNavController
 import com.example.mymusic.domain.model.Song
 import com.example.mymusic.presentation.navigation.BottomBarScreen
 import com.example.mymusic.presentation.navigation.BottomNavGraph
+import com.example.mymusic.presentation.navigation.Navigation
+import com.example.mymusic.presentation.navigation.Screen
 import com.example.mymusic.presentation.search.SearchViewModel
 import com.example.mymusic.presentation.songs.ArtistInfo
 import com.example.mymusic.presentation.songs.MediaPlayerController
+import kotlinx.coroutines.delay
 
 @OptIn(ExperimentalMaterialApi::class)
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter", "SuspiciousIndentation")
@@ -39,7 +44,9 @@ fun MainScreen(
     searchText: String,
     songs: List<Song>,
     onItemClick: (Song) -> Unit,
+    onDataLoaded: () -> Unit
 ) {
+
 
     val navController = rememberNavController()
 
@@ -49,6 +56,9 @@ fun MainScreen(
     )
     val scaffoldState = rememberBottomSheetScaffoldState()
 
+    LaunchedEffect(key1 = Unit){
+        onDataLoaded()
+    }
             Scaffold(
                 bottomBar = {
                     BottomBar(navController = navController)
