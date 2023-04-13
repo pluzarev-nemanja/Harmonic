@@ -7,7 +7,6 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
@@ -20,12 +19,9 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.compose.rememberNavController
-import com.example.mymusic.presentation.navigation.Navigation
 import com.example.mymusic.presentation.permission.PermissionDialog
 import com.example.mymusic.presentation.permission.ReadStoragePermissionTextProvider
 import com.example.mymusic.presentation.search.SearchViewModel
-import com.example.mymusic.presentation.songs.SongsScreen
 import com.example.mymusic.presentation.songs.SongsViewModel
 import com.example.mymusic.ui.theme.MyMusicTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -41,7 +37,7 @@ class MainActivity : ComponentActivity() {
     @RequiresApi(Build.VERSION_CODES.M)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        installSplashScreen().setKeepOnScreenCondition{
+        installSplashScreen().setKeepOnScreenCondition {
             keepSplashOpened
         }
         setContent {
@@ -113,7 +109,7 @@ class MainActivity : ComponentActivity() {
                             )
                         }
 
-                    if(granted){
+                    if (granted) {
                         val songsViewModel = viewModel(
                             modelClass = SongsViewModel::class.java
                         )
@@ -139,7 +135,7 @@ class MainActivity : ComponentActivity() {
                             },
                             onDataLoaded = {
                                 keepSplashOpened = false
-                            }
+                            },
                         )
                     }
 

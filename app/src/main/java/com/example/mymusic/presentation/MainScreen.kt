@@ -14,9 +14,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
@@ -26,12 +24,9 @@ import androidx.navigation.compose.rememberNavController
 import com.example.mymusic.domain.model.Song
 import com.example.mymusic.presentation.navigation.BottomBarScreen
 import com.example.mymusic.presentation.navigation.BottomNavGraph
-import com.example.mymusic.presentation.navigation.Navigation
 import com.example.mymusic.presentation.navigation.Screen
-import com.example.mymusic.presentation.search.SearchViewModel
 import com.example.mymusic.presentation.songs.ArtistInfo
 import com.example.mymusic.presentation.songs.MediaPlayerController
-import kotlinx.coroutines.delay
 
 @OptIn(ExperimentalMaterialApi::class)
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter", "SuspiciousIndentation")
@@ -44,9 +39,8 @@ fun MainScreen(
     searchText: String,
     songs: List<Song>,
     onItemClick: (Song) -> Unit,
-    onDataLoaded: () -> Unit
+    onDataLoaded: () -> Unit,
 ) {
-
 
     val navController = rememberNavController()
 
@@ -56,50 +50,55 @@ fun MainScreen(
     )
     val scaffoldState = rememberBottomSheetScaffoldState()
 
-    LaunchedEffect(key1 = Unit){
+    LaunchedEffect(key1 = Unit) {
         onDataLoaded()
     }
-            Scaffold(
-                bottomBar = {
-                    BottomBar(navController = navController)
-                }
-            ) {innerPadding->
-                    BottomSheetScaffold(
-                        sheetGesturesEnabled = false,
-                        sheetContent = {
-                            currentPlayingAudio?.let { currentPlayingAudio ->
-                                Box(modifier = Modifier
-                                    .padding(bottom = innerPadding.calculateBottomPadding() - 18.dp)
-                                ){
-                                    BottomBarPlayer(
-                                        song = currentPlayingAudio,
-                                        isAudioPlaying = isAudioPlaying,
-                                        onStart = { onStart.invoke(currentPlayingAudio) },
-                                    )
-                                }
-
+    Scaffold(
+        bottomBar = {
+            BottomBar(navController = navController)
+        }
+    ) { innerPadding ->
+        BottomSheetScaffold(
+            sheetGesturesEnabled = false,
+            sheetContent = {
+                currentPlayingAudio?.let { currentPlayingAudio ->
+                    Box(
+                        modifier = Modifier
+                            .padding(bottom = innerPadding.calculateBottomPadding() - 18.dp)
+                            .clickable {
+                                navController.navigate(Screen.PlayerScreen.route)
                             }
-                        },
-                        sheetShape = RoundedCornerShape(topEnd = 26.dp, topStart = 26.dp),
-                        scaffoldState = scaffoldState,
-                        sheetPeekHeight = animatedHeight,
                     ) {
-
-                        Box(modifier = Modifier
-                            .padding(innerPadding)
-                        ) {
-                            BottomNavGraph(
-                                navController = navController,
-                                songList = audioList,
-                                songs = songs,
-                                searchText = searchText,
-                                currentPlayingAudio = currentPlayingAudio,
-                                onItemClick = onItemClick
-                            )
-                        }
+                        BottomBarPlayer(
+                            song = currentPlayingAudio,
+                            isAudioPlaying = isAudioPlaying,
+                            onStart = { onStart.invoke(currentPlayingAudio) },
+                        )
                     }
+
+                }
+            },
+            sheetShape = RoundedCornerShape(topEnd = 26.dp, topStart = 26.dp),
+            scaffoldState = scaffoldState,
+            sheetPeekHeight = animatedHeight,
+        ) {
+
+            Box(
+                modifier = Modifier
+                    .padding(innerPadding)
+            ) {
+                BottomNavGraph(
+                    navController = navController,
+                    songList = audioList,
+                    songs = songs,
+                    searchText = searchText,
+                    currentPlayingAudio = currentPlayingAudio,
+                    onItemClick = onItemClick
+                )
             }
+        }
     }
+}
 
 
 @Composable

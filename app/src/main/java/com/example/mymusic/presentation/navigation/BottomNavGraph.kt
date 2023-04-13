@@ -8,6 +8,7 @@ import androidx.navigation.compose.composable
 import com.example.mymusic.domain.model.Song
 import com.example.mymusic.presentation.album.AlbumScreen
 import com.example.mymusic.presentation.home.HomeScreen
+import com.example.mymusic.presentation.player.PlayerScreen
 import com.example.mymusic.presentation.playlist.PlaylistScreen
 import com.example.mymusic.presentation.search.SearchScreen
 import com.example.mymusic.presentation.search.SearchViewModel
@@ -62,6 +63,9 @@ fun BottomNavGraph(
                 currentPlayingAudio,
                 onItemClick
             )
+        }
+        composable(Screen.PlayerScreen.route){
+            PlayerScreen()
         }
     }
 }
