@@ -1,15 +1,18 @@
 package com.example.mymusic.presentation
 
 import android.annotation.SuppressLint
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -25,8 +28,11 @@ import com.example.mymusic.domain.model.Song
 import com.example.mymusic.presentation.navigation.BottomBarScreen
 import com.example.mymusic.presentation.navigation.BottomNavGraph
 import com.example.mymusic.presentation.navigation.Screen
+import com.example.mymusic.presentation.player.PlayerScreen
 import com.example.mymusic.presentation.songs.ArtistInfo
 import com.example.mymusic.presentation.songs.MediaPlayerController
+import kotlinx.coroutines.launch
+import kotlin.time.Duration.Companion.milliseconds
 
 @OptIn(ExperimentalMaterialApi::class)
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter", "SuspiciousIndentation")
@@ -44,48 +50,88 @@ fun MainScreen(
 
     val navController = rememberNavController()
 
-    val animatedHeight by animateDpAsState(
-        targetValue = if (currentPlayingAudio == null) 0.dp
-        else 80.dp
+
+    val bottomSheet = rememberBottomSheetState(initialValue = BottomSheetValue.Collapsed,
+    animationSpec = tween(200)
     )
-    val scaffoldState = rememberBottomSheetScaffoldState()
+
+    val scaffoldState = rememberBottomSheetScaffoldState(bottomSheetState = bottomSheet)
+
 
     LaunchedEffect(key1 = Unit) {
         onDataLoaded()
     }
-    Scaffold(
-        bottomBar = {
-            BottomBar(navController = navController)
-        }
-    ) { innerPadding ->
-        BottomSheetScaffold(
-            sheetGesturesEnabled = false,
-            sheetContent = {
-                currentPlayingAudio?.let { currentPlayingAudio ->
-                    Box(
-                        modifier = Modifier
-                            .padding(bottom = innerPadding.calculateBottomPadding() - 18.dp)
-                            .clickable {
-                                navController.navigate(Screen.PlayerScreen.route)
-                            }
-                    ) {
-                        BottomBarPlayer(
-                            song = currentPlayingAudio,
-                            isAudioPlaying = isAudioPlaying,
-                            onStart = { onStart.invoke(currentPlayingAudio) },
-                        )
-                    }
 
-                }
+    val bottomBarState = rememberSaveable { (mutableStateOf(true)) }
+
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+
+    val animatedHeight by animateDpAsState(
+        targetValue = if (currentPlayingAudio == null) 0.dp
+        else 130.dp
+    )
+    val animatedCorners by animateDpAsState(
+        targetValue = if(bottomSheet.isExpanded) 0.dp else 26.dp
+    )
+
+    val coroutineScope = rememberCoroutineScope()
+
+
+    when (navBackStackEntry?.destination?.route) {
+        BottomBarScreen.Home.route -> {
+            bottomBarState.value = true
+
+        }
+        BottomBarScreen.Songs.route -> {
+            bottomBarState.value = true
+        }
+        BottomBarScreen.Playlists.route -> {
+            bottomBarState.value = true
+        }
+        BottomBarScreen.Album.route -> {
+            bottomBarState.value = true
+        }
+        Screen.SearchScreen.route -> {
+            bottomBarState.value = true
+        }
+        Screen.PlayerScreen.route -> {
+            bottomBarState.value = false
+        }
+    }
+
+
+    Scaffold(bottomBar = {
+        BottomBar(navController = navController, bottomBarState = bottomBarState)
+    }) { innerPadding ->
+        BottomSheetScaffold(
+            sheetContent = {
+                        currentPlayingAudio?.let { currentPlayingAudio ->
+                            Box(modifier = Modifier
+                                .padding(bottom = innerPadding.calculateBottomPadding())
+                                .clickable {
+                                    coroutineScope.launch {
+                                        bottomSheet.expand()
+                                    }
+                                }) {
+                                if(bottomSheet.isCollapsed){
+                                    BottomBarPlayer(
+                                        song = currentPlayingAudio,
+                                        isAudioPlaying = isAudioPlaying,
+                                        onStart = { onStart.invoke(currentPlayingAudio) },
+                                    )
+                                }else{
+                                    PlayerScreen()
+                                }
+                            }
+                        }
             },
-            sheetShape = RoundedCornerShape(topEnd = 26.dp, topStart = 26.dp),
+            sheetShape = RoundedCornerShape(topEnd = animatedCorners, topStart = animatedCorners),
             scaffoldState = scaffoldState,
             sheetPeekHeight = animatedHeight,
         ) {
 
             Box(
-                modifier = Modifier
-                    .padding(innerPadding)
+                modifier = Modifier.padding(innerPadding)
             ) {
                 BottomNavGraph(
                     navController = navController,
@@ -102,7 +148,7 @@ fun MainScreen(
 
 
 @Composable
-fun BottomBar(navController: NavHostController) {
+fun BottomBar(navController: NavHostController, bottomBarState: MutableState<Boolean>) {
     val screens = listOf(
         BottomBarScreen.Home,
         BottomBarScreen.Songs,
@@ -112,37 +158,35 @@ fun BottomBar(navController: NavHostController) {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
 
-    BottomNavigation(
-        modifier = Modifier
-            .graphicsLayer {
-                shape = RoundedCornerShape(
-                    topStart = 20.dp,
-                    topEnd = 20.dp
-                )
-                clip = true
+    AnimatedVisibility(visible = bottomBarState.value,
+        enter = slideInVertically(initialOffsetY = { it }),
+        exit = slideOutVertically(targetOffsetY = { it }),
+        content = {
+            BottomNavigation(modifier = Modifier.graphicsLayer {
+                    shape = RoundedCornerShape(
+                        topStart = 20.dp, topEnd = 20.dp
+                    )
+                    clip = true
+                }) {
+                screens.forEach { screen ->
+                    AddItem(
+                        screen = screen,
+                        currentDestination = currentDestination,
+                        navController = navController
+                    )
+                }
             }
-    ) {
-        screens.forEach { screen ->
-            AddItem(
-                screen = screen,
-                currentDestination = currentDestination,
-                navController = navController
-            )
-        }
-    }
+        })
 }
 
 @Composable
 fun RowScope.AddItem(
-    screen: BottomBarScreen,
-    currentDestination: NavDestination?,
-    navController: NavHostController
+    screen: BottomBarScreen, currentDestination: NavDestination?, navController: NavHostController
 ) {
 
-    BottomNavigationItem(
-        label = {
-            Text(text = screen.title)
-        },
+    BottomNavigationItem(label = {
+        Text(text = screen.title)
+    },
         icon = {
             Icon(imageVector = screen.icon, contentDescription = screen.title)
         },
@@ -155,8 +199,7 @@ fun RowScope.AddItem(
                 popUpTo(navController.graph.findStartDestination().id)
                 launchSingleTop = true
             }
-        }
-    )
+        })
 }
 
 @Composable
@@ -168,15 +211,12 @@ fun BottomBarPlayer(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .height(80.dp)
             .background(Color.Gray),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
         ArtistInfo(
-            audio = song,
-            modifier = Modifier
-                .weight(1f)
+            audio = song, modifier = Modifier.weight(1f)
         )
         MediaPlayerController(
             isAudioPlaying = isAudioPlaying,

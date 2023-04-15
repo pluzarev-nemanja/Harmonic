@@ -49,9 +49,8 @@ fun PlayerScreen() {
             ProgressBar()
             Spacer(modifier = Modifier.height(38.dp))
             PlayerControls()
-            Spacer(modifier = Modifier.height(38.dp))
+            Spacer(modifier = Modifier.height(18.dp))
             MoreOptions()
-
         }
     }
 }
