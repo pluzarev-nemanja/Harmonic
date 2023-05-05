@@ -29,8 +29,12 @@ import com.example.mymusic.presentation.navigation.BottomBarScreen
 import com.example.mymusic.presentation.navigation.BottomNavGraph
 import com.example.mymusic.presentation.navigation.Screen
 import com.example.mymusic.presentation.player.PlayerScreen
+import com.example.mymusic.presentation.player.SheetCollapsed
+import com.example.mymusic.presentation.player.SheetContent
+import com.example.mymusic.presentation.player.SheetExpanded
 import com.example.mymusic.presentation.songs.ArtistInfo
 import com.example.mymusic.presentation.songs.MediaPlayerController
+import com.example.mymusic.presentation.util.currentFraction
 import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.milliseconds
 
@@ -50,13 +54,21 @@ fun MainScreen(
 
     val navController = rememberNavController()
 
+    val coroutineScope = rememberCoroutineScope()
 
-    val bottomSheet = rememberBottomSheetState(initialValue = BottomSheetValue.Collapsed,
-    animationSpec = tween(200)
+    val scaffoldState = rememberBottomSheetScaffoldState(
+        bottomSheetState = rememberBottomSheetState(BottomSheetValue.Collapsed)
     )
 
-    val scaffoldState = rememberBottomSheetScaffoldState(bottomSheetState = bottomSheet)
-
+    val sheetToggle: () -> Unit = {
+        coroutineScope.launch {
+            if (scaffoldState.bottomSheetState.isCollapsed) {
+                scaffoldState.bottomSheetState.expand()
+            } else {
+                scaffoldState.bottomSheetState.collapse()
+            }
+        }
+    }
 
     LaunchedEffect(key1 = Unit) {
         onDataLoaded()
@@ -68,13 +80,11 @@ fun MainScreen(
 
     val animatedHeight by animateDpAsState(
         targetValue = if (currentPlayingAudio == null) 0.dp
-        else 130.dp
-    )
-    val animatedCorners by animateDpAsState(
-        targetValue = if(bottomSheet.isExpanded) 0.dp else 26.dp
+        else 115.dp
     )
 
-    val coroutineScope = rememberCoroutineScope()
+
+    val radius = 30.dp
 
 
     when (navBackStackEntry?.destination?.route) {
@@ -94,9 +104,6 @@ fun MainScreen(
         Screen.SearchScreen.route -> {
             bottomBarState.value = true
         }
-        Screen.PlayerScreen.route -> {
-            bottomBarState.value = false
-        }
     }
 
 
@@ -105,27 +112,34 @@ fun MainScreen(
     }) { innerPadding ->
         BottomSheetScaffold(
             sheetContent = {
-                        currentPlayingAudio?.let { currentPlayingAudio ->
-                            Box(modifier = Modifier
-                                .padding(bottom = innerPadding.calculateBottomPadding())
-                                .clickable {
-                                    coroutineScope.launch {
-                                        bottomSheet.expand()
-                                    }
-                                }) {
-                                if(bottomSheet.isCollapsed){
-                                    BottomBarPlayer(
-                                        song = currentPlayingAudio,
-                                        isAudioPlaying = isAudioPlaying,
-                                        onStart = { onStart.invoke(currentPlayingAudio) },
-                                    )
-                                }else{
-                                    PlayerScreen()
-                                }
+                SheetContent {
+                        SheetExpanded {
+                            currentPlayingAudio?.let { currentPlayingAudio ->
+                                PlayerScreen(
+                                    image = currentPlayingAudio.artUri,
+                                    songName = currentPlayingAudio.displayName,
+                                    artist = currentPlayingAudio.artist,
+                                    close = { sheetToggle() }
+                                )
                             }
                         }
+
+                        SheetCollapsed(
+                            isCollapsed = scaffoldState.bottomSheetState.isCollapsed,
+                            currentFraction = scaffoldState.currentFraction,
+                            onSheetClick = sheetToggle
+                        ) {
+                            currentPlayingAudio?.let { currentPlayingAudio ->
+                                BottomBarPlayer(
+                                    song = currentPlayingAudio,
+                                    isAudioPlaying = isAudioPlaying,
+                                    onStart = { onStart.invoke(currentPlayingAudio) },
+                                )
+                            }
+                        }
+                }
             },
-            sheetShape = RoundedCornerShape(topEnd = animatedCorners, topStart = animatedCorners),
+            sheetShape = RoundedCornerShape(topEnd = radius, topStart = radius),
             scaffoldState = scaffoldState,
             sheetPeekHeight = animatedHeight,
         ) {

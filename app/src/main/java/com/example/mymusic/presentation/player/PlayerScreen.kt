@@ -1,5 +1,6 @@
 package com.example.mymusic.presentation.player
 
+import android.net.Uri
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -21,10 +22,18 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.net.toUri
+import com.example.mymusic.presentation.util.Marquee
+import com.example.mymusic.presentation.util.defaultMarqueeParams
 import com.example.mymusic.presentation.util.shadow
 
 @Composable
-fun PlayerScreen() {
+fun PlayerScreen(
+    image : String,
+    songName : String,
+    artist : String,
+    close : () -> Unit
+) {
 
     Surface(modifier = Modifier.background(MaterialTheme.colors.background)) {
         Column(
@@ -32,10 +41,10 @@ fun PlayerScreen() {
                 .fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Header()
+            Header(close)
             Spacer(modifier = Modifier.height(18.dp))
             Image(
-                imageVector = Icons.Default.Favorite,
+                imageVector = Icons.Default.Headphones,
                 contentDescription = "Song Image",
                 modifier = Modifier
                     .shadow(offsetY = 230.dp, blurRadius = 15.dp)
@@ -44,7 +53,7 @@ fun PlayerScreen() {
                     .background(Color.DarkGray),
             )
             Spacer(modifier = Modifier.height(38.dp))
-            SongInfo()
+            SongInfo(songName, artist)
             Spacer(modifier = Modifier.height(38.dp))
             ProgressBar()
             Spacer(modifier = Modifier.height(38.dp))
@@ -94,14 +103,18 @@ fun PlayButton(
 }
 
 @Composable
-fun Header() {
+fun Header(
+    close : () -> Unit
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .padding(top = 5.dp),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        IconButton(onClick = {}) {
+        IconButton(onClick = {
+            close()
+        }) {
             Icon(
                 imageVector = Icons.Default.ExpandMore,
                 contentDescription = "back",
@@ -131,18 +144,25 @@ fun Header() {
 }
 
 @Composable
-fun SongInfo() {
+fun SongInfo(
+    songName : String,
+    artist : String
+) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text(
-                text = "Song Name",
-                fontWeight = FontWeight.Bold,
-                fontSize = 28.sp
-            )
+            Marquee(
+            params = defaultMarqueeParams(),
+        ) {
+                Text(
+                    text = songName,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 28.sp,
+                )
+            }
             Spacer(modifier = Modifier.height(4.dp))
             Text(
-                text = "Artist name",
+                text = artist,
                 fontWeight = FontWeight.Light,
                 fontSize = 18.sp
             )
@@ -277,8 +297,3 @@ fun MoreOptions() {
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun DefaultPreview() {
-    PlayerScreen()
-}

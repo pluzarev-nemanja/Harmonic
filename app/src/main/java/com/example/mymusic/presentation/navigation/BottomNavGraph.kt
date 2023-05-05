@@ -64,8 +64,5 @@ fun BottomNavGraph(
                 onItemClick
             )
         }
-        composable(Screen.PlayerScreen.route){
-            PlayerScreen()
-        }
     }
 }
