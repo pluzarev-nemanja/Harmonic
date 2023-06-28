@@ -3,11 +3,9 @@ package com.example.mymusic.presentation
 import android.annotation.SuppressLint
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateDpAsState
-import androidx.compose.animation.core.tween
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
@@ -36,7 +34,6 @@ import com.example.mymusic.presentation.songs.ArtistInfo
 import com.example.mymusic.presentation.songs.MediaPlayerController
 import com.example.mymusic.presentation.util.currentFraction
 import kotlinx.coroutines.launch
-import kotlin.time.Duration.Companion.milliseconds
 
 @OptIn(ExperimentalMaterialApi::class)
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter", "SuspiciousIndentation")
@@ -59,6 +56,7 @@ fun MainScreen(
     val scaffoldState = rememberBottomSheetScaffoldState(
         bottomSheetState = rememberBottomSheetState(BottomSheetValue.Collapsed)
     )
+
 
     val sheetToggle: () -> Unit = {
         coroutineScope.launch {
@@ -113,30 +111,30 @@ fun MainScreen(
         BottomSheetScaffold(
             sheetContent = {
                 SheetContent {
-                        SheetExpanded {
-                            currentPlayingAudio?.let { currentPlayingAudio ->
-                                PlayerScreen(
-                                    image = currentPlayingAudio.artUri,
-                                    songName = currentPlayingAudio.displayName,
-                                    artist = currentPlayingAudio.artist,
-                                    close = { sheetToggle() }
-                                )
-                            }
+                    SheetExpanded {
+                        currentPlayingAudio?.let { currentPlayingAudio ->
+                            PlayerScreen(
+                                image = currentPlayingAudio.artUri,
+                                songName = currentPlayingAudio.displayName,
+                                artist = currentPlayingAudio.artist,
+                                close = { sheetToggle() }
+                            )
                         }
+                    }
 
-                        SheetCollapsed(
-                            isCollapsed = scaffoldState.bottomSheetState.isCollapsed,
-                            currentFraction = scaffoldState.currentFraction,
-                            onSheetClick = sheetToggle
-                        ) {
-                            currentPlayingAudio?.let { currentPlayingAudio ->
-                                BottomBarPlayer(
-                                    song = currentPlayingAudio,
-                                    isAudioPlaying = isAudioPlaying,
-                                    onStart = { onStart.invoke(currentPlayingAudio) },
-                                )
-                            }
+                    SheetCollapsed(
+                        isCollapsed = scaffoldState.bottomSheetState.isCollapsed,
+                        currentFraction = scaffoldState.currentFraction,
+                        onSheetClick = sheetToggle
+                    ) {
+                        currentPlayingAudio?.let { currentPlayingAudio ->
+                            BottomBarPlayer(
+                                song = currentPlayingAudio,
+                                isAudioPlaying = isAudioPlaying,
+                                onStart = { onStart.invoke(currentPlayingAudio) },
+                            )
                         }
+                    }
                 }
             },
             sheetShape = RoundedCornerShape(topEnd = radius, topStart = radius),
@@ -177,11 +175,11 @@ fun BottomBar(navController: NavHostController, bottomBarState: MutableState<Boo
         exit = slideOutVertically(targetOffsetY = { it }),
         content = {
             BottomNavigation(modifier = Modifier.graphicsLayer {
-                    shape = RoundedCornerShape(
-                        topStart = 20.dp, topEnd = 20.dp
-                    )
-                    clip = true
-                }) {
+                shape = RoundedCornerShape(
+                    topStart = 20.dp, topEnd = 20.dp
+                )
+                clip = true
+            }) {
                 screens.forEach { screen ->
                     AddItem(
                         screen = screen,
@@ -222,20 +220,20 @@ fun BottomBarPlayer(
     isAudioPlaying: Boolean,
     onStart: () -> Unit,
 ) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(Color.Gray),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        ArtistInfo(
-            audio = song, modifier = Modifier.weight(1f)
-        )
-        MediaPlayerController(
-            isAudioPlaying = isAudioPlaying,
-            onStart = { onStart.invoke() },
-        )
-        Spacer(modifier = Modifier.width(20.dp))
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(Color.Gray),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            ArtistInfo(
+                audio = song, modifier = Modifier.weight(1f)
+            )
+            MediaPlayerController(
+                isAudioPlaying = isAudioPlaying,
+                onStart = { onStart.invoke() },
+            )
+            Spacer(modifier = Modifier.width(20.dp))
     }
 }
