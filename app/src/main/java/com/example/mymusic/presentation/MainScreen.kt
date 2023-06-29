@@ -47,6 +47,10 @@ fun MainScreen(
     songs: List<Song>,
     onItemClick: (Song) -> Unit,
     onDataLoaded: () -> Unit,
+    progress: Float,
+    onProgressChange: (Float) -> Unit,
+    skipNext : () -> Unit,
+    skipPrevious: () -> Unit
 ) {
 
     val navController = rememberNavController()
@@ -117,7 +121,14 @@ fun MainScreen(
                                 image = currentPlayingAudio.artUri,
                                 songName = currentPlayingAudio.displayName,
                                 artist = currentPlayingAudio.artist,
-                                close = { sheetToggle() }
+                                close = { sheetToggle() },
+                                progress = progress,
+                                onProgressChange = onProgressChange,
+                                audio = currentPlayingAudio,
+                                isAudioPlaying = isAudioPlaying,
+                                onStart = { onStart.invoke(currentPlayingAudio) },
+                                skipNext = {skipNext.invoke()},
+                                skipPrevious = {skipPrevious.invoke()}
                             )
                         }
                     }

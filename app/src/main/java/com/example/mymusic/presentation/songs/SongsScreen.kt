@@ -398,7 +398,7 @@ fun AudioItem(
 
 }
 
-private fun timeStampToDuration(position: Long): String {
+ fun timeStampToDuration(position: Long): String {
     val totalSeconds = floor(position / 1E3).toInt()
     val minutes = totalSeconds / 60
     val remainingSeconds = totalSeconds - (minutes * 60)

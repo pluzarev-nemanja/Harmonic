@@ -136,6 +136,16 @@ class MainActivity : ComponentActivity() {
                             onDataLoaded = {
                                 keepSplashOpened = false
                             },
+                            progress = songsViewModel.currentAudioProgress.value,
+                            onProgressChange = {
+                                songsViewModel.seekTo(it)
+                            },
+                            skipNext = {
+                                songsViewModel.skipToNext()
+                            },
+                            skipPrevious = {
+                                songsViewModel.skipToPrevious()
+                            }
                         )
                     }
 

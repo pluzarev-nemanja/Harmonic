@@ -212,6 +212,10 @@ class SongsViewModel @Inject constructor(
         serviceConnection.skipToNext()
     }
 
+    fun skipToPrevious(){
+        serviceConnection.transportControl.skipToPrevious()
+    }
+
     fun seekTo(value: Float) {
         serviceConnection.transportControl.seekTo(
             (currentDuration * value / 100f).toLong()

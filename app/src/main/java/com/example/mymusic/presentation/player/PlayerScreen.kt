@@ -1,6 +1,5 @@
 package com.example.mymusic.presentation.player
 
-import android.net.Uri
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -18,21 +17,34 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.net.toUri
+import com.example.mymusic.domain.model.Song
+import com.example.mymusic.presentation.songs.PlayerIconItem
+import com.example.mymusic.presentation.songs.timeStampToDuration
 import com.example.mymusic.presentation.util.Marquee
 import com.example.mymusic.presentation.util.defaultMarqueeParams
 import com.example.mymusic.presentation.util.shadow
+import com.skydoves.landscapist.ImageOptions
+import com.skydoves.landscapist.glide.GlideImage
 
 @Composable
 fun PlayerScreen(
     image : String,
     songName : String,
     artist : String,
-    close : () -> Unit
+    close : () -> Unit,
+    progress: Float,
+    onProgressChange: (Float) -> Unit,
+    audio : Song,
+    isAudioPlaying: Boolean,
+    onStart: (Song) -> Unit,
+    skipNext: () -> Unit,
+    skipPrevious: () -> Unit
 ) {
 
     Surface(modifier = Modifier.background(MaterialTheme.colors.background)) {
@@ -43,9 +55,12 @@ fun PlayerScreen(
         ) {
             Header(close)
             Spacer(modifier = Modifier.height(18.dp))
-            Image(
-                imageVector = Icons.Default.Headphones,
-                contentDescription = "Song Image",
+            GlideImage(
+                imageModel = { image },
+                imageOptions = ImageOptions(
+                    contentScale = ContentScale.Crop,
+                    alignment = Alignment.Center
+                ),
                 modifier = Modifier
                     .shadow(offsetY = 230.dp, blurRadius = 15.dp)
                     .size(300.dp)
@@ -54,53 +69,24 @@ fun PlayerScreen(
             )
             Spacer(modifier = Modifier.height(38.dp))
             SongInfo(songName, artist)
+            Spacer(modifier = Modifier.height(8.dp))
+            ProgressBar(progress = progress,
+                onProgressChange = onProgressChange,
+            audio = audio
+                )
             Spacer(modifier = Modifier.height(38.dp))
-            ProgressBar()
-            Spacer(modifier = Modifier.height(38.dp))
-            PlayerControls()
+            PlayerControls(
+                isAudioPlaying = isAudioPlaying,
+                onStart = { onStart.invoke(audio) },
+                skipNext = { skipNext.invoke() },
+                skipPrevious = { skipPrevious.invoke() }
+            )
             Spacer(modifier = Modifier.height(18.dp))
             MoreOptions()
         }
     }
 }
-@Composable
-fun PlayButton(
-    modifier: Modifier = Modifier,
-    icon: ImageVector,
-    border: BorderStroke? = null,
-    backgroundColor: Color = MaterialTheme.colors.primary,
-    color: Color = MaterialTheme.colors.onSurface,
-    onClick: () -> Unit
-) {
 
-    Surface(
-        shape = CircleShape,
-        border = border,
-        modifier = modifier
-            .clickable {
-                onClick.invoke()
-            },
-        contentColor = color,
-        color = backgroundColor
-
-    ) {
-        Box(
-            modifier = Modifier.padding(4.dp),
-            contentAlignment = Alignment.Center,
-        ) {
-            Icon(
-                imageVector = icon,
-                contentDescription = null,
-                Modifier.size(30.dp)
-            )
-
-        }
-
-
-    }
-
-
-}
 
 @Composable
 fun Header(
@@ -149,7 +135,8 @@ fun SongInfo(
     artist : String
 ) {
         Column(
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier.padding(horizontal = 10.dp)
         ) {
             Marquee(
             params = defaultMarqueeParams(),
@@ -157,7 +144,7 @@ fun SongInfo(
                 Text(
                     text = songName,
                     fontWeight = FontWeight.Bold,
-                    fontSize = 28.sp,
+                    fontSize = 22.sp,
                 )
             }
             Spacer(modifier = Modifier.height(4.dp))
@@ -170,9 +157,16 @@ fun SongInfo(
 }
 
 @Composable
-fun ProgressBar() {
-    LinearProgressIndicator()
-    Spacer(modifier = Modifier.height(18.dp))
+fun ProgressBar(
+    progress: Float,
+    onProgressChange: (Float) -> Unit,
+    audio : Song
+) {
+    Slider(
+        value = progress,
+        onValueChange = { onProgressChange.invoke(it) },
+        valueRange = 0f..100f,
+    )
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -181,17 +175,22 @@ fun ProgressBar() {
         verticalAlignment = Alignment.Top
     ) {
         Text(
-            text = "1:04 / ",
+            text = timeStampToDuration(progress.toLong()) + " / ",
             fontWeight = FontWeight.Bold,
         )
         Text(
-            text = "2:23", fontWeight = FontWeight.Light,
+            text = timeStampToDuration(audio.duration.toLong()), fontWeight = FontWeight.Light,
         )
     }
 }
 
 @Composable
-fun PlayerControls() {
+fun PlayerControls(
+    isAudioPlaying: Boolean,
+    onStart: () -> Unit,
+    skipNext : () -> Unit,
+    skipPrevious : () -> Unit,
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -209,22 +208,27 @@ fun PlayerControls() {
 
                 )
         }
-        IconButton(onClick = {}) {
+        IconButton(onClick = {
+            skipPrevious.invoke()
+        }) {
             Icon(
                 imageVector = Icons.Default.SkipPrevious,
                 contentDescription = "SkipPrevious",
                 modifier = Modifier.size(45.dp)
             )
         }
-
-        PlayButton(
-            icon = Icons.Default.Pause,
-            modifier = Modifier.size(75.dp)
-
+        PlayerIconItem(
+            icon = if (isAudioPlaying) Icons.Default.Pause
+            else Icons.Default.PlayArrow,
+            backgroundColor = MaterialTheme.colors.primary,
+            modifier = Modifier
+                .size(60.dp)
         ) {
-
+            onStart.invoke()
         }
-        IconButton(onClick = {}) {
+        IconButton(onClick = {
+            skipNext.invoke()
+        }) {
             Icon(
                 imageVector = Icons.Default.SkipNext,
                 contentDescription = "SkipNext",
