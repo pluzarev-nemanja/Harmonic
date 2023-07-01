@@ -145,6 +145,12 @@ class MainActivity : ComponentActivity() {
                             },
                             skipPrevious = {
                                 songsViewModel.skipToPrevious()
+                            },
+                            shuffle = {
+                                songsViewModel.shuffle()
+                            },
+                            repeat ={
+                                songsViewModel.repeat(it)
                             }
                         )
                     }

@@ -50,7 +50,9 @@ fun MainScreen(
     progress: Float,
     onProgressChange: (Float) -> Unit,
     skipNext : () -> Unit,
-    skipPrevious: () -> Unit
+    skipPrevious: () -> Unit,
+    shuffle: () -> Unit,
+    repeat : (Int) -> Unit
 ) {
 
     val navController = rememberNavController()
@@ -128,7 +130,9 @@ fun MainScreen(
                                 isAudioPlaying = isAudioPlaying,
                                 onStart = { onStart.invoke(currentPlayingAudio) },
                                 skipNext = {skipNext.invoke()},
-                                skipPrevious = {skipPrevious.invoke()}
+                                skipPrevious = {skipPrevious.invoke()},
+                                shuffle = {shuffle.invoke()},
+                                repeat = repeat
                             )
                         }
                     }

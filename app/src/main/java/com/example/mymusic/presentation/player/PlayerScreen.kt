@@ -10,7 +10,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
@@ -44,7 +44,9 @@ fun PlayerScreen(
     isAudioPlaying: Boolean,
     onStart: (Song) -> Unit,
     skipNext: () -> Unit,
-    skipPrevious: () -> Unit
+    skipPrevious: () -> Unit,
+    shuffle: () -> Unit,
+    repeat : (Int) -> Unit
 ) {
 
     Surface(modifier = Modifier.background(MaterialTheme.colors.background)) {
@@ -79,7 +81,9 @@ fun PlayerScreen(
                 isAudioPlaying = isAudioPlaying,
                 onStart = { onStart.invoke(audio) },
                 skipNext = { skipNext.invoke() },
-                skipPrevious = { skipPrevious.invoke() }
+                skipPrevious = { skipPrevious.invoke() },
+                shuffle = {shuffle.invoke()},
+                repeat = repeat
             )
             Spacer(modifier = Modifier.height(18.dp))
             MoreOptions()
@@ -190,7 +194,17 @@ fun PlayerControls(
     onStart: () -> Unit,
     skipNext : () -> Unit,
     skipPrevious : () -> Unit,
+    shuffle: () -> Unit,
+    repeat: (Int) -> Unit
 ) {
+    var selected by remember {
+       mutableStateOf(false)
+    }
+
+    var number by remember{
+        mutableStateOf(1)
+    }
+
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -198,13 +212,19 @@ fun PlayerControls(
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = CenterVertically
     ) {
-        IconButton(onClick = {}) {
+        IconButton(onClick = {
+            shuffle.invoke()
+            selected = !selected
+        }) {
             Icon(
                 imageVector = Icons.Default.Shuffle,
                 contentDescription = "shuffle",
-                tint = MaterialTheme.colors
-                    .onSurface
-                    .copy(alpha = .5f),
+                tint = if(!selected) {
+                    MaterialTheme.colors.onSurface.copy(alpha = .5f)
+                }
+                else{
+                    MaterialTheme.colors.onSurface
+                    },
 
                 )
         }
@@ -236,13 +256,27 @@ fun PlayerControls(
             )
         }
 
-        IconButton(onClick = {}) {
+        IconButton(onClick = {
+            number = when(number){
+                1->2
+                2->3
+                else->1
+            }
+            repeat.invoke(number)
+        }) {
             Icon(
-                imageVector = Icons.Default.Repeat,
+                imageVector = when(number){
+                    1->Icons.Default.Repeat
+                    2->Icons.Default.Repeat
+                    3->Icons.Default.RepeatOne
+                    else -> Icons.Default.RepeatOne
+                },
                 contentDescription = "Repeat",
-                tint = MaterialTheme.colors
+                tint = if(number == 1)MaterialTheme.colors
                     .onSurface
-                    .copy(alpha = .5f),
+                    .copy(alpha = .5f)
+                else MaterialTheme.colors
+                    .onSurface,
             )
         }
     }

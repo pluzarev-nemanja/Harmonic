@@ -1,6 +1,9 @@
 package com.example.mymusic.presentation.songs
 
 import android.support.v4.media.MediaBrowserCompat
+import android.support.v4.media.session.PlaybackStateCompat
+import android.support.v4.media.session.PlaybackStateCompat.SHUFFLE_MODE_ALL
+import android.support.v4.media.session.PlaybackStateCompat.SHUFFLE_MODE_NONE
 import android.util.Log
 import androidx.compose.runtime.*
 import androidx.lifecycle.ViewModel
@@ -13,6 +16,7 @@ import com.example.mymusic.presentation.exoplayer.currentPosition
 import com.example.mymusic.presentation.exoplayer.isPlaying
 import com.example.mymusic.presentation.service.MusicPlayerService
 import com.example.mymusic.presentation.util.Constants
+import com.google.android.exoplayer2.Player.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -27,7 +31,7 @@ class SongsViewModel @Inject constructor(
 
     var songList = mutableStateListOf<Song>()
 
-
+    private var shuffleMode by mutableStateOf(false)
     val currentPlayingAudio = serviceConnection.currentPlayingAudio
     private val isConnected = serviceConnection.isConnected
     private lateinit var rootMediaId: String
@@ -53,6 +57,7 @@ class SongsViewModel @Inject constructor(
         get() = MusicPlayerService.currentDuration
 
     var currentAudioProgress = mutableStateOf(0f)
+
 
 
     init {
@@ -215,6 +220,24 @@ class SongsViewModel @Inject constructor(
     fun skipToPrevious(){
         serviceConnection.transportControl.skipToPrevious()
     }
+
+    fun shuffle(){
+        shuffleMode = !shuffleMode
+        if(shuffleMode){
+            serviceConnection.transportControl.setShuffleMode(SHUFFLE_MODE_ALL)
+        }else{
+            serviceConnection.transportControl.setShuffleMode(SHUFFLE_MODE_NONE)
+        }
+    }
+
+    fun repeat(number : Int = 1){
+        when(number){
+            1 -> serviceConnection.transportControl.setRepeatMode(PlaybackStateCompat.REPEAT_MODE_NONE)
+            2 -> serviceConnection.transportControl.setRepeatMode(PlaybackStateCompat.REPEAT_MODE_ALL)
+            3 -> serviceConnection.transportControl.setRepeatMode(PlaybackStateCompat.REPEAT_MODE_ONE)
+        }
+    }
+
 
     fun seekTo(value: Float) {
         serviceConnection.transportControl.seekTo(
