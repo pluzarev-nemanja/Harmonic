@@ -5,7 +5,10 @@ import android.support.v4.media.session.PlaybackStateCompat
 import android.support.v4.media.session.PlaybackStateCompat.SHUFFLE_MODE_ALL
 import android.support.v4.media.session.PlaybackStateCompat.SHUFFLE_MODE_NONE
 import android.util.Log
-import androidx.compose.runtime.*
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.mymusic.domain.model.Song
@@ -16,11 +19,11 @@ import com.example.mymusic.presentation.exoplayer.currentPosition
 import com.example.mymusic.presentation.exoplayer.isPlaying
 import com.example.mymusic.presentation.service.MusicPlayerService
 import com.example.mymusic.presentation.util.Constants
-import com.google.android.exoplayer2.Player.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlin.math.floor
 
 @HiltViewModel
 class SongsViewModel @Inject constructor(
@@ -31,6 +34,7 @@ class SongsViewModel @Inject constructor(
 
     var songList = mutableStateListOf<Song>()
 
+    private var timer by mutableStateOf("")
     private var shuffleMode by mutableStateOf(false)
     val currentPlayingAudio = serviceConnection.currentPlayingAudio
     private val isConnected = serviceConnection.isConnected
@@ -57,7 +61,6 @@ class SongsViewModel @Inject constructor(
         get() = MusicPlayerService.currentDuration
 
     var currentAudioProgress = mutableStateOf(0f)
-
 
 
     init {
@@ -95,7 +98,7 @@ class SongsViewModel @Inject constructor(
         when (sortOrder) {
             SortOrder.ASCENDING -> {
                 viewModelScope.launch {
-                    musicUseCases.getAllSongsAsc().collect{ songsList ->
+                    musicUseCases.getAllSongsAsc().collect { songsList ->
                         songList.clear()
                         songList += songsList.map {
                             val displayName = it.displayName.substringBefore(".")
@@ -112,7 +115,7 @@ class SongsViewModel @Inject constructor(
             }
             SortOrder.DESCENDING -> {
                 viewModelScope.launch {
-                    musicUseCases.getAllSongsDesc().collect{ songsList ->
+                    musicUseCases.getAllSongsDesc().collect { songsList ->
                         songList.clear()
                         songList += songsList.map {
                             val displayName = it.displayName.substringBefore(".")
@@ -129,7 +132,7 @@ class SongsViewModel @Inject constructor(
             }
             SortOrder.ARTIST -> {
                 viewModelScope.launch {
-                    musicUseCases.getAllSongsArtist().collect{ songsList ->
+                    musicUseCases.getAllSongsArtist().collect { songsList ->
                         songList.clear()
                         songList += songsList.map {
                             val displayName = it.displayName.substringBefore(".")
@@ -146,7 +149,7 @@ class SongsViewModel @Inject constructor(
             }
             SortOrder.ALBUM -> {
                 viewModelScope.launch {
-                    musicUseCases.getAllSongsAlbum().collect{ songsList ->
+                    musicUseCases.getAllSongsAlbum().collect { songsList ->
                         songList.clear()
                         songList += songsList.map {
                             val displayName = it.displayName.substringBefore(".")
@@ -163,7 +166,7 @@ class SongsViewModel @Inject constructor(
             }
             SortOrder.DATE_ADDED -> {
                 viewModelScope.launch {
-                    musicUseCases.getAllSongsDate().collect{ songsList ->
+                    musicUseCases.getAllSongsDate().collect { songsList ->
                         songList.clear()
                         songList += songsList.map {
                             val displayName = it.displayName.substringBefore(".")
@@ -179,6 +182,17 @@ class SongsViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+
+    //nije currentDuration
+    fun updateTimer(): String {
+        val totalSeconds = floor(currentPlayBackPosition / 1E3).toInt()
+        val minutes = totalSeconds / 60
+        val remainingSeconds = totalSeconds - (minutes * 60)
+        timer = if (currentPlayBackPosition < 0) "--:--"
+        else "%d:%02d".format(minutes, remainingSeconds)
+        return timer
     }
 
     fun playAudio(currentAudio: Song) {
@@ -217,21 +231,21 @@ class SongsViewModel @Inject constructor(
         serviceConnection.skipToNext()
     }
 
-    fun skipToPrevious(){
+    fun skipToPrevious() {
         serviceConnection.transportControl.skipToPrevious()
     }
 
-    fun shuffle(){
+    fun shuffle() {
         shuffleMode = !shuffleMode
-        if(shuffleMode){
+        if (shuffleMode) {
             serviceConnection.transportControl.setShuffleMode(SHUFFLE_MODE_ALL)
-        }else{
+        } else {
             serviceConnection.transportControl.setShuffleMode(SHUFFLE_MODE_NONE)
         }
     }
 
-    fun repeat(number : Int = 1){
-        when(number){
+    fun repeat(number: Int = 1) {
+        when (number) {
             1 -> serviceConnection.transportControl.setRepeatMode(PlaybackStateCompat.REPEAT_MODE_NONE)
             2 -> serviceConnection.transportControl.setRepeatMode(PlaybackStateCompat.REPEAT_MODE_ALL)
             3 -> serviceConnection.transportControl.setRepeatMode(PlaybackStateCompat.REPEAT_MODE_ONE)

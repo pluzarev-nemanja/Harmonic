@@ -151,6 +151,9 @@ class MainActivity : ComponentActivity() {
                             },
                             repeat ={
                                 songsViewModel.repeat(it)
+                            },
+                            updateTimer = {
+                                songsViewModel.updateTimer()
                             }
                         )
                     }

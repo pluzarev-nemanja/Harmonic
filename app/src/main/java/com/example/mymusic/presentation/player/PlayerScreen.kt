@@ -1,11 +1,7 @@
 package com.example.mymusic.presentation.player
 
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -16,13 +12,10 @@ import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.net.toUri
 import com.example.mymusic.domain.model.Song
 import com.example.mymusic.presentation.songs.PlayerIconItem
 import com.example.mymusic.presentation.songs.timeStampToDuration
@@ -34,19 +27,20 @@ import com.skydoves.landscapist.glide.GlideImage
 
 @Composable
 fun PlayerScreen(
-    image : String,
-    songName : String,
-    artist : String,
-    close : () -> Unit,
+    image: String,
+    songName: String,
+    artist: String,
+    close: () -> Unit,
     progress: Float,
     onProgressChange: (Float) -> Unit,
-    audio : Song,
+    audio: Song,
     isAudioPlaying: Boolean,
     onStart: (Song) -> Unit,
     skipNext: () -> Unit,
     skipPrevious: () -> Unit,
     shuffle: () -> Unit,
-    repeat : (Int) -> Unit
+    repeat: (Int) -> Unit,
+    updateTimer: () -> String
 ) {
 
     Surface(modifier = Modifier.background(MaterialTheme.colors.background)) {
@@ -72,19 +66,22 @@ fun PlayerScreen(
             Spacer(modifier = Modifier.height(38.dp))
             SongInfo(songName, artist)
             Spacer(modifier = Modifier.height(8.dp))
-            ProgressBar(progress = progress,
+            ProgressBar(
+                progress = progress,
                 onProgressChange = onProgressChange,
-            audio = audio
-                )
+                audio = audio,
+                updateTimer = {updateTimer.invoke()}
+            )
             Spacer(modifier = Modifier.height(38.dp))
             PlayerControls(
                 isAudioPlaying = isAudioPlaying,
                 onStart = { onStart.invoke(audio) },
                 skipNext = { skipNext.invoke() },
                 skipPrevious = { skipPrevious.invoke() },
-                shuffle = {shuffle.invoke()},
-                repeat = repeat
-            )
+                shuffle = { shuffle.invoke() },
+                repeat = repeat,
+
+                )
             Spacer(modifier = Modifier.height(18.dp))
             MoreOptions()
         }
@@ -94,7 +91,7 @@ fun PlayerScreen(
 
 @Composable
 fun Header(
-    close : () -> Unit
+    close: () -> Unit
 ) {
     Row(
         modifier = Modifier
@@ -135,36 +132,37 @@ fun Header(
 
 @Composable
 fun SongInfo(
-    songName : String,
-    artist : String
+    songName: String,
+    artist: String
 ) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.padding(horizontal = 10.dp)
-        ) {
-            Marquee(
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier.padding(horizontal = 10.dp)
+    ) {
+        Marquee(
             params = defaultMarqueeParams(),
         ) {
-                Text(
-                    text = songName,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 22.sp,
-                )
-            }
-            Spacer(modifier = Modifier.height(4.dp))
             Text(
-                text = artist,
-                fontWeight = FontWeight.Light,
-                fontSize = 18.sp
+                text = songName,
+                fontWeight = FontWeight.Bold,
+                fontSize = 22.sp,
             )
         }
+        Spacer(modifier = Modifier.height(4.dp))
+        Text(
+            text = artist,
+            fontWeight = FontWeight.Light,
+            fontSize = 18.sp
+        )
+    }
 }
 
 @Composable
 fun ProgressBar(
     progress: Float,
     onProgressChange: (Float) -> Unit,
-    audio : Song
+    audio: Song,
+    updateTimer: () -> String
 ) {
     Slider(
         value = progress,
@@ -179,7 +177,7 @@ fun ProgressBar(
         verticalAlignment = Alignment.Top
     ) {
         Text(
-            text = timeStampToDuration(progress.toLong()) + " / ",
+            text = updateTimer.invoke() + " / ",
             fontWeight = FontWeight.Bold,
         )
         Text(
@@ -192,16 +190,16 @@ fun ProgressBar(
 fun PlayerControls(
     isAudioPlaying: Boolean,
     onStart: () -> Unit,
-    skipNext : () -> Unit,
-    skipPrevious : () -> Unit,
+    skipNext: () -> Unit,
+    skipPrevious: () -> Unit,
     shuffle: () -> Unit,
-    repeat: (Int) -> Unit
+    repeat: (Int) -> Unit,
 ) {
     var selected by remember {
-       mutableStateOf(false)
+        mutableStateOf(false)
     }
 
-    var number by remember{
+    var number by remember {
         mutableStateOf(1)
     }
 
@@ -219,12 +217,11 @@ fun PlayerControls(
             Icon(
                 imageVector = Icons.Default.Shuffle,
                 contentDescription = "shuffle",
-                tint = if(!selected) {
+                tint = if (!selected) {
                     MaterialTheme.colors.onSurface.copy(alpha = .5f)
-                }
-                else{
+                } else {
                     MaterialTheme.colors.onSurface
-                    },
+                },
 
                 )
         }
@@ -257,22 +254,22 @@ fun PlayerControls(
         }
 
         IconButton(onClick = {
-            number = when(number){
-                1->2
-                2->3
-                else->1
+            number = when (number) {
+                1 -> 2
+                2 -> 3
+                else -> 1
             }
             repeat.invoke(number)
         }) {
             Icon(
-                imageVector = when(number){
-                    1->Icons.Default.Repeat
-                    2->Icons.Default.Repeat
-                    3->Icons.Default.RepeatOne
+                imageVector = when (number) {
+                    1 -> Icons.Default.Repeat
+                    2 -> Icons.Default.Repeat
+                    3 -> Icons.Default.RepeatOne
                     else -> Icons.Default.RepeatOne
                 },
                 contentDescription = "Repeat",
-                tint = if(number == 1)MaterialTheme.colors
+                tint = if (number == 1) MaterialTheme.colors
                     .onSurface
                     .copy(alpha = .5f)
                 else MaterialTheme.colors
@@ -290,7 +287,7 @@ fun MoreOptions() {
             .padding(start = 5.dp, end = 5.dp),
         horizontalArrangement = Arrangement.SpaceEvenly,
         verticalAlignment = CenterVertically
-    ){
+    ) {
         IconButton(onClick = {}) {
             Icon(
                 imageVector = Icons.Default.Favorite,

@@ -52,7 +52,8 @@ fun MainScreen(
     skipNext : () -> Unit,
     skipPrevious: () -> Unit,
     shuffle: () -> Unit,
-    repeat : (Int) -> Unit
+    repeat : (Int) -> Unit,
+    updateTimer : () -> String
 ) {
 
     val navController = rememberNavController()
@@ -132,7 +133,8 @@ fun MainScreen(
                                 skipNext = {skipNext.invoke()},
                                 skipPrevious = {skipPrevious.invoke()},
                                 shuffle = {shuffle.invoke()},
-                                repeat = repeat
+                                repeat = repeat,
+                                updateTimer = {updateTimer.invoke()}
                             )
                         }
                     }
