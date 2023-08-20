@@ -51,4 +51,16 @@ class MusicRepositoryImpl @Inject constructor(
     override fun getAllPlaylists(): Flow<List<Playlist>> {
         return dao.getAllPlaylists()
     }
+
+    override fun getAllPlaylistsDesc(): Flow<List<Playlist>> {
+        return dao.getAllPlaylistsDesc()
+    }
+
+    override fun getAllPlaylistsSongCount(): Flow<List<Playlist>> {
+        return dao.getAllPlaylistsSongCount()
+    }
+
+    override fun getAllPlaylistsDuration(): Flow<List<Playlist>> {
+        return dao.getAllPlaylistsDuration()
+    }
 }

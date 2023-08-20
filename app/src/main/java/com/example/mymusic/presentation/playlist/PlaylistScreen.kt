@@ -1,8 +1,12 @@
 package com.example.mymusic.presentation.playlist
 
+import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -10,23 +14,32 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.staggeredgrid.LazyStaggeredGridState
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.lazy.staggeredgrid.items
+import androidx.compose.foundation.lazy.staggeredgrid.rememberLazyStaggeredGridState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.AlertDialog
 import androidx.compose.material.Button
+import androidx.compose.material.DropdownMenu
+import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.FabPosition
 import androidx.compose.material.FloatingActionButton
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
+import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material.icons.filled.MoreHoriz
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -37,12 +50,21 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.example.mymusic.R
 import com.example.mymusic.domain.model.Playlist
+import com.example.mymusic.domain.model.Song
+import com.example.mymusic.domain.util.PlaylistSortOrder
+import com.example.mymusic.presentation.navigation.Screen
+import com.example.mymusic.presentation.songs.SortOrderItem
+import com.example.mymusic.presentation.songs.TOP_BAR_HEIGHT
+import com.example.mymusic.presentation.songs.isScrolled
 import com.example.mymusic.presentation.songs.timeStampToDuration
 import com.example.mymusic.presentation.util.shadow
 import com.skydoves.landscapist.ImageOptions
@@ -52,7 +74,10 @@ import com.skydoves.landscapist.glide.GlideImage
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun PlaylistScreen(
-    playlistViewModel: PlaylistViewModel
+    playlistViewModel: PlaylistViewModel,
+    sortOrderChange: (PlaylistSortOrder) -> Unit,
+    navController: NavController,
+    currentPlayingAudio: Song?
 ) {
 
     var openDialog by remember {
@@ -61,6 +86,20 @@ fun PlaylistScreen(
     var filledText by remember {
         mutableStateOf("")
     }
+    val scrollState = rememberLazyStaggeredGridState()
+
+    val sortOrder by remember {
+        mutableStateOf(PlaylistSortOrder.ASCENDING)
+    }
+    val animatedHeight by animateDpAsState(
+        targetValue = if (currentPlayingAudio == null) 0.dp
+        else 80.dp, label = "animatedHeight"
+    )
+
+    val paddingLazyList by animateDpAsState(
+        targetValue = if (scrollState.isScrolled) 0.dp else TOP_BAR_HEIGHT,
+        animationSpec = tween(durationMillis = 300), label = "paddingLazyList"
+    )
 
     Scaffold(
         floatingActionButton = {
@@ -75,16 +114,26 @@ fun PlaylistScreen(
     ) { paddingValues ->
         LazyVerticalStaggeredGrid(
             columns = StaggeredGridCells.Fixed(2),
-            modifier = Modifier.fillMaxSize(),
-            contentPadding = PaddingValues(16.dp),
-            horizontalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(top = paddingLazyList),
+            contentPadding = PaddingValues(16.dp, bottom = animatedHeight),
+            horizontalArrangement = Arrangement.spacedBy(16.dp),
+            state = scrollState,
+            ) {
             items(
                 items = playlistViewModel.playlists
             ) { playlist: Playlist ->
-                PlaylistItem(playlist = playlist)
+                PlaylistItem(playlist = playlist, modifier = Modifier.padding(top = 10.dp))
             }
         }
+        TopBarPlaylist(
+            lazyListState = scrollState,
+            sortOrder,
+            onSortOrderChange = { sortOrderChange.invoke(it) },
+            navController = navController
+        )
+
         if (openDialog) {
             AlertDialog(
                 shape = RoundedCornerShape(10.dp),
@@ -153,9 +202,9 @@ fun PlaylistItem(
                     alignment = Alignment.Center
                 ),
                 modifier = Modifier
-                    .shadow(offsetY = 130.dp, blurRadius = 15.dp)
                     .fillMaxWidth()
                     .clip(RoundedCornerShape(25.dp))
+                    .shadow(offsetY = 130.dp, blurRadius = 15.dp)
                     .background(Color.DarkGray),
             )
         }
@@ -187,3 +236,158 @@ fun PlaylistItem(
     Spacer(modifier = Modifier.height(12.dp))
 }
 
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+fun TopBarPlaylist(
+    lazyListState: LazyStaggeredGridState,
+    sortOrdering: PlaylistSortOrder,
+    onSortOrderChange: (PlaylistSortOrder) -> Unit,
+    navController: NavController
+) {
+
+    var showMenu by remember { mutableStateOf(false) }
+    var showNestedMenu by remember { mutableStateOf(false) }
+    val sortOrder = remember {
+        mutableStateOf(sortOrdering)
+    }
+
+    TopAppBar(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(color = MaterialTheme.colors.primary)
+            .animateContentSize(animationSpec = tween(durationMillis = 300))
+            .height(height = if (lazyListState.isScrollInProgress) 0.dp else TOP_BAR_HEIGHT),
+
+        ) {
+        Row(
+            modifier = Modifier.fillMaxSize(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            IconButton(onClick = {
+                //navigate to search screen
+                navController.navigate(Screen.SearchScreen.route)
+            }) {
+                Icon(imageVector = Icons.Default.Search, contentDescription = "Search button")
+            }
+            Text(
+                text = "Playlists",
+                style = TextStyle(
+                    fontSize = MaterialTheme.typography.h6.fontSize,
+                    color = MaterialTheme.colors.surface,
+                    fontStyle = FontStyle.Italic
+                )
+            )
+            Box(modifier = Modifier.padding(end = 8.dp)) {
+                IconButton(onClick = {
+                    showMenu = !showMenu
+                }) {
+                    Icon(
+                        imageVector = Icons.Default.MoreHoriz,
+                        contentDescription = "More options",
+                        tint = MaterialTheme.colors
+                            .onSurface
+                            .copy(alpha = .5f)
+                    )
+                }
+                MaterialTheme(shapes = MaterialTheme.shapes.copy(medium = RoundedCornerShape(16.dp))) {
+                    DropdownMenu(
+                        expanded = showMenu,
+                        onDismissRequest = { showMenu = false }
+                    ) {
+
+                        DropdownMenuItem(onClick = {
+                            showMenu = false
+                            showNestedMenu = true
+                        }) {
+                            Text(text = "Sort order ")
+                            Icon(
+                                imageVector = Icons.Default.ChevronRight,
+                                contentDescription = "Sort order"
+                            )
+                        }
+
+                        DropdownMenuItem(onClick = {
+                            //Navigation to Settings Screen
+                            showMenu = false
+                        }) {
+                            Text(text = "Settings")
+                        }
+
+                    }
+                    DropdownMenu(
+                        expanded = showNestedMenu,
+                        onDismissRequest = { showNestedMenu = false }
+                    ) {
+                        DropdownMenuItem(onClick = {}) {
+                            Text(
+                                text = "Sort order",
+                                color = MaterialTheme.colors
+                                    .onSurface
+                                    .copy(alpha = .5f),
+                                style = MaterialTheme.typography.body1,
+                                fontSize = 13.sp
+                            )
+                        }
+                        DropdownMenuItem(onClick = {
+                            sortOrder.value = PlaylistSortOrder.ASCENDING
+                            onSortOrderChange.invoke(sortOrder.value)
+                            showNestedMenu = false
+                        }) {
+                            SortOrderItem(
+                                sortOrder = "Ascending",
+                                isSelected = sortOrder.value == PlaylistSortOrder.ASCENDING
+                            ) {
+                                sortOrder.value = PlaylistSortOrder.ASCENDING
+                                onSortOrderChange.invoke(sortOrder.value)
+                                showNestedMenu = false
+                            }
+                        }
+                        DropdownMenuItem(onClick = {
+                            sortOrder.value = PlaylistSortOrder.DESCENDING
+                            onSortOrderChange.invoke(sortOrder.value)
+                            showNestedMenu = false
+                        }) {
+                            SortOrderItem(
+                                sortOrder = "Descending",
+                                isSelected = sortOrder.value == PlaylistSortOrder.DESCENDING
+                            ) {
+                                sortOrder.value = PlaylistSortOrder.DESCENDING
+                                onSortOrderChange.invoke(sortOrder.value)
+                                showNestedMenu = false
+                            }
+                        }
+                        DropdownMenuItem(onClick = {
+                            sortOrder.value = PlaylistSortOrder.SONG_COUNT
+                            onSortOrderChange.invoke(sortOrder.value)
+                            showNestedMenu = false
+                        }) {
+                            SortOrderItem(
+                                sortOrder = "Song count",
+                                isSelected = sortOrder.value == PlaylistSortOrder.SONG_COUNT
+                            ) {
+                                sortOrder.value = PlaylistSortOrder.SONG_COUNT
+                                onSortOrderChange.invoke(sortOrder.value)
+                                showNestedMenu = false
+                            }
+                        }
+                        DropdownMenuItem(onClick = {
+                            sortOrder.value = PlaylistSortOrder.DURATION
+                            onSortOrderChange.invoke(sortOrder.value)
+                            showNestedMenu = false
+                        }) {
+                            SortOrderItem(
+                                sortOrder = "Duration",
+                                isSelected = sortOrder.value == PlaylistSortOrder.DURATION
+                            ) {
+                                sortOrder.value = PlaylistSortOrder.DURATION
+                                onSortOrderChange.invoke(sortOrder.value)
+                                showNestedMenu = false
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

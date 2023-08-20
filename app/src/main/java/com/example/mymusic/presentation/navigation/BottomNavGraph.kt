@@ -52,7 +52,13 @@ fun BottomNavGraph(
         }
         composable(BottomBarScreen.Playlists.route) {
             PlaylistScreen(
-                playlistViewModel = playlistViewModel
+                playlistViewModel = playlistViewModel,
+                sortOrderChange = {
+                    playlistViewModel.changeSortOrder(it)
+                },
+                navController = navController,
+                currentPlayingAudio = songsViewModel
+                    .currentPlayingAudio.value,
             )
         }
         composable(BottomBarScreen.Album.route) {

@@ -45,7 +45,10 @@ object AppModule {
             searchBySongName = SearchBySongName(repository),
             insertPlaylist = InsertPlaylist(repository),
             deletePlaylist = DeletePlaylist(repository),
-            getAllPlaylists = GetAllPlaylists(repository)
+            getAllPlaylists = GetAllPlaylists(repository),
+            getAllPlaylistsDesc = GetAllPlaylistsDesc(repository),
+            getAllPlaylistsDuration = GetAllPlaylistsDuration(repository),
+            getAllPlaylistsSongCount = GetAllPlaylistsSongCount(repository)
         )
     }
 }

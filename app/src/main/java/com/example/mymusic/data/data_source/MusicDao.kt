@@ -39,4 +39,13 @@ interface MusicDao {
     suspend fun deletePlaylist(playlist: Playlist)
     @Query("SELECT * FROM playlist ORDER BY playlistName ASC")
     fun getAllPlaylists(): Flow<List<Playlist>>
+
+    @Query("SELECT * FROM playlist ORDER BY playlistName DESC")
+    fun getAllPlaylistsDesc(): Flow<List<Playlist>>
+
+    @Query("SELECT * FROM playlist ORDER BY songCount ASC")
+    fun getAllPlaylistsSongCount(): Flow<List<Playlist>>
+
+    @Query("SELECT * FROM playlist ORDER BY playlistDuration ASC")
+    fun getAllPlaylistsDuration(): Flow<List<Playlist>>
 }

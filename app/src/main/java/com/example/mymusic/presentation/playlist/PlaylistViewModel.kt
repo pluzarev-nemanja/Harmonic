@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.mymusic.domain.model.Playlist
 import com.example.mymusic.domain.use_cases.MusicUseCases
+import com.example.mymusic.domain.util.PlaylistSortOrder
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -25,7 +26,6 @@ class PlaylistViewModel @Inject constructor(
     }
 
     fun insertPlaylist(playlistName: String){
-        playlists.clear()
         if (playlistName.isBlank()) {
             return
         }
@@ -36,6 +36,7 @@ class PlaylistViewModel @Inject constructor(
             songs = emptyList()
         )
         viewModelScope.launch {
+            playlists.clear()
             musicUseCases.insertPlaylist(playlist)
         }
     }
@@ -43,6 +44,46 @@ class PlaylistViewModel @Inject constructor(
     fun deletePlaylist(playlist: Playlist){
         viewModelScope.launch {
             musicUseCases.deletePlaylist(playlist)
+        }
+    }
+
+    fun changeSortOrder(sortOrder: PlaylistSortOrder){
+        when(sortOrder){
+            PlaylistSortOrder.ASCENDING -> {
+                viewModelScope.launch {
+                    musicUseCases.getAllPlaylists().collect{ playlist ->
+                        playlists.clear()
+                        playlists += playlist
+
+                    }
+                }
+            }
+            PlaylistSortOrder.DESCENDING -> {
+                viewModelScope.launch {
+                    musicUseCases.getAllPlaylistsDesc().collect{ playlist ->
+                        playlists.clear()
+                        playlists += playlist
+
+                    }
+                }
+            }
+            PlaylistSortOrder.SONG_COUNT -> {
+                viewModelScope.launch {
+                    musicUseCases.getAllPlaylistsSongCount().collect{ playlist ->
+                        playlists.clear()
+                        playlists += playlist
+
+                    }
+                }
+            }
+            PlaylistSortOrder.DURATION -> {
+                viewModelScope.launch {
+                    musicUseCases.getAllPlaylistsDuration().collect{ playlist ->
+                        playlists.clear()
+                        playlists += playlist
+                    }
+                }
+            }
         }
     }
 

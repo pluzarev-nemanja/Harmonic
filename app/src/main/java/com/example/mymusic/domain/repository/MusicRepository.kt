@@ -25,4 +25,10 @@ interface MusicRepository {
     suspend fun deletePlaylist(playlist: Playlist)
 
     fun getAllPlaylists(): Flow<List<Playlist>>
+
+    fun getAllPlaylistsDesc(): Flow<List<Playlist>>
+
+    fun getAllPlaylistsSongCount(): Flow<List<Playlist>>
+
+    fun getAllPlaylistsDuration(): Flow<List<Playlist>>
 }
