@@ -42,7 +42,10 @@ object AppModule {
             getAllSongsArtist = GetAllSongsArtist(repository),
             getAllSongsAlbum = GetAllSongsAlbum(repository),
             getAllSongsDate = GetAllSongsDate(repository),
-            searchBySongName = SearchBySongName(repository)
+            searchBySongName = SearchBySongName(repository),
+            insertPlaylist = InsertPlaylist(repository),
+            deletePlaylist = DeletePlaylist(repository),
+            getAllPlaylists = GetAllPlaylists(repository)
         )
     }
 }

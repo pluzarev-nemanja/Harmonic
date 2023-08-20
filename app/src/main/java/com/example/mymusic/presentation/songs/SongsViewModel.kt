@@ -4,7 +4,6 @@ import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import android.support.v4.media.session.PlaybackStateCompat.SHUFFLE_MODE_ALL
 import android.support.v4.media.session.PlaybackStateCompat.SHUFFLE_MODE_NONE
-import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -113,6 +112,7 @@ class SongsViewModel @Inject constructor(
                     }
                 }
             }
+
             SortOrder.DESCENDING -> {
                 viewModelScope.launch {
                     musicUseCases.getAllSongsDesc().collect { songsList ->
@@ -130,6 +130,7 @@ class SongsViewModel @Inject constructor(
                     }
                 }
             }
+
             SortOrder.ARTIST -> {
                 viewModelScope.launch {
                     musicUseCases.getAllSongsArtist().collect { songsList ->
@@ -147,6 +148,7 @@ class SongsViewModel @Inject constructor(
                     }
                 }
             }
+
             SortOrder.ALBUM -> {
                 viewModelScope.launch {
                     musicUseCases.getAllSongsAlbum().collect { songsList ->
@@ -164,6 +166,7 @@ class SongsViewModel @Inject constructor(
                     }
                 }
             }
+
             SortOrder.DATE_ADDED -> {
                 viewModelScope.launch {
                     musicUseCases.getAllSongsDate().collect { songsList ->
@@ -185,7 +188,6 @@ class SongsViewModel @Inject constructor(
     }
 
 
-    //nije currentDuration
     fun updateTimer(): String {
         val totalSeconds = floor(currentPlayBackPosition / 1E3).toInt()
         val minutes = totalSeconds / 60

@@ -52,7 +52,7 @@ fun SongsScreen(
     currentPlayingAudio: Song?,
     onItemClick: (Song) -> Unit,
     sortOrderChange: (SortOrder) -> Unit,
-    navController : NavController
+    navController: NavController
 ) {
 
     val sortOrder by remember {
@@ -61,19 +61,19 @@ fun SongsScreen(
 
     val animatedHeight by animateDpAsState(
         targetValue = if (currentPlayingAudio == null) 0.dp
-        else 80.dp
+        else 80.dp, label = "animatedHeight"
     )
 
     val scrollState = rememberLazyListState()
 
     val paddingLazyList by animateDpAsState(
         targetValue = if (scrollState.isScrolled) 0.dp else TOP_BAR_HEIGHT,
-        animationSpec = tween(durationMillis = 300)
+        animationSpec = tween(durationMillis = 300), label = "paddingLazyList"
     )
 
     val scrollKnobPadding by animateDpAsState(
         targetValue = if (scrollState.isScrolled || isAudioPlaying) 80.dp else TOP_BAR_HEIGHT,
-        animationSpec = tween(durationMillis = 300)
+        animationSpec = tween(durationMillis = 300), label = "scrollKnobPadding"
     )
 
 
@@ -141,7 +141,7 @@ fun TopBar(
             .animateContentSize(animationSpec = tween(durationMillis = 300))
             .height(height = if (lazyListState.isScrolled) 0.dp else TOP_BAR_HEIGHT),
 
-    ) {
+        ) {
         Row(
             modifier = Modifier.fillMaxSize(),
             verticalAlignment = Alignment.CenterVertically,
@@ -398,7 +398,7 @@ fun AudioItem(
 
 }
 
- fun timeStampToDuration(position: Long): String {
+fun timeStampToDuration(position: Long): String {
     val totalSeconds = floor(position / 1E3).toInt()
     val minutes = totalSeconds / 60
     val remainingSeconds = totalSeconds - (minutes * 60)
@@ -472,7 +472,7 @@ fun ArtistInfo(
                     val colors = listOf(Color.Black, Color.Transparent)
                     drawContent()
                     drawRect(
-                        brush = Brush.horizontalGradient(colors,startX = 200f),
+                        brush = Brush.horizontalGradient(colors, startX = 200f),
                         blendMode = BlendMode.DstIn
                     )
                 }

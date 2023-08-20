@@ -25,7 +25,6 @@ import androidx.navigation.compose.rememberNavController
 import com.example.mymusic.domain.model.Song
 import com.example.mymusic.presentation.navigation.BottomBarScreen
 import com.example.mymusic.presentation.navigation.BottomNavGraph
-import com.example.mymusic.presentation.navigation.Screen
 import com.example.mymusic.presentation.player.PlayerScreen
 import com.example.mymusic.presentation.player.SheetCollapsed
 import com.example.mymusic.presentation.player.SheetContent
@@ -49,11 +48,11 @@ fun MainScreen(
     onDataLoaded: () -> Unit,
     progress: Float,
     onProgressChange: (Float) -> Unit,
-    skipNext : () -> Unit,
+    skipNext: () -> Unit,
     skipPrevious: () -> Unit,
     shuffle: () -> Unit,
-    repeat : (Int) -> Unit,
-    updateTimer : () -> String
+    repeat: (Int) -> Unit,
+    updateTimer: () -> String
 ) {
 
     val navController = rememberNavController()
@@ -81,35 +80,14 @@ fun MainScreen(
 
     val bottomBarState = rememberSaveable { (mutableStateOf(true)) }
 
-    val navBackStackEntry by navController.currentBackStackEntryAsState()
 
     val animatedHeight by animateDpAsState(
         targetValue = if (currentPlayingAudio == null) 0.dp
-        else 115.dp
+        else 115.dp, label = "height animation"
     )
 
 
     val radius = 30.dp
-
-
-    when (navBackStackEntry?.destination?.route) {
-        BottomBarScreen.Home.route -> {
-            bottomBarState.value = true
-
-        }
-        BottomBarScreen.Songs.route -> {
-            bottomBarState.value = true
-        }
-        BottomBarScreen.Playlists.route -> {
-            bottomBarState.value = true
-        }
-        BottomBarScreen.Album.route -> {
-            bottomBarState.value = true
-        }
-        Screen.SearchScreen.route -> {
-            bottomBarState.value = true
-        }
-    }
 
 
     Scaffold(bottomBar = {
@@ -130,11 +108,11 @@ fun MainScreen(
                                 audio = currentPlayingAudio,
                                 isAudioPlaying = isAudioPlaying,
                                 onStart = { onStart.invoke(currentPlayingAudio) },
-                                skipNext = {skipNext.invoke()},
-                                skipPrevious = {skipPrevious.invoke()},
-                                shuffle = {shuffle.invoke()},
+                                skipNext = { skipNext.invoke() },
+                                skipPrevious = { skipPrevious.invoke() },
+                                shuffle = { shuffle.invoke() },
                                 repeat = repeat,
-                                updateTimer = {updateTimer.invoke()}
+                                updateTimer = { updateTimer.invoke() }
                             )
                         }
                     }
@@ -213,9 +191,10 @@ fun RowScope.AddItem(
     screen: BottomBarScreen, currentDestination: NavDestination?, navController: NavHostController
 ) {
 
-    BottomNavigationItem(label = {
-        Text(text = screen.title)
-    },
+    BottomNavigationItem(
+        label = {
+            Text(text = screen.title)
+        },
         icon = {
             Icon(imageVector = screen.icon, contentDescription = screen.title)
         },
@@ -229,7 +208,9 @@ fun RowScope.AddItem(
                 launchSingleTop = true
             }
         },
-        alwaysShowLabel = false)
+        alwaysShowLabel = false,
+
+        )
 }
 
 @Composable
@@ -238,20 +219,20 @@ fun BottomBarPlayer(
     isAudioPlaying: Boolean,
     onStart: () -> Unit,
 ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(Color.Gray),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            ArtistInfo(
-                audio = song, modifier = Modifier.weight(1f)
-            )
-            MediaPlayerController(
-                isAudioPlaying = isAudioPlaying,
-                onStart = { onStart.invoke() },
-            )
-            Spacer(modifier = Modifier.width(20.dp))
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(Color.Gray),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        ArtistInfo(
+            audio = song, modifier = Modifier.weight(1f)
+        )
+        MediaPlayerController(
+            isAudioPlaying = isAudioPlaying,
+            onStart = { onStart.invoke() },
+        )
+        Spacer(modifier = Modifier.width(20.dp))
     }
 }

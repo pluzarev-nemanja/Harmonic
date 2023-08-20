@@ -1,9 +1,12 @@
 package com.example.mymusic.data.data_source
 
 import androidx.room.Dao
+import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Upsert
+import com.example.mymusic.domain.model.Playlist
 import com.example.mymusic.domain.model.Song
 import kotlinx.coroutines.flow.Flow
 
@@ -30,4 +33,10 @@ interface MusicDao {
 
     @Query("SELECT * FROM song WHERE displayName LIKE :searchQuery")
     fun searchBySongName(searchQuery: String): Flow<List<Song>>
+    @Upsert
+    suspend fun insertPlaylist(playlist: Playlist)
+    @Delete
+    suspend fun deletePlaylist(playlist: Playlist)
+    @Query("SELECT * FROM playlist ORDER BY playlistName ASC")
+    fun getAllPlaylists(): Flow<List<Playlist>>
 }

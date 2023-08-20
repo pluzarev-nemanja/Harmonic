@@ -1,6 +1,7 @@
 package com.example.mymusic.data.repository
 
 import com.example.mymusic.data.data_source.MusicDao
+import com.example.mymusic.domain.model.Playlist
 import com.example.mymusic.domain.model.Song
 import com.example.mymusic.domain.repository.MusicRepository
 import kotlinx.coroutines.flow.Flow
@@ -36,5 +37,18 @@ class MusicRepositoryImpl @Inject constructor(
 
     override fun searchBySongName(searchQuery: String): Flow<List<Song>> {
         return dao.searchBySongName(searchQuery)
+    }
+
+    override suspend fun insertPlaylist(playlist: Playlist) {
+        dao.insertPlaylist(playlist)
+    }
+
+    override suspend fun deletePlaylist(playlist: Playlist) {
+        dao.deletePlaylist(playlist)
+    }
+
+
+    override fun getAllPlaylists(): Flow<List<Playlist>> {
+        return dao.getAllPlaylists()
     }
 }
