@@ -4,6 +4,7 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.mymusic.domain.model.Playlist
+import com.example.mymusic.domain.model.Song
 import com.example.mymusic.domain.use_cases.MusicUseCases
 import com.example.mymusic.domain.util.PlaylistSortOrder
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -25,6 +26,12 @@ class PlaylistViewModel @Inject constructor(
         }
     }
 
+
+    fun insertSongIntoPlaylist(song: Song,playlistName: String){
+        viewModelScope.launch {
+
+        }
+    }
     fun insertPlaylist(playlistName: String){
         if (playlistName.isBlank()) {
             return

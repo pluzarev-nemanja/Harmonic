@@ -122,9 +122,14 @@ fun PlaylistScreen(
             state = scrollState,
             ) {
             items(
-                items = playlistViewModel.playlists
+                items = playlistViewModel.playlists,
+                key = {
+                    it.playlistName
+                }
             ) { playlist: Playlist ->
-                PlaylistItem(playlist = playlist, modifier = Modifier.padding(top = 10.dp))
+                PlaylistItem(playlist = playlist, modifier = Modifier
+                    .padding(top = 10.dp)
+                )
             }
         }
         TopBarPlaylist(
@@ -256,7 +261,7 @@ fun TopBarPlaylist(
             .fillMaxWidth()
             .background(color = MaterialTheme.colors.primary)
             .animateContentSize(animationSpec = tween(durationMillis = 300))
-            .height(height = if (lazyListState.isScrollInProgress) 0.dp else TOP_BAR_HEIGHT),
+            .height(height = if (lazyListState.isScrolled) 0.dp else TOP_BAR_HEIGHT),
 
         ) {
         Row(
