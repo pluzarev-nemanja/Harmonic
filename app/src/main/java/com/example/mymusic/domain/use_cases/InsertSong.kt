@@ -88,7 +88,7 @@ class InsertSong @Inject constructor(
                         val uri = ContentUris.withAppendedId(
                             MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
                             id
-                        )
+                        ).toString()
                         val album = getString(albumColumn) ?: "Unknown"
                         val albumId = getLong(albumIdColumn).toString()
                         val albumUri = Uri.parse("content://media/external/audio/albumart")

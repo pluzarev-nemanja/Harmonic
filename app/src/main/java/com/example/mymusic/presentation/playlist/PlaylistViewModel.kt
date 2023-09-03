@@ -23,6 +23,7 @@ class PlaylistViewModel @Inject constructor(
     init {
         viewModelScope.launch {
             musicUseCases.getAllPlaylists().collect{ playlist ->
+                playlists.clear()
                 playlists += playlist
             }
         }
@@ -31,19 +32,19 @@ class PlaylistViewModel @Inject constructor(
 
     fun insertSongIntoPlaylist(song: Song,playlistName: String){
         playlists.forEach { playlist: Playlist ->
+
             if(playlist.playlistName == playlistName && playlistName!= ""){
-                Log.d("PlaylistViewModel","${song.uri} ## ,${song.displayName},$playlistName")
+
                 viewModelScope.launch {
+                    playlists.clear()
                     val songs = playlist.songs.toMutableList()
                     songs.add(song)
-                    Log.d("PlaylistViewModel","${songs.size},${songs.isEmpty()}")
                     val item = Playlist(
                         playlistName = playlistName,
                         songCount = playlist.songCount + 1,
                         playlistDuration = playlist.playlistDuration + song.duration,
                         songs = songs
                     )
-                    Log.d("PlaylistViewModel","$item")
                     musicUseCases.updatePlaylist(item)
                 }
             }

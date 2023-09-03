@@ -15,7 +15,7 @@ data class Song(
     val duration:Int,
     val title:String,
     val album: String,
-    val uri: Uri,
+    val uri: String,
     val artUri: String,
     val dateAdded: String,
     @PrimaryKey val id:Long
