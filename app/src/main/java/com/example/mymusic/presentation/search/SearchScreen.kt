@@ -23,6 +23,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
+import com.example.mymusic.domain.model.Playlist
 import com.example.mymusic.domain.model.Song
 import com.example.mymusic.presentation.songs.AudioItem
 
@@ -33,7 +34,9 @@ fun SearchScreen(
     songs: List<Song>,
     searchViewModel: SearchViewModel,
     currentPlayingAudio: Song?,
-    onItemClick: (Song) -> Unit
+    onItemClick: (Song) -> Unit,
+    playlists : List<Playlist>,
+    insertSongIntoPlaylist : (Song,String) -> Unit
 ) {
 
     val animatedHeight by animateDpAsState(
@@ -81,7 +84,9 @@ fun SearchScreen(
                             onItemClick = { onItemClick.invoke(song) },
                             modifier = Modifier.animateItemPlacement(
                                 tween(durationMillis = 250)
-                            )
+                            ),
+                            playlists = playlists,
+                            insertSongIntoPlaylist = insertSongIntoPlaylist
                         )
                     }
 

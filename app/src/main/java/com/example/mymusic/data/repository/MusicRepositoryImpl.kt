@@ -63,4 +63,8 @@ class MusicRepositoryImpl @Inject constructor(
     override fun getAllPlaylistsDuration(): Flow<List<Playlist>> {
         return dao.getAllPlaylistsDuration()
     }
+
+    override suspend fun updatePlaylist(playlist: Playlist) {
+        dao.updatePlaylist(playlist)
+    }
 }

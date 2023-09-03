@@ -31,4 +31,7 @@ interface MusicRepository {
     fun getAllPlaylistsSongCount(): Flow<List<Playlist>>
 
     fun getAllPlaylistsDuration(): Flow<List<Playlist>>
+
+    suspend fun updatePlaylist(playlist: Playlist)
+
 }

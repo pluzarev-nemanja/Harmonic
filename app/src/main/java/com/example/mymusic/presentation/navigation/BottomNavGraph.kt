@@ -47,7 +47,11 @@ fun BottomNavGraph(
                 sortOrderChange = {
                     songsViewModel.changeSortOrderSongs(it)
                 },
-                navController = navController
+                navController = navController,
+                playlists = playlistViewModel.playlists,
+                insertSongIntoPlaylist = { song , playlistName ->
+                    playlistViewModel.insertSongIntoPlaylist(song,playlistName)
+                }
             )
         }
         composable(BottomBarScreen.Playlists.route) {
@@ -70,7 +74,11 @@ fun BottomNavGraph(
                 songs,
                 searchViewModel,
                 currentPlayingAudio,
-                onItemClick
+                onItemClick,
+                playlists = playlistViewModel.playlists,
+                insertSongIntoPlaylist = { song , playlistName ->
+                    playlistViewModel.insertSongIntoPlaylist(song,playlistName)
+                }
             )
         }
     }

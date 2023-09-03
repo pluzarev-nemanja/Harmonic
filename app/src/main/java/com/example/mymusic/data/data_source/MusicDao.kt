@@ -5,6 +5,7 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Update
 import androidx.room.Upsert
 import com.example.mymusic.domain.model.Playlist
 import com.example.mymusic.domain.model.Song
@@ -48,4 +49,7 @@ interface MusicDao {
 
     @Query("SELECT * FROM playlist ORDER BY playlistDuration ASC")
     fun getAllPlaylistsDuration(): Flow<List<Playlist>>
+
+    @Update
+    suspend fun updatePlaylist(playlist: Playlist)
 }

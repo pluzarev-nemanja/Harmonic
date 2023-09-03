@@ -13,6 +13,7 @@ import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.lazy.staggeredgrid.LazyStaggeredGridState
+import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -35,6 +36,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.mymusic.domain.model.Playlist
 import com.example.mymusic.domain.model.Song
 import com.example.mymusic.domain.util.SortOrder
 import com.example.mymusic.presentation.navigation.Screen
@@ -53,7 +55,9 @@ fun SongsScreen(
     currentPlayingAudio: Song?,
     onItemClick: (Song) -> Unit,
     sortOrderChange: (SortOrder) -> Unit,
-    navController: NavController
+    navController: NavController,
+    playlists: List<Playlist>,
+    insertSongIntoPlaylist : (Song,String) -> Unit
 ) {
 
     val sortOrder by remember {
@@ -96,16 +100,18 @@ fun SongsScreen(
                 ) {
                     items(
                         items = audioList,
-                        key = {
-                            it.id
-                        }
+//                        key = {
+//                            it.id
+//                        }
                     ) { song: Song ->
                         AudioItem(
                             audio = song,
                             onItemClick = { onItemClick.invoke(song) },
                             modifier = Modifier.animateItemPlacement(
                                 tween(durationMillis = 450)
-                            )
+                            ),
+                            playlists = playlists,
+                            insertSongIntoPlaylist = insertSongIntoPlaylist
                         )
                     }
 
@@ -316,8 +322,15 @@ fun SortOrderItem(
 fun AudioItem(
     audio: Song,
     onItemClick: (id: Long) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    playlists: List<Playlist> = emptyList(),
+    insertSongIntoPlaylist: (Song, String) -> Unit
 ) {
+
+    var showMenu by remember { mutableStateOf(false) }
+    var openDialog by remember {
+        mutableStateOf(false)
+    }
     Card(
         modifier = modifier
             .fillMaxWidth()
@@ -381,7 +394,10 @@ fun AudioItem(
                     )
                 }
             }
-            IconButton(onClick = { }) {
+            //here comes code for opening menu
+            IconButton(onClick = {
+                showMenu = true
+            }) {
                 Icon(
                     imageVector = Icons.Default.MoreHoriz,
                     contentDescription = "More options",
@@ -390,13 +406,108 @@ fun AudioItem(
                         .copy(alpha = .5f),
 
                     )
+                MaterialTheme(shapes = MaterialTheme.shapes.copy(medium = RoundedCornerShape(16.dp))) {
+                    DropdownMenu(
+                        expanded = showMenu,
+                        onDismissRequest = {
+                            showMenu = false
+                        },
+                    ) {
+                        DropdownMenuItem(onClick = {
+                            openDialog = true
+                            showMenu = false
+                        }) {
+                            Text(
+                                text = "Add song to playlist",
+
+                                )
+                        }
+                    }
+                }
+                if (openDialog) {
+
+                    var selectedIndex by remember {
+                        mutableStateOf("")
+                    }
+
+                    AlertDialog(
+                        modifier = Modifier.height(350.dp),
+                        shape = RoundedCornerShape(10.dp),
+                        onDismissRequest = {
+                            openDialog = false
+                        },
+                        title = {
+                            Text(
+                                text = "Choose playlist",
+                                modifier = Modifier.padding(top = 12.dp)
+                            )
+                        },
+                        text = {
+                            LazyColumn(modifier = Modifier.padding(top = 12.dp)) {
+                                items(playlists) { playlist ->
+                                    PlaylistChooser(playlist = playlist,
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .selectable(
+                                                selected = selectedIndex == playlist.playlistName,
+                                                onClick = {
+                                                    selectedIndex =
+                                                        if (selectedIndex == playlist.playlistName) "" else playlist.playlistName
+                                                }
+                                            )
+                                            .background(
+                                                if (selectedIndex == playlist.playlistName) Color.Gray
+                                                else Color.Transparent
+                                            )
+                                    )
+                                }
+                            }
+                        },
+                        confirmButton = {
+                            Button(
+                                onClick = {
+                                    //here comes function for updating data in playlist,pass selectedIndex as name
+                                    insertSongIntoPlaylist.invoke(audio,selectedIndex)
+                                    openDialog = false
+                                }) {
+                                Text("Add")
+                            }
+                        },
+                        dismissButton = {
+
+                            Button(
+                                onClick = {
+                                    openDialog = false
+                                }
+                            ) {
+                                Text("Cancel")
+                            }
+                        }
+                    )
+                }
             }
             Spacer(modifier = Modifier.size(8.dp))
         }
 
     }
+}
 
+@Composable
+fun PlaylistChooser(
+    playlist: Playlist,
+    modifier: Modifier = Modifier
+) {
+    Column {
 
+        Spacer(modifier = Modifier.height(8.dp))
+        Text(
+            text = playlist.playlistName,
+            fontSize = 15.sp,
+            modifier = modifier
+        )
+        Spacer(modifier = Modifier.height(8.dp))
+        Divider()
+    }
 }
 
 fun timeStampToDuration(position: Long): String {

@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.staggeredgrid.LazyStaggeredGridState
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
@@ -103,10 +104,13 @@ fun PlaylistScreen(
 
     Scaffold(
         floatingActionButton = {
-            FloatingActionButton(onClick = {
-                openDialog = true
+            FloatingActionButton(
+                onClick = {
+                    openDialog = true
 
-            }) {
+                },
+                modifier = Modifier.padding(bottom = animatedHeight)
+            ) {
                 Icon(imageVector = Icons.Filled.Add, contentDescription = "Add new playlist")
             }
         },
@@ -120,15 +124,16 @@ fun PlaylistScreen(
             contentPadding = PaddingValues(16.dp, bottom = animatedHeight),
             horizontalArrangement = Arrangement.spacedBy(16.dp),
             state = scrollState,
-            ) {
+        ) {
             items(
                 items = playlistViewModel.playlists,
                 key = {
                     it.playlistName
                 }
             ) { playlist: Playlist ->
-                PlaylistItem(playlist = playlist, modifier = Modifier
-                    .padding(top = 10.dp)
+                PlaylistItem(
+                    playlist = playlist, modifier = Modifier
+                        .padding(top = 10.dp)
                 )
             }
         }
@@ -168,18 +173,21 @@ fun PlaylistScreen(
                         onClick = {
                             openDialog = false
                             playlistViewModel.insertPlaylist(filledText)
+                            filledText = ""
                         }) {
                         Text("Create playlist")
                     }
                 },
                 dismissButton = {
+
                     Button(
                         onClick = {
                             openDialog = false
-                        }) {
+                            filledText = ""
+                        }
+                    ) {
                         Text("Cancel")
                     }
-                    filledText = ""
                 }
             )
         }

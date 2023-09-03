@@ -1,22 +1,24 @@
 package com.example.mymusic.domain.model
 
 import android.net.Uri
+import androidx.annotation.Keep
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.google.gson.annotations.SerializedName
 import java.io.Serializable
 
 @Entity(tableName = "song")
 data class Song(
-    val uri: Uri,
     val displayName:String,
-    @PrimaryKey val id:Long,
     val artist:String,
     val data:String,
     val duration:Int,
     val title:String,
     val album: String,
+    val uri: Uri,
     val artUri: String,
-    val dateAdded: String
+    val dateAdded: String,
+    @PrimaryKey val id:Long
 ){
     fun doesMatchSearchQuery(query: String): Boolean {
         val matchingCombinations = listOf(

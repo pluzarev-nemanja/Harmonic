@@ -13,5 +13,6 @@ data class MusicUseCases(
     val getAllPlaylists: GetAllPlaylists,
     val getAllPlaylistsDesc: GetAllPlaylistsDesc,
     val getAllPlaylistsDuration: GetAllPlaylistsDuration,
-    val getAllPlaylistsSongCount: GetAllPlaylistsSongCount
+    val getAllPlaylistsSongCount: GetAllPlaylistsSongCount,
+    val updatePlaylist: UpdatePlaylist
 )

@@ -2,22 +2,20 @@ package com.example.mymusic.data.data_source
 
 import androidx.room.TypeConverter
 import com.example.mymusic.domain.model.Song
-import com.google.common.reflect.TypeToken
 import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 
 class DataConverters {
 
     @TypeConverter
-    fun fromCountryLangList(value: List<Song>): String {
-        val gson = Gson()
-        val type = object : TypeToken<List<Song>>() {}.type
-        return gson.toJson(value, type)
+    fun toSongList(string: String): List<Song> {
+        val listType = object : TypeToken<List<Song>>() {}.type
+        return Gson().fromJson(string, listType) //here crash
     }
 
     @TypeConverter
-    fun toCountryLangList(value: String): List<Song> {
-        val gson = Gson()
-        val type = object : TypeToken<List<Song>>() {}.type
-        return gson.fromJson(value, type)
+    fun fromSongList(list: List<Song>): String {
+        return Gson().toJson(list)
     }
+
 }

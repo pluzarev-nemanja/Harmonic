@@ -1,11 +1,13 @@
 package com.example.mymusic.presentation.playlist
 
+import android.util.Log
 import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.mymusic.domain.model.Playlist
 import com.example.mymusic.domain.model.Song
 import com.example.mymusic.domain.use_cases.MusicUseCases
+import com.example.mymusic.domain.use_cases.UpdatePlaylist
 import com.example.mymusic.domain.util.PlaylistSortOrder
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -28,8 +30,23 @@ class PlaylistViewModel @Inject constructor(
 
 
     fun insertSongIntoPlaylist(song: Song,playlistName: String){
-        viewModelScope.launch {
-
+        playlists.forEach { playlist: Playlist ->
+            if(playlist.playlistName == playlistName && playlistName!= ""){
+                Log.d("PlaylistViewModel","${song.uri} ## ,${song.displayName},$playlistName")
+                viewModelScope.launch {
+                    val songs = playlist.songs.toMutableList()
+                    songs.add(song)
+                    Log.d("PlaylistViewModel","${songs.size},${songs.isEmpty()}")
+                    val item = Playlist(
+                        playlistName = playlistName,
+                        songCount = playlist.songCount + 1,
+                        playlistDuration = playlist.playlistDuration + song.duration,
+                        songs = songs
+                    )
+                    Log.d("PlaylistViewModel","$item")
+                    musicUseCases.updatePlaylist(item)
+                }
+            }
         }
     }
     fun insertPlaylist(playlistName: String){
