@@ -44,10 +44,10 @@ interface MusicDao {
     @Query("SELECT * FROM playlist ORDER BY playlistName DESC")
     fun getAllPlaylistsDesc(): Flow<List<Playlist>>
 
-    @Query("SELECT * FROM playlist ORDER BY songCount ASC")
+    @Query("SELECT * FROM playlist ORDER BY songCount DESC")
     fun getAllPlaylistsSongCount(): Flow<List<Playlist>>
 
-    @Query("SELECT * FROM playlist ORDER BY playlistDuration ASC")
+    @Query("SELECT * FROM playlist ORDER BY playlistDuration DESC")
     fun getAllPlaylistsDuration(): Flow<List<Playlist>>
 
     @Update

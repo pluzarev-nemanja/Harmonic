@@ -33,7 +33,7 @@ class PlaylistViewModel @Inject constructor(
     fun insertSongIntoPlaylist(song: Song,playlistName: String){
         playlists.forEach { playlist: Playlist ->
 
-            if(playlist.playlistName == playlistName && playlistName!= ""){
+            if(playlist.playlistName == playlistName && playlistName!= "" && !playlist.songs.contains(song)){
 
                 viewModelScope.launch {
                     playlists.clear()
