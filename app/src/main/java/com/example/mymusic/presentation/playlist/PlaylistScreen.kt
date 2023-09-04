@@ -1,5 +1,6 @@
 package com.example.mymusic.presentation.playlist
 
+import android.widget.Toast
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
@@ -11,16 +12,19 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.staggeredgrid.LazyStaggeredGridState
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.lazy.staggeredgrid.items
 import androidx.compose.foundation.lazy.staggeredgrid.rememberLazyStaggeredGridState
+import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.AlertDialog
@@ -51,6 +55,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -63,6 +68,7 @@ import com.example.mymusic.domain.model.Playlist
 import com.example.mymusic.domain.model.Song
 import com.example.mymusic.domain.util.PlaylistSortOrder
 import com.example.mymusic.presentation.navigation.Screen
+import com.example.mymusic.presentation.songs.PlaylistChooser
 import com.example.mymusic.presentation.songs.SortOrderItem
 import com.example.mymusic.presentation.songs.TOP_BAR_HEIGHT
 import com.example.mymusic.presentation.songs.isScrolled
@@ -78,7 +84,8 @@ fun PlaylistScreen(
     playlistViewModel: PlaylistViewModel,
     sortOrderChange: (PlaylistSortOrder) -> Unit,
     navController: NavController,
-    currentPlayingAudio: Song?
+    currentPlayingAudio: Song?,
+    deletePlaylist: (Playlist) -> Unit
 ) {
 
     var openDialog by remember {
@@ -132,8 +139,10 @@ fun PlaylistScreen(
                 }
             ) { playlist: Playlist ->
                 PlaylistItem(
-                    playlist = playlist, modifier = Modifier
-                        .padding(top = 10.dp)
+                    playlist = playlist,
+                    modifier = Modifier
+                        .padding(top = 10.dp),
+                    deletePlaylist = deletePlaylist
                 )
             }
         }
@@ -199,8 +208,19 @@ fun PlaylistScreen(
 @Composable
 fun PlaylistItem(
     playlist: Playlist,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    deletePlaylist: (Playlist) -> Unit
 ) {
+    val context = LocalContext.current
+
+    var showMenu by remember {
+        mutableStateOf(false)
+    }
+
+    var openDialog by remember {
+        mutableStateOf(false)
+    }
+
     Column(
         modifier = modifier.fillMaxSize(),
     ) {
@@ -236,8 +256,61 @@ fun PlaylistItem(
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Bold
                 )
-                IconButton(onClick = { }) {
+                IconButton(onClick = {
+                    showMenu = true
+                }) {
+                    MaterialTheme(shapes = MaterialTheme.shapes.copy(medium = RoundedCornerShape(16.dp))) {
+                        DropdownMenu(
+                            expanded = showMenu,
+                            onDismissRequest = {
+                                showMenu = false
+                            },
+                        ) {
+                            DropdownMenuItem(onClick = {
+                                openDialog = true
+                                showMenu = false
+                            }) {
+                                Text(text = "Delete playlist")
+                            }
+                        }
+                    }
                     Icon(imageVector = Icons.Filled.MoreHoriz, contentDescription = "More options")
+                    if (openDialog) {
+
+                        AlertDialog(
+                            shape = RoundedCornerShape(10.dp),
+                            onDismissRequest = {
+                                openDialog = false
+                            },
+                            title = {
+                                Text(
+                                    text = "Delete playlist",
+                                    modifier = Modifier.padding(top = 12.dp)
+                                )
+                            },
+                            text = {
+                                Text(text = "Do you want to delete ${playlist.playlistName} playlist?")
+                            },
+                            confirmButton = {
+                                Button(
+                                    onClick = {
+                                        deletePlaylist(playlist)
+                                        openDialog = false
+                                    }) {
+                                    Text("Delete")
+                                }
+                            },
+                            dismissButton = {
+                                Button(
+                                    onClick = {
+                                        openDialog = false
+                                    }
+                                ) {
+                                    Text("Cancel")
+                                }
+                            }
+                        )
+                    }
                 }
             }
             Row(verticalAlignment = Alignment.CenterVertically) {

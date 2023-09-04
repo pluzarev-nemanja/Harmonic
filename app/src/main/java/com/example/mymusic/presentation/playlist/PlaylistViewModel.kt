@@ -51,18 +51,22 @@ class PlaylistViewModel @Inject constructor(
         }
     }
     fun insertPlaylist(playlistName: String){
-        if (playlistName.isBlank()) {
-            return
-        }
-        val playlist = Playlist(
-            playlistName = playlistName,
-            songCount = 0,
-            playlistDuration = 0L,
-            songs = emptyList()
-        )
-        viewModelScope.launch {
-            playlists.clear()
-            musicUseCases.insertPlaylist(playlist)
+
+        playlists.forEach { playlist: Playlist ->
+
+            if (playlist.playlistName != playlistName && playlistName.isNotBlank()) {
+
+                val playlistItem = Playlist(
+                    playlistName = playlistName,
+                    songCount = 0,
+                    playlistDuration = 0L,
+                    songs = emptyList()
+                )
+                viewModelScope.launch {
+                    playlists.clear()
+                    musicUseCases.insertPlaylist(playlistItem)
+                }
+            }
         }
     }
 

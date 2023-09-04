@@ -63,6 +63,9 @@ fun BottomNavGraph(
                 navController = navController,
                 currentPlayingAudio = songsViewModel
                     .currentPlayingAudio.value,
+                deletePlaylist = {
+                    playlistViewModel.deletePlaylist(it)
+                }
             )
         }
         composable(BottomBarScreen.Album.route) {

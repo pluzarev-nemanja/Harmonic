@@ -68,6 +68,7 @@ class SongsViewModel @Inject constructor(
         }
         viewModelScope.launch {
             musicUseCases.getAllSongsAsc().collect { songsList ->
+                songList.clear()
                 songList += songsList.map {
                     val displayName = it.displayName.substringBefore(".")
                     val artist = if (it.artist.contains("<unknown>"))
