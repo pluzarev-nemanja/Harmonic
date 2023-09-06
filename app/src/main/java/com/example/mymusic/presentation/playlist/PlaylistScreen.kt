@@ -6,6 +6,7 @@ import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -142,7 +143,8 @@ fun PlaylistScreen(
                     playlist = playlist,
                     modifier = Modifier
                         .padding(top = 10.dp),
-                    deletePlaylist = deletePlaylist
+                    deletePlaylist = deletePlaylist,
+                    navController = navController
                 )
             }
         }
@@ -209,7 +211,8 @@ fun PlaylistScreen(
 fun PlaylistItem(
     playlist: Playlist,
     modifier: Modifier = Modifier,
-    deletePlaylist: (Playlist) -> Unit
+    deletePlaylist: (Playlist) -> Unit,
+    navController: NavController
 ) {
     val context = LocalContext.current
 
@@ -222,7 +225,12 @@ fun PlaylistItem(
     }
 
     Column(
-        modifier = modifier.fillMaxSize(),
+        modifier = modifier
+            .fillMaxSize()
+            .clickable {
+                navController.navigate(Screen.PlaylistDetailsScreen.route)
+            }
+        ,
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),

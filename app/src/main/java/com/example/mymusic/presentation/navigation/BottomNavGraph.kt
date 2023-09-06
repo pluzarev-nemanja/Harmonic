@@ -8,6 +8,7 @@ import androidx.navigation.compose.composable
 import com.example.mymusic.domain.model.Song
 import com.example.mymusic.presentation.album.AlbumScreen
 import com.example.mymusic.presentation.home.HomeScreen
+import com.example.mymusic.presentation.playlist.PlaylistDetailsScreen
 import com.example.mymusic.presentation.playlist.PlaylistScreen
 import com.example.mymusic.presentation.playlist.PlaylistViewModel
 import com.example.mymusic.presentation.search.SearchScreen
@@ -82,6 +83,12 @@ fun BottomNavGraph(
                 insertSongIntoPlaylist = { song , playlistName ->
                     playlistViewModel.insertSongIntoPlaylist(song,playlistName)
                 }
+            )
+        }
+        composable(Screen.PlaylistDetailsScreen.route){
+            PlaylistDetailsScreen(
+                currentPlayingAudio = songsViewModel.currentPlayingAudio.value,
+                navController = navController,
             )
         }
     }
