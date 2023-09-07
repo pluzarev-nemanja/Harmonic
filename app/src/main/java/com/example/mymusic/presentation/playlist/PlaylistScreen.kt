@@ -1,6 +1,5 @@
 package com.example.mymusic.presentation.playlist
 
-import android.widget.Toast
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
@@ -13,19 +12,15 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.staggeredgrid.LazyStaggeredGridState
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.lazy.staggeredgrid.items
 import androidx.compose.foundation.lazy.staggeredgrid.rememberLazyStaggeredGridState
-import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.AlertDialog
@@ -69,7 +64,6 @@ import com.example.mymusic.domain.model.Playlist
 import com.example.mymusic.domain.model.Song
 import com.example.mymusic.domain.util.PlaylistSortOrder
 import com.example.mymusic.presentation.navigation.Screen
-import com.example.mymusic.presentation.songs.PlaylistChooser
 import com.example.mymusic.presentation.songs.SortOrderItem
 import com.example.mymusic.presentation.songs.TOP_BAR_HEIGHT
 import com.example.mymusic.presentation.songs.isScrolled
@@ -144,7 +138,8 @@ fun PlaylistScreen(
                     modifier = Modifier
                         .padding(top = 10.dp),
                     deletePlaylist = deletePlaylist,
-                    navController = navController
+                    navController = navController,
+                    playlistViewModel = playlistViewModel
                 )
             }
         }
@@ -212,8 +207,9 @@ fun PlaylistItem(
     playlist: Playlist,
     modifier: Modifier = Modifier,
     deletePlaylist: (Playlist) -> Unit,
-    navController: NavController
-) {
+    navController: NavController,
+    playlistViewModel: PlaylistViewModel,
+    ) {
     val context = LocalContext.current
 
     var showMenu by remember {
@@ -228,9 +224,9 @@ fun PlaylistItem(
         modifier = modifier
             .fillMaxSize()
             .clickable {
+                playlistViewModel.addPlaylist(playlist)
                 navController.navigate(Screen.PlaylistDetailsScreen.route)
-            }
-        ,
+            },
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),

@@ -20,7 +20,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
-import androidx.compose.material.ButtonColors
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
@@ -30,26 +29,28 @@ import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.MoreHoriz
-import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.MusicNote
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Shuffle
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.mymusic.R
+import com.example.mymusic.domain.model.Playlist
 import com.example.mymusic.domain.model.Song
 import com.example.mymusic.presentation.songs.AudioItem
-import com.example.mymusic.presentation.util.shadow
+import com.example.mymusic.presentation.songs.timeStampToDuration
 import com.skydoves.landscapist.ImageOptions
 import com.skydoves.landscapist.glide.GlideImage
 
@@ -57,7 +58,12 @@ import com.skydoves.landscapist.glide.GlideImage
 @Composable
 fun PlaylistDetailsScreen(
     currentPlayingAudio: Song?,
-    navController : NavController,
+    navController: NavController,
+    playlist: Playlist?,
+    allPlaylists: List<Playlist>,
+    insertSongIntoPlaylist: (Song, String) -> Unit,
+    onItemClick: (Song) -> Unit,
+    shuffle: () -> Unit,
     ) {
 
     Scaffold(
@@ -71,22 +77,38 @@ fun PlaylistDetailsScreen(
         Column(
             modifier = Modifier.fillMaxSize()
         ) {
-            PlaylistInfo()
+            PlaylistInfo(
+                playlist = playlist!!,
+                shuffle = { shuffle.invoke() },
+                )
             SongsList(
-                currentPlayingAudio = currentPlayingAudio
+                currentPlayingAudio = currentPlayingAudio,
+                audioList = playlist.songs,
+                allPlaylists = allPlaylists,
+                insertSongIntoPlaylist = insertSongIntoPlaylist,
+                onItemClick = onItemClick
             )
         }
     }
 }
 
 @Composable
-fun PlaylistInfo() {
-    Row (
+fun PlaylistInfo(
+    playlist: Playlist,
+    shuffle: () -> Unit,
+    ) {
+
+    var selected by remember {
+        mutableStateOf(false)
+    }
+
+
+    Row(
         modifier = Modifier
             .height(180.dp)
             .fillMaxWidth()
             .padding(15.dp)
-    ){
+    ) {
         GlideImage(
             imageModel = { R.mipmap.ic_launcher },
             imageOptions = ImageOptions(
@@ -106,534 +128,64 @@ fun PlaylistInfo() {
             Text(
                 fontWeight = FontWeight.Bold,
                 fontSize = 20.sp,
-                text = "Playlist name.."
+                text = playlist.playlistName
             )
             Row(modifier = Modifier.fillMaxWidth()) {
-               Text(text = "283 songs · ")
-               Text(text = "16:28:22")
+                Text(text = "${playlist.songCount} · ")
+                Text(text = timeStampToDuration(playlist.playlistDuration))
             }
-            Row (
+            Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceEvenly
-            ){
+            ) {
                 Button(
-                    onClick = { /*TODO*/ },
+                    onClick = {
+                              // here code to play whole playlist
+
+
+                    },
                     shape = RoundedCornerShape(35.dp),
                     modifier = Modifier.width(120.dp)
                 ) {
-                   Icon(imageVector = Icons.Default.PlayArrow, contentDescription = "Play playlist")
+                    Icon(
+                        imageVector = Icons.Default.PlayArrow,
+                        contentDescription = "Play playlist"
+                    )
                 }
                 Spacer(modifier = Modifier.width(4.dp))
-                Button(onClick = { /*TODO*/ },
+                Button(
+                    onClick = {
+                              //shuffle here
+                              shuffle.invoke()
+                        selected = !selected
+                    },
                     shape = CircleShape
                 ) {
-                    Icon(imageVector = Icons.Default.Shuffle, contentDescription = "Play playlist")
-                }
+                    Icon(
+                        imageVector = Icons.Default.Shuffle,
+                        contentDescription = "shuffle",
+                        tint = if (!selected) {
+                            MaterialTheme.colors.onSurface.copy(alpha = .5f)
+                        } else {
+                            MaterialTheme.colors.onSurface
+                        },
+
+                        )                }
             }
         }
     }
 }
 
-val songs = listOf(
-    Song(
-        "ss",
-        "ss",
-        "ss",
-        1,
-        "",
-        "",
-        "",
-        "",
-        "",
-        1L
-    ),
-    Song(
-        "ss",
-        "ss",
-        "ss",
-        1,
-        "",
-        "",
-        "",
-        "",
-        "",
-        1L
-    ),
-    Song(
-        "ss",
-        "ss",
-        "ss",
-        1,
-        "",
-        "",
-        "",
-        "",
-        "",
-        1L
-    ),
-    Song(
-        "ss",
-        "ss",
-        "ss",
-        1,
-        "",
-        "",
-        "",
-        "",
-        "",
-        1L
-    ),
-    Song(
-        "ss",
-        "ss",
-        "ss",
-        1,
-        "",
-        "",
-        "",
-        "",
-        "",
-        1L
-    ),
-    Song(
-        "ss",
-        "ss",
-        "ss",
-        1,
-        "",
-        "",
-        "",
-        "",
-        "",
-        1L
-    ),
-    Song(
-        "ss",
-        "ss",
-        "ss",
-        1,
-        "",
-        "",
-        "",
-        "",
-        "",
-        1L
-    ),
-    Song(
-        "ss",
-        "ss",
-        "ss",
-        1,
-        "",
-        "",
-        "",
-        "",
-        "",
-        1L
-    ),
-    Song(
-        "ss",
-        "ss",
-        "ss",
-        1,
-        "",
-        "",
-        "",
-        "",
-        "",
-        1L
-    ),
-    Song(
-        "ss",
-        "ss",
-        "ss",
-        1,
-        "",
-        "",
-        "",
-        "",
-        "",
-        1L
-    ),
-    Song(
-        "ss",
-        "ss",
-        "ss",
-        1,
-        "",
-        "",
-        "",
-        "",
-        "",
-        1L
-    ),
-    Song(
-        "ss",
-        "ss",
-        "ss",
-        1,
-        "",
-        "",
-        "",
-        "",
-        "",
-        1L
-    ),
-    Song(
-        "ss",
-        "ss",
-        "ss",
-        1,
-        "",
-        "",
-        "",
-        "",
-        "",
-        1L
-    ),
-    Song(
-        "ss",
-        "ss",
-        "ss",
-        1,
-        "",
-        "",
-        "",
-        "",
-        "",
-        1L
-    ),
-    Song(
-        "ss",
-        "ss",
-        "ss",
-        1,
-        "",
-        "",
-        "",
-        "",
-        "",
-        1L
-    ),
-    Song(
-        "ss",
-        "ss",
-        "ss",
-        1,
-        "",
-        "",
-        "",
-        "",
-        "",
-        1L
-    ),
-    Song(
-        "ss",
-        "ss",
-        "ss",
-        1,
-        "",
-        "",
-        "",
-        "",
-        "",
-        1L
-    ),
-    Song(
-        "ss",
-        "ss",
-        "ss",
-        1,
-        "",
-        "",
-        "",
-        "",
-        "",
-        1L
-    ),
-    Song(
-        "ss",
-        "ss",
-        "ss",
-        1,
-        "",
-        "",
-        "",
-        "",
-        "",
-        1L
-    ),
-    Song(
-        "ss",
-        "ss",
-        "ss",
-        1,
-        "",
-        "",
-        "",
-        "",
-        "",
-        1L
-    ),
-    Song(
-        "ss",
-        "ss",
-        "ss",
-        1,
-        "",
-        "",
-        "",
-        "",
-        "",
-        1L
-    ),
-    Song(
-        "ss",
-        "ss",
-        "ss",
-        1,
-        "",
-        "",
-        "",
-        "",
-        "",
-        1L
-    ),
-    Song(
-        "ss",
-        "ss",
-        "ss",
-        1,
-        "",
-        "",
-        "",
-        "",
-        "",
-        1L
-    ),
-    Song(
-        "ss",
-        "ss",
-        "ss",
-        1,
-        "",
-        "",
-        "",
-        "",
-        "",
-        1L
-    ),
-    Song(
-        "ss",
-        "ss",
-        "ss",
-        1,
-        "",
-        "",
-        "",
-        "",
-        "",
-        1L
-    ),
-    Song(
-        "ss",
-        "ss",
-        "ss",
-        1,
-        "",
-        "",
-        "",
-        "",
-        "",
-        1L
-    ),
-    Song(
-        "ss",
-        "ss",
-        "ss",
-        1,
-        "",
-        "",
-        "",
-        "",
-        "",
-        1L
-    ),
-    Song(
-        "ss",
-        "ss",
-        "ss",
-        1,
-        "",
-        "",
-        "",
-        "",
-        "",
-        1L
-    ),
-    Song(
-        "ss",
-        "ss",
-        "ss",
-        1,
-        "",
-        "",
-        "",
-        "",
-        "",
-        1L
-    ),
-    Song(
-        "ss",
-        "ss",
-        "ss",
-        1,
-        "",
-        "",
-        "",
-        "",
-        "",
-        1L
-    ),
-    Song(
-        "ss",
-        "ss",
-        "ss",
-        1,
-        "",
-        "",
-        "",
-        "",
-        "",
-        1L
-    ),
-    Song(
-        "ss",
-        "ss",
-        "ss",
-        1,
-        "",
-        "",
-        "",
-        "",
-        "",
-        1L
-    ),
-    Song(
-        "ss",
-        "ss",
-        "ss",
-        1,
-        "",
-        "",
-        "",
-        "",
-        "",
-        1L
-    ),
-    Song(
-        "ss",
-        "ss",
-        "ss",
-        1,
-        "",
-        "",
-        "",
-        "",
-        "",
-        1L
-    ),
-    Song(
-        "ss",
-        "ss",
-        "ss",
-        1,
-        "",
-        "",
-        "",
-        "",
-        "",
-        1L
-    ),
-    Song(
-        "ss",
-        "ss",
-        "ss",
-        1,
-        "",
-        "",
-        "",
-        "",
-        "",
-        1L
-    ),
-    Song(
-        "ss",
-        "ss",
-        "ss",
-        1,
-        "",
-        "",
-        "",
-        "",
-        "",
-        1L
-    ),
-    Song(
-        "ss",
-        "ss",
-        "ss",
-        1,
-        "",
-        "",
-        "",
-        "",
-        "",
-        1L
-    ),
-    Song(
-        "ss",
-        "ss",
-        "ss",
-        1,
-        "",
-        "",
-        "",
-        "",
-        "",
-        1L
-    ),
-    Song(
-        "ss",
-        "ss",
-        "ss",
-        1,
-        "",
-        "",
-        "",
-        "",
-        "",
-        1L
-    ),
-    Song(
-        "ss",
-        "ss",
-        "ss",
-        1,
-        "",
-        "",
-        "",
-        "",
-        "",
-        1L
-    )
-)
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun SongsList(
     currentPlayingAudio: Song?,
-    ) {
+    audioList: List<Song>,
+    allPlaylists: List<Playlist>,
+    insertSongIntoPlaylist: (Song, String) -> Unit,
+    onItemClick: (Song) -> Unit,
+) {
 
     val animatedHeight by animateDpAsState(
         targetValue = if (currentPlayingAudio == null) 0.dp
@@ -643,33 +195,41 @@ fun SongsList(
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
         contentPadding = PaddingValues(bottom = animatedHeight),
-        ){
-        items(songs){ song ->
-            SongItem(song = song)
-            Spacer(modifier = Modifier.height(4.dp))
+    ) {
+        items(audioList) { song ->
+            AudioItem(
+                audio = song,
+                onItemClick = { onItemClick.invoke(song) },
+                modifier = Modifier.animateItemPlacement(
+                    tween(durationMillis = 450)
+                ),
+                playlists = allPlaylists,
+                insertSongIntoPlaylist = insertSongIntoPlaylist
+            )
         }
     }
 }
 
 @Composable
 fun SongItem(
-    modifier : Modifier = Modifier,
-    song : Song
+    modifier: Modifier = Modifier,
+    song: Song
 ) {
-    
-    Row (
+
+    Row(
         modifier = Modifier
             .fillMaxWidth()
             .fillMaxHeight()
             .background(Color.Magenta),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceEvenly
-    ){
-       Icon(imageVector = Icons.Filled.MusicNote, contentDescription = "") 
+    ) {
+        Icon(imageVector = Icons.Filled.MusicNote, contentDescription = "")
         Text(text = "Song name...")
     }
-    
+
 }
+
 @Composable
 fun TopBarPlaylist(
     navController: NavController

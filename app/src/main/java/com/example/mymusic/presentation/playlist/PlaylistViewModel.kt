@@ -1,13 +1,12 @@
 package com.example.mymusic.presentation.playlist
 
-import android.util.Log
 import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.mymusic.domain.model.Playlist
 import com.example.mymusic.domain.model.Song
 import com.example.mymusic.domain.use_cases.MusicUseCases
-import com.example.mymusic.domain.use_cases.UpdatePlaylist
 import com.example.mymusic.domain.util.PlaylistSortOrder
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -20,6 +19,8 @@ class PlaylistViewModel @Inject constructor(
 
     var playlists = mutableStateListOf<Playlist>()
 
+    var clickedPlaylist = mutableStateOf<Playlist?>(null)
+    private set
     init {
         viewModelScope.launch {
             musicUseCases.getAllPlaylists().collect{ playlist ->
@@ -29,7 +30,9 @@ class PlaylistViewModel @Inject constructor(
         }
     }
 
-
+    fun addPlaylist(playlist: Playlist){
+        clickedPlaylist.value = playlist
+    }
     fun insertSongIntoPlaylist(song: Song,playlistName: String){
         playlists.forEach { playlist: Playlist ->
 

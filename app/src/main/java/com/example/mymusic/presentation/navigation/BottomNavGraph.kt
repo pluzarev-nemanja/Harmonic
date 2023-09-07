@@ -50,8 +50,8 @@ fun BottomNavGraph(
                 },
                 navController = navController,
                 playlists = playlistViewModel.playlists,
-                insertSongIntoPlaylist = { song , playlistName ->
-                    playlistViewModel.insertSongIntoPlaylist(song,playlistName)
+                insertSongIntoPlaylist = { song, playlistName ->
+                    playlistViewModel.insertSongIntoPlaylist(song, playlistName)
                 }
             )
         }
@@ -80,15 +80,27 @@ fun BottomNavGraph(
                 currentPlayingAudio,
                 onItemClick,
                 playlists = playlistViewModel.playlists,
-                insertSongIntoPlaylist = { song , playlistName ->
-                    playlistViewModel.insertSongIntoPlaylist(song,playlistName)
+                insertSongIntoPlaylist = { song, playlistName ->
+                    playlistViewModel.insertSongIntoPlaylist(song, playlistName)
                 }
             )
         }
-        composable(Screen.PlaylistDetailsScreen.route){
+        composable(Screen.PlaylistDetailsScreen.route) {
+
             PlaylistDetailsScreen(
                 currentPlayingAudio = songsViewModel.currentPlayingAudio.value,
                 navController = navController,
+                playlist = playlistViewModel.clickedPlaylist.value,
+                allPlaylists = playlistViewModel.playlists,
+                insertSongIntoPlaylist = { song, playlistName ->
+                    playlistViewModel.insertSongIntoPlaylist(song, playlistName)
+                },
+                onItemClick = {
+                    songsViewModel.playAudio(it)
+                },
+                shuffle = {
+                    songsViewModel.shuffle()
+                },
             )
         }
     }
