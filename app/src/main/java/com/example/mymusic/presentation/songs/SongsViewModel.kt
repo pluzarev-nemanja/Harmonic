@@ -218,6 +218,15 @@ class SongsViewModel @Inject constructor(
         }
     }
 
+    fun playPlaylist(currentAudio: Song, songs: List<Song>) {
+        serviceConnection.playAudio(songs)
+        serviceConnection.transportControl
+            .playFromMediaId(
+                currentAudio.id.toString(),
+                null
+            )
+    }
+
     fun stopPlayBack() {
         serviceConnection.transportControl.stop()
     }

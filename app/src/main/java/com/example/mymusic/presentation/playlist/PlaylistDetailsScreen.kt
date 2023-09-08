@@ -30,6 +30,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.MoreHoriz
 import androidx.compose.material.icons.filled.MusicNote
+import androidx.compose.material.icons.filled.Pause
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Shuffle
 import androidx.compose.runtime.Composable
@@ -64,6 +65,7 @@ fun PlaylistDetailsScreen(
     insertSongIntoPlaylist: (Song, String) -> Unit,
     onItemClick: (Song) -> Unit,
     shuffle: () -> Unit,
+    onStart: (Song,List<Song>) -> Unit,
     ) {
 
     Scaffold(
@@ -80,6 +82,9 @@ fun PlaylistDetailsScreen(
             PlaylistInfo(
                 playlist = playlist!!,
                 shuffle = { shuffle.invoke() },
+                onStart = {
+                        onStart.invoke(playlist.songs[0],playlist.songs)
+                },
                 )
             SongsList(
                 currentPlayingAudio = currentPlayingAudio,
@@ -96,6 +101,7 @@ fun PlaylistDetailsScreen(
 fun PlaylistInfo(
     playlist: Playlist,
     shuffle: () -> Unit,
+    onStart: () -> Unit,
     ) {
 
     var selected by remember {
@@ -141,9 +147,7 @@ fun PlaylistInfo(
             ) {
                 Button(
                     onClick = {
-                              // here code to play whole playlist
-
-
+                        onStart.invoke()
                     },
                     shape = RoundedCornerShape(35.dp),
                     modifier = Modifier.width(120.dp)

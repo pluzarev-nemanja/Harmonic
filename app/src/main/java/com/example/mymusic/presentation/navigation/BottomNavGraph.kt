@@ -87,6 +87,8 @@ fun BottomNavGraph(
         }
         composable(Screen.PlaylistDetailsScreen.route) {
 
+            //shuffle button to play random song,not to be like normal shuffle
+
             PlaylistDetailsScreen(
                 currentPlayingAudio = songsViewModel.currentPlayingAudio.value,
                 navController = navController,
@@ -100,6 +102,9 @@ fun BottomNavGraph(
                 },
                 shuffle = {
                     songsViewModel.shuffle()
+                },
+                onStart = {currentPlayingAudio , songs ->
+                    songsViewModel.playPlaylist(currentPlayingAudio,songs)
                 },
             )
         }
