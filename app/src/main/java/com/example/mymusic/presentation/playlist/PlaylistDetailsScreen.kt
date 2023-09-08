@@ -30,14 +30,10 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.MoreHoriz
 import androidx.compose.material.icons.filled.MusicNote
-import androidx.compose.material.icons.filled.Pause
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Shuffle
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -64,9 +60,9 @@ fun PlaylistDetailsScreen(
     allPlaylists: List<Playlist>,
     insertSongIntoPlaylist: (Song, String) -> Unit,
     onItemClick: (Song) -> Unit,
-    shuffle: () -> Unit,
-    onStart: (Song,List<Song>) -> Unit,
-    ) {
+    shuffle: (Playlist) -> Unit,
+    onStart: (Song, List<Song>) -> Unit,
+) {
 
     Scaffold(
         topBar = {
@@ -81,11 +77,11 @@ fun PlaylistDetailsScreen(
         ) {
             PlaylistInfo(
                 playlist = playlist!!,
-                shuffle = { shuffle.invoke() },
+                shuffle = { shuffle.invoke(playlist) },
                 onStart = {
-                        onStart.invoke(playlist.songs[0],playlist.songs)
+                    onStart.invoke(playlist.songs[0], playlist.songs)
                 },
-                )
+            )
             SongsList(
                 currentPlayingAudio = currentPlayingAudio,
                 audioList = playlist.songs,
@@ -102,12 +98,7 @@ fun PlaylistInfo(
     playlist: Playlist,
     shuffle: () -> Unit,
     onStart: () -> Unit,
-    ) {
-
-    var selected by remember {
-        mutableStateOf(false)
-    }
-
+) {
 
     Row(
         modifier = Modifier
@@ -160,22 +151,15 @@ fun PlaylistInfo(
                 Spacer(modifier = Modifier.width(4.dp))
                 Button(
                     onClick = {
-                              //shuffle here
-                              shuffle.invoke()
-                        selected = !selected
+                        shuffle.invoke()
                     },
                     shape = CircleShape
                 ) {
                     Icon(
                         imageVector = Icons.Default.Shuffle,
                         contentDescription = "shuffle",
-                        tint = if (!selected) {
-                            MaterialTheme.colors.onSurface.copy(alpha = .5f)
-                        } else {
-                            MaterialTheme.colors.onSurface
-                        },
-
-                        )                }
+                    )
+                }
             }
         }
     }

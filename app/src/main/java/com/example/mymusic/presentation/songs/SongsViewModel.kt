@@ -10,6 +10,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.mymusic.domain.model.Playlist
 import com.example.mymusic.domain.model.Song
 import com.example.mymusic.domain.use_cases.MusicUseCases
 import com.example.mymusic.domain.util.SortOrder
@@ -23,6 +24,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.math.floor
+import kotlin.random.Random
 
 @HiltViewModel
 class SongsViewModel @Inject constructor(
@@ -225,6 +227,11 @@ class SongsViewModel @Inject constructor(
                 currentAudio.id.toString(),
                 null
             )
+    }
+
+    fun shufflePlaylist(playlist: Playlist){
+        val number = Random.nextInt(from = 0, until = playlist.songCount)
+        playPlaylist(currentAudio = playlist.songs[number],songs = playlist.songs)
     }
 
     fun stopPlayBack() {

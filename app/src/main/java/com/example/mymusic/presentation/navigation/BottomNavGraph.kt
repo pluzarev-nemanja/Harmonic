@@ -100,8 +100,8 @@ fun BottomNavGraph(
                 onItemClick = {
                     songsViewModel.playAudio(it)
                 },
-                shuffle = {
-                    songsViewModel.shuffle()
+                shuffle = { playlist ->
+                    songsViewModel.shufflePlaylist(playlist = playlist)
                 },
                 onStart = {currentPlayingAudio , songs ->
                     songsViewModel.playPlaylist(currentPlayingAudio,songs)
