@@ -1,5 +1,6 @@
 package com.example.mymusic.domain.repository
 
+import com.example.mymusic.domain.model.Album
 import com.example.mymusic.domain.model.Playlist
 import com.example.mymusic.domain.model.Song
 import kotlinx.coroutines.flow.Flow
@@ -33,5 +34,9 @@ interface MusicRepository {
     fun getAllPlaylistsDuration(): Flow<List<Playlist>>
 
     suspend fun updatePlaylist(playlist: Playlist)
+    suspend fun insertAlbums(albums: MutableList<Album>)
 
+    suspend fun deleteAlbum(album: Album)
+
+    fun getAllAlbums(): Flow<List<Album>>
 }

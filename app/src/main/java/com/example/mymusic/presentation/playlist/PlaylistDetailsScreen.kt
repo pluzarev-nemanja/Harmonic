@@ -79,6 +79,7 @@ fun PlaylistDetailsScreen(
                 playlist = playlist!!,
                 shuffle = { shuffle.invoke(playlist) },
                 onStart = {
+                    if(playlist.songs.isNotEmpty())
                     onStart.invoke(playlist.songs[0], playlist.songs)
                 },
             )
@@ -198,25 +199,6 @@ fun SongsList(
     }
 }
 
-@Composable
-fun SongItem(
-    modifier: Modifier = Modifier,
-    song: Song
-) {
-
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .fillMaxHeight()
-            .background(Color.Magenta),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceEvenly
-    ) {
-        Icon(imageVector = Icons.Filled.MusicNote, contentDescription = "")
-        Text(text = "Song name...")
-    }
-
-}
 
 @Composable
 fun TopBarPlaylist(
@@ -229,9 +211,10 @@ fun TopBarPlaylist(
             .background(color = MaterialTheme.colors.primary)
     ) {
         Row(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier.fillMaxSize()
+                .padding(end = 8.dp),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
+            horizontalArrangement = Arrangement.SpaceBetween,
         ) {
 
             IconButton(onClick = {
@@ -240,7 +223,10 @@ fun TopBarPlaylist(
                 Icon(imageVector = Icons.Filled.ArrowBack, contentDescription = "Back button")
             }
 
-            IconButton(onClick = { /*TODO*/ }) {
+            IconButton(onClick = {
+                //add more options to playlist
+
+            }) {
                 Icon(imageVector = Icons.Filled.MoreHoriz, contentDescription = "Back button")
             }
         }

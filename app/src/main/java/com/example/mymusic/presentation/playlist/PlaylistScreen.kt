@@ -210,7 +210,6 @@ fun PlaylistItem(
     navController: NavController,
     playlistViewModel: PlaylistViewModel,
     ) {
-    val context = LocalContext.current
 
     var showMenu by remember {
         mutableStateOf(false)

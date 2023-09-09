@@ -7,6 +7,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
 import androidx.room.Upsert
+import com.example.mymusic.domain.model.Album
 import com.example.mymusic.domain.model.Playlist
 import com.example.mymusic.domain.model.Song
 import kotlinx.coroutines.flow.Flow
@@ -52,4 +53,15 @@ interface MusicDao {
 
     @Update
     suspend fun updatePlaylist(playlist: Playlist)
+
+    @Upsert
+    suspend fun insertAlbums(albums: MutableList<Album>)
+
+    @Delete
+    suspend fun deleteAlbum(album: Album)
+
+    @Query("SELECT * FROM album ORDER BY albumName ASC")
+    fun getAllAlbums(): Flow<List<Album>>
+
+
 }

@@ -1,6 +1,7 @@
 package com.example.mymusic.data.repository
 
 import com.example.mymusic.data.data_source.MusicDao
+import com.example.mymusic.domain.model.Album
 import com.example.mymusic.domain.model.Playlist
 import com.example.mymusic.domain.model.Song
 import com.example.mymusic.domain.repository.MusicRepository
@@ -66,5 +67,17 @@ class MusicRepositoryImpl @Inject constructor(
 
     override suspend fun updatePlaylist(playlist: Playlist) {
         dao.updatePlaylist(playlist)
+    }
+
+    override suspend fun insertAlbums(albums: MutableList<Album>) {
+        dao.insertAlbums(albums)
+    }
+
+    override suspend fun deleteAlbum(album: Album) {
+        dao.deleteAlbum(album)
+    }
+
+    override fun getAllAlbums(): Flow<List<Album>> {
+        return dao.getAllAlbums()
     }
 }

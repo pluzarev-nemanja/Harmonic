@@ -7,6 +7,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.mymusic.domain.model.Song
 import com.example.mymusic.presentation.album.AlbumScreen
+import com.example.mymusic.presentation.album.AlbumViewModel
 import com.example.mymusic.presentation.home.HomeScreen
 import com.example.mymusic.presentation.playlist.PlaylistDetailsScreen
 import com.example.mymusic.presentation.playlist.PlaylistScreen
@@ -20,8 +21,9 @@ import com.example.mymusic.presentation.songs.SongsViewModel
 fun BottomNavGraph(
     navController: NavHostController,
     songsViewModel: SongsViewModel = hiltViewModel(),
-    songList: List<Song>,
     searchViewModel: SearchViewModel = hiltViewModel(),
+    albumsViewModel: AlbumViewModel = hiltViewModel(),
+    songList: List<Song>,
     searchText: String,
     songs: List<Song>,
     currentPlayingAudio: Song?,
@@ -70,7 +72,11 @@ fun BottomNavGraph(
             )
         }
         composable(BottomBarScreen.Album.route) {
-            AlbumScreen()
+            AlbumScreen(
+                currentPlayingAudio = currentPlayingAudio,
+                navController = navController,
+                albums = albumsViewModel.albums
+            )
         }
         composable(Screen.SearchScreen.route) {
             SearchScreen(
@@ -86,8 +92,6 @@ fun BottomNavGraph(
             )
         }
         composable(Screen.PlaylistDetailsScreen.route) {
-
-            //shuffle button to play random song,not to be like normal shuffle
 
             PlaylistDetailsScreen(
                 currentPlayingAudio = songsViewModel.currentPlayingAudio.value,
