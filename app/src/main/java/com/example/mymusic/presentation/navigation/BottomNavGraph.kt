@@ -6,6 +6,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.mymusic.domain.model.Song
+import com.example.mymusic.presentation.album.AlbumDetailScreen
 import com.example.mymusic.presentation.album.AlbumScreen
 import com.example.mymusic.presentation.album.AlbumViewModel
 import com.example.mymusic.presentation.home.HomeScreen
@@ -81,7 +82,8 @@ fun BottomNavGraph(
                 },
                 deleteAlbum = {
                     albumsViewModel.deleteAlbum(it)
-                }
+                },
+                albumsViewModel
             )
         }
         composable(Screen.SearchScreen.route) {
@@ -113,10 +115,33 @@ fun BottomNavGraph(
                 shuffle = { playlist ->
                     songsViewModel.shufflePlaylist(playlist = playlist)
                 },
-                onStart = {currentPlayingAudio , songs ->
-                    songsViewModel.playPlaylist(currentPlayingAudio,songs)
+                onStart = { currentPlayingAudio, songs ->
+                    songsViewModel.playPlaylist(currentPlayingAudio, songs)
                 },
             )
         }
+
+        composable(Screen.AlbumDetailScreen.route) {
+            AlbumDetailScreen(
+                navController = navController,
+                album = albumsViewModel.albumNavigated.value,
+                allPlaylists = playlistViewModel.playlists,
+                insertSongIntoPlaylist = { song, playlistName ->
+                    playlistViewModel.insertSongIntoPlaylist(song, playlistName)
+                },
+                onItemClick = {
+                    songsViewModel.playAudio(it)
+                },
+                currentPlayingAudio = songsViewModel.currentPlayingAudio.value,
+                shuffle = { album ->
+                    songsViewModel.shuffleAlbum(album)
+                },
+                onStart = { currentPlayingAudio, songs ->
+                    songsViewModel.playPlaylist(currentPlayingAudio, songs)
+                },
+
+                )
+        }
+
     }
 }

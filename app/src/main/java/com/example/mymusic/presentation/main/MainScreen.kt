@@ -1,4 +1,4 @@
-package com.example.mymusic.presentation
+package com.example.mymusic.presentation.main
 
 import android.annotation.SuppressLint
 import androidx.compose.animation.AnimatedVisibility

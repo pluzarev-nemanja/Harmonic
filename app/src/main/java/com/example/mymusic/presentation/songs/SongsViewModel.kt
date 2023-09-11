@@ -10,6 +10,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.mymusic.domain.model.Album
 import com.example.mymusic.domain.model.Playlist
 import com.example.mymusic.domain.model.Song
 import com.example.mymusic.domain.use_cases.MusicUseCases
@@ -229,6 +230,10 @@ class SongsViewModel @Inject constructor(
             )
     }
 
+    fun shuffleAlbum(album: Album){
+        val number = Random.nextInt(from = 0, until = album.songCount)
+        playPlaylist(currentAudio = album.songs[number],songs = album.songs)
+    }
     fun shufflePlaylist(playlist: Playlist){
         val number = Random.nextInt(from = 0, until = playlist.songCount)
         playPlaylist(currentAudio = playlist.songs[number],songs = playlist.songs)

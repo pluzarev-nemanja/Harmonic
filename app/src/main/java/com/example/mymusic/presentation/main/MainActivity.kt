@@ -1,4 +1,4 @@
-package com.example.mymusic.presentation
+package com.example.mymusic.presentation.main
 
 import android.Manifest
 import android.app.Activity

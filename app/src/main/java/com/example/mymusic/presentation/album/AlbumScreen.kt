@@ -73,7 +73,8 @@ fun AlbumScreen(
     navController: NavController,
     albums: List<Album>,
     sortOrderChange: (AlbumSortOrder) -> Unit,
-    deleteAlbum: (Album) -> Unit
+    deleteAlbum: (Album) -> Unit,
+    albumViewModel: AlbumViewModel
 ) {
     val sortOrder by remember {
         mutableStateOf(AlbumSortOrder.ALBUM_NAME)
@@ -106,7 +107,9 @@ fun AlbumScreen(
                     album = album,
                     modifier = Modifier
                         .padding(top = 10.dp),
-                    deleteAlbum = deleteAlbum
+                    deleteAlbum = deleteAlbum,
+                    navController,
+                    albumViewModel = albumViewModel
                 )
             }
         }
@@ -126,7 +129,9 @@ fun AlbumScreen(
 fun AlbumItem(
     album: Album,
     modifier: Modifier = Modifier,
-    deleteAlbum: (Album) -> Unit
+    deleteAlbum: (Album) -> Unit,
+    navController: NavController,
+    albumViewModel: AlbumViewModel
 ) {
 
     var showMenu by remember {
@@ -140,7 +145,8 @@ fun AlbumItem(
         modifier = modifier
             .fillMaxSize()
             .clickable {
-
+                albumViewModel.addAlbum(album)
+                navController.navigate(Screen.AlbumDetailScreen.route)
             },
     ) {
         Row(

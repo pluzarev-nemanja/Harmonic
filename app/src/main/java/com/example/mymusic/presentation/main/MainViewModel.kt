@@ -1,4 +1,4 @@
-package com.example.mymusic.presentation
+package com.example.mymusic.presentation.main
 
 import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.ViewModel

@@ -227,7 +227,7 @@ fun TopBarPlaylist(
                 //add more options to playlist
 
             }) {
-                Icon(imageVector = Icons.Filled.MoreHoriz, contentDescription = "Back button")
+                Icon(imageVector = Icons.Filled.MoreHoriz, contentDescription = "More options")
             }
         }
     }

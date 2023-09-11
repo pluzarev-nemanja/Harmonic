@@ -2,6 +2,7 @@ package com.example.mymusic.presentation.album
 
 import android.util.Log
 import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.mymusic.domain.model.Album
@@ -20,6 +21,9 @@ class AlbumViewModel  @Inject constructor(
 
     var albums = mutableStateListOf<Album>()
 
+    var albumNavigated = mutableStateOf<Album?>(null)
+        private set
+
     init {
         viewModelScope.launch {
             musicUseCases.insertAlbum()
@@ -30,6 +34,10 @@ class AlbumViewModel  @Inject constructor(
                 albums += album
             }
         }
+    }
+
+    fun addAlbum(album: Album){
+        albumNavigated.value = album
     }
 
 
