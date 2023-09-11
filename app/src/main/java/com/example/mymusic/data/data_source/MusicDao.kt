@@ -63,5 +63,11 @@ interface MusicDao {
     @Query("SELECT * FROM album ORDER BY albumName ASC")
     fun getAllAlbums(): Flow<List<Album>>
 
+    @Query("SELECT * FROM album ORDER BY artist ASC")
+    fun getAllAlbumsArtist(): Flow<List<Album>>
+
+    @Query("SELECT * FROM album ORDER BY songCount ASC")
+    fun getAllAlbumsSongCount(): Flow<List<Album>>
+
 
 }

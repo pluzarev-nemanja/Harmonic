@@ -39,4 +39,8 @@ interface MusicRepository {
     suspend fun deleteAlbum(album: Album)
 
     fun getAllAlbums(): Flow<List<Album>>
+
+    fun getAllAlbumsArtist(): Flow<List<Album>>
+
+    fun getAllAlbumsSongCount(): Flow<List<Album>>
 }

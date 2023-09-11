@@ -75,7 +75,13 @@ fun BottomNavGraph(
             AlbumScreen(
                 currentPlayingAudio = currentPlayingAudio,
                 navController = navController,
-                albums = albumsViewModel.albums
+                albums = albumsViewModel.albums,
+                sortOrderChange = {
+                    albumsViewModel.changeSortOrder(it)
+                },
+                deleteAlbum = {
+                    albumsViewModel.deleteAlbum(it)
+                }
             )
         }
         composable(Screen.SearchScreen.route) {

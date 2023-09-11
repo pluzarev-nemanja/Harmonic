@@ -52,7 +52,9 @@ object AppModule {
             updatePlaylist = UpdatePlaylist(repository),
             insertAlbum = InsertAlbum(repository,app),
             deleteAlbum = DeleteAlbum(repository),
-            getAllAlbumsAsc = GetAllAlbumsAsc(repository)
+            getAllAlbumsAsc = GetAllAlbumsAsc(repository),
+            getAllAlbumsArtist = GetAllAlbumsArtist(repository),
+            getAllAlbumsSongCount = GetAllAlbumsSongCount(repository)
         )
     }
 }

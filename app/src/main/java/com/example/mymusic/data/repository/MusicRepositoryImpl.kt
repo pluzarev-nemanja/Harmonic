@@ -69,6 +69,7 @@ class MusicRepositoryImpl @Inject constructor(
         dao.updatePlaylist(playlist)
     }
 
+
     override suspend fun insertAlbums(albums: MutableList<Album>) {
         dao.insertAlbums(albums)
     }
@@ -79,5 +80,13 @@ class MusicRepositoryImpl @Inject constructor(
 
     override fun getAllAlbums(): Flow<List<Album>> {
         return dao.getAllAlbums()
+    }
+
+    override fun getAllAlbumsArtist(): Flow<List<Album>> {
+        return dao.getAllAlbumsArtist()
+    }
+
+    override fun getAllAlbumsSongCount(): Flow<List<Album>> {
+        return dao.getAllAlbumsSongCount()
     }
 }

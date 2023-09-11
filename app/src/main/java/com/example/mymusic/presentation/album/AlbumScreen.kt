@@ -1,6 +1,5 @@
 package com.example.mymusic.presentation.album
 
-import android.util.Log
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
@@ -28,8 +27,6 @@ import androidx.compose.material.AlertDialog
 import androidx.compose.material.Button
 import androidx.compose.material.DropdownMenu
 import androidx.compose.material.DropdownMenuItem
-import androidx.compose.material.FabPosition
-import androidx.compose.material.FloatingActionButton
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
@@ -37,7 +34,6 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material.icons.filled.MoreHoriz
 import androidx.compose.material.icons.filled.Search
@@ -59,14 +55,14 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.mymusic.R
 import com.example.mymusic.domain.model.Album
+import com.example.mymusic.domain.model.Playlist
 import com.example.mymusic.domain.model.Song
+import com.example.mymusic.domain.util.AlbumSortOrder
 import com.example.mymusic.domain.util.PlaylistSortOrder
 import com.example.mymusic.presentation.navigation.Screen
 import com.example.mymusic.presentation.songs.SortOrderItem
 import com.example.mymusic.presentation.songs.TOP_BAR_HEIGHT
 import com.example.mymusic.presentation.songs.isScrolled
-import com.example.mymusic.presentation.songs.timeStampToDuration
-import com.example.mymusic.presentation.util.shadow
 import com.skydoves.landscapist.ImageOptions
 import com.skydoves.landscapist.glide.GlideImage
 
@@ -75,8 +71,13 @@ import com.skydoves.landscapist.glide.GlideImage
 fun AlbumScreen(
     currentPlayingAudio: Song?,
     navController: NavController,
-    albums : List<Album>
-    ) {
+    albums: List<Album>,
+    sortOrderChange: (AlbumSortOrder) -> Unit,
+    deleteAlbum: (Album) -> Unit
+) {
+    val sortOrder by remember {
+        mutableStateOf(AlbumSortOrder.ALBUM_NAME)
+    }
 
     val scrollState = rememberLazyStaggeredGridState()
 
@@ -89,7 +90,7 @@ fun AlbumScreen(
         animationSpec = tween(durationMillis = 300), label = "paddingLazyList"
     )
 
-    Scaffold {padding ->
+    Scaffold { padding ->
         LazyVerticalStaggeredGrid(
             columns = StaggeredGridCells.Fixed(2),
             modifier = Modifier
@@ -100,18 +101,21 @@ fun AlbumScreen(
             state = scrollState,
         ) {
 
-            items(albums){ album ->
-               AlbumItem(
-                   album = album,
-                   modifier = Modifier
-                       .padding(top = 10.dp),
-               )
+            items(albums) { album ->
+                AlbumItem(
+                    album = album,
+                    modifier = Modifier
+                        .padding(top = 10.dp),
+                    deleteAlbum = deleteAlbum
+                )
             }
         }
         AlbumTopBar(
             lazyListState = scrollState,
-            sortOrdering = PlaylistSortOrder.DURATION,
-            onSortOrderChange ={} ,
+            sortOrdering = sortOrder,
+            onSortOrderChange = {
+                sortOrderChange.invoke(it)
+            },
             navController = navController
         )
     }
@@ -121,8 +125,17 @@ fun AlbumScreen(
 @Composable
 fun AlbumItem(
     album: Album,
-    modifier : Modifier = Modifier
+    modifier: Modifier = Modifier,
+    deleteAlbum: (Album) -> Unit
 ) {
+
+    var showMenu by remember {
+        mutableStateOf(false)
+    }
+    var openDialog by remember {
+        mutableStateOf(false)
+    }
+
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -135,15 +148,15 @@ fun AlbumItem(
             horizontalArrangement = Arrangement.Center
         ) {
             GlideImage(
+                modifier = Modifier
+                    .padding(5.dp)
+                    .fillMaxWidth()
+                    .clip(CircleShape),
                 imageModel = { R.mipmap.ic_launcher },
                 imageOptions = ImageOptions(
                     contentScale = ContentScale.Crop,
                     alignment = Alignment.Center
                 ),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clip(CircleShape)
-                    .background(Color.DarkGray),
             )
         }
         Spacer(modifier = Modifier.height(8.dp))
@@ -162,60 +175,60 @@ fun AlbumItem(
                     fontWeight = FontWeight.Bold
                 )
                 IconButton(onClick = {
-                    //showMenu = true
+                    showMenu = true
                 }) {
-//                    MaterialTheme(shapes = MaterialTheme.shapes.copy(medium = RoundedCornerShape(16.dp))) {
-//                        DropdownMenu(
-//                            expanded = showMenu,
-//                            onDismissRequest = {
-//                                showMenu = false
-//                            },
-//                        ) {
-//                            DropdownMenuItem(onClick = {
-//                                openDialog = true
-//                                showMenu = false
-//                            }) {
-//                                Text(text = "Delete playlist")
-//                            }
-//                        }
-//                    }
+                    MaterialTheme(shapes = MaterialTheme.shapes.copy(medium = RoundedCornerShape(16.dp))) {
+                        DropdownMenu(
+                            expanded = showMenu,
+                            onDismissRequest = {
+                                showMenu = false
+                            },
+                        ) {
+                            DropdownMenuItem(onClick = {
+                                openDialog = true
+                                showMenu = false
+                            }) {
+                                Text(text = "Delete album")
+                            }
+                        }
+                    }
                     Icon(imageVector = Icons.Filled.MoreHoriz, contentDescription = "More options")
-//                    if (openDialog) {
-//
-//                        AlertDialog(
-//                            shape = RoundedCornerShape(10.dp),
-//                            onDismissRequest = {
-//                                openDialog = false
-//                            },
-//                            title = {
-//                                Text(
-//                                    text = "Delete playlist",
-//                                    modifier = Modifier.padding(top = 12.dp)
-//                                )
-//                            },
-//                            text = {
-//                                Text(text = "Do you want to delete ${playlist.playlistName} playlist?")
-//                            },
-//                            confirmButton = {
-//                                Button(
-//                                    onClick = {
-//                                        deletePlaylist(playlist)
-//                                        openDialog = false
-//                                    }) {
-//                                    Text("Delete")
-//                                }
-//                            },
-//                            dismissButton = {
-//                                Button(
-//                                    onClick = {
-//                                        openDialog = false
-//                                    }
-//                                ) {
-//                                    Text("Cancel")
-//                                }
-//                            }
-//                        )
-//                    }
+                    if (openDialog) {
+
+                        AlertDialog(
+                            shape = RoundedCornerShape(10.dp),
+                            onDismissRequest = {
+                                openDialog = false
+                            },
+                            title = {
+                                Text(
+                                    text = "Delete album",
+                                    modifier = Modifier.padding(top = 12.dp)
+                                )
+                            },
+                            text = {
+                                Text(text = "Do you want to delete ${album.albumName} album?")
+                            },
+                            confirmButton = {
+                                Button(
+                                    onClick = {
+                                        deleteAlbum(album)
+                                        openDialog = false
+                                    }) {
+                                    Text("Delete")
+                                }
+                            },
+                            dismissButton = {
+                                Button(
+                                    onClick = {
+                                        openDialog = false
+                                    }
+                                ) {
+                                    Text("Cancel")
+                                }
+                            }
+                        )
+                    }
                 }
             }
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
@@ -230,8 +243,8 @@ fun AlbumItem(
 @Composable
 fun AlbumTopBar(
     lazyListState: LazyStaggeredGridState,
-    sortOrdering: PlaylistSortOrder,
-    onSortOrderChange: (PlaylistSortOrder) -> Unit,
+    sortOrdering: AlbumSortOrder,
+    onSortOrderChange: (AlbumSortOrder) -> Unit,
     navController: NavController
 ) {
 
@@ -320,57 +333,43 @@ fun AlbumTopBar(
                             )
                         }
                         DropdownMenuItem(onClick = {
-                            sortOrder.value = PlaylistSortOrder.ASCENDING
+                            sortOrder.value = AlbumSortOrder.ALBUM_NAME
                             onSortOrderChange.invoke(sortOrder.value)
                             showNestedMenu = false
                         }) {
                             SortOrderItem(
-                                sortOrder = "Ascending",
-                                isSelected = sortOrder.value == PlaylistSortOrder.ASCENDING
+                                sortOrder = "Album Name",
+                                isSelected = sortOrder.value == AlbumSortOrder.ALBUM_NAME
                             ) {
-                                sortOrder.value = PlaylistSortOrder.ASCENDING
+                                sortOrder.value = AlbumSortOrder.ALBUM_NAME
                                 onSortOrderChange.invoke(sortOrder.value)
                                 showNestedMenu = false
                             }
                         }
                         DropdownMenuItem(onClick = {
-                            sortOrder.value = PlaylistSortOrder.DESCENDING
+                            sortOrder.value = AlbumSortOrder.ARTIST
                             onSortOrderChange.invoke(sortOrder.value)
                             showNestedMenu = false
                         }) {
                             SortOrderItem(
-                                sortOrder = "Descending",
-                                isSelected = sortOrder.value == PlaylistSortOrder.DESCENDING
+                                sortOrder = "Artist",
+                                isSelected = sortOrder.value == AlbumSortOrder.ARTIST
                             ) {
-                                sortOrder.value = PlaylistSortOrder.DESCENDING
+                                sortOrder.value = AlbumSortOrder.ARTIST
                                 onSortOrderChange.invoke(sortOrder.value)
                                 showNestedMenu = false
                             }
                         }
                         DropdownMenuItem(onClick = {
-                            sortOrder.value = PlaylistSortOrder.SONG_COUNT
+                            sortOrder.value = AlbumSortOrder.SONG_COUNT
                             onSortOrderChange.invoke(sortOrder.value)
                             showNestedMenu = false
                         }) {
                             SortOrderItem(
                                 sortOrder = "Song count",
-                                isSelected = sortOrder.value == PlaylistSortOrder.SONG_COUNT
+                                isSelected = sortOrder.value == AlbumSortOrder.SONG_COUNT
                             ) {
-                                sortOrder.value = PlaylistSortOrder.SONG_COUNT
-                                onSortOrderChange.invoke(sortOrder.value)
-                                showNestedMenu = false
-                            }
-                        }
-                        DropdownMenuItem(onClick = {
-                            sortOrder.value = PlaylistSortOrder.DURATION
-                            onSortOrderChange.invoke(sortOrder.value)
-                            showNestedMenu = false
-                        }) {
-                            SortOrderItem(
-                                sortOrder = "Duration",
-                                isSelected = sortOrder.value == PlaylistSortOrder.DURATION
-                            ) {
-                                sortOrder.value = PlaylistSortOrder.DURATION
+                                sortOrder.value = AlbumSortOrder.SONG_COUNT
                                 onSortOrderChange.invoke(sortOrder.value)
                                 showNestedMenu = false
                             }
