@@ -54,7 +54,8 @@ object AppModule {
             deleteAlbum = DeleteAlbum(repository),
             getAllAlbumsAsc = GetAllAlbumsAsc(repository),
             getAllAlbumsArtist = GetAllAlbumsArtist(repository),
-            getAllAlbumsSongCount = GetAllAlbumsSongCount(repository)
+            getAllAlbumsSongCount = GetAllAlbumsSongCount(repository),
+            getAlbumWithSongs = GetAlbumWithSongs(repository)
         )
     }
 }

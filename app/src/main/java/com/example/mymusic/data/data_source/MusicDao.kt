@@ -5,8 +5,10 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Transaction
 import androidx.room.Update
 import androidx.room.Upsert
+import com.example.mymusic.data.relations.AlbumWithSongs
 import com.example.mymusic.domain.model.Album
 import com.example.mymusic.domain.model.Playlist
 import com.example.mymusic.domain.model.Song
@@ -69,5 +71,8 @@ interface MusicDao {
     @Query("SELECT * FROM album ORDER BY songCount ASC")
     fun getAllAlbumsSongCount(): Flow<List<Album>>
 
+    @Transaction
+    @Query("SELECT * FROM album WHERE albumName = :albumName")
+     fun getAlbumWithSongs(albumName : String) : Flow<List<AlbumWithSongs>>
 
 }

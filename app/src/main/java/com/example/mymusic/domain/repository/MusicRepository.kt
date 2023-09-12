@@ -1,5 +1,6 @@
 package com.example.mymusic.domain.repository
 
+import com.example.mymusic.data.relations.AlbumWithSongs
 import com.example.mymusic.domain.model.Album
 import com.example.mymusic.domain.model.Playlist
 import com.example.mymusic.domain.model.Song
@@ -43,4 +44,7 @@ interface MusicRepository {
     fun getAllAlbumsArtist(): Flow<List<Album>>
 
     fun getAllAlbumsSongCount(): Flow<List<Album>>
+
+     fun getAlbumWithSongs(albumName : String) : Flow<List<AlbumWithSongs>>
+
 }

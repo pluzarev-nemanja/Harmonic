@@ -1,6 +1,7 @@
 package com.example.mymusic.data.repository
 
 import com.example.mymusic.data.data_source.MusicDao
+import com.example.mymusic.data.relations.AlbumWithSongs
 import com.example.mymusic.domain.model.Album
 import com.example.mymusic.domain.model.Playlist
 import com.example.mymusic.domain.model.Song
@@ -88,5 +89,9 @@ class MusicRepositoryImpl @Inject constructor(
 
     override fun getAllAlbumsSongCount(): Flow<List<Album>> {
         return dao.getAllAlbumsSongCount()
+    }
+
+    override  fun getAlbumWithSongs(albumName: String): Flow<List<AlbumWithSongs>> {
+        return dao.getAlbumWithSongs(albumName)
     }
 }

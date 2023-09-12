@@ -7,6 +7,7 @@ import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
 import java.io.Serializable
 
+//album == albumName
 @Entity(tableName = "song")
 data class Song(
     val displayName:String,

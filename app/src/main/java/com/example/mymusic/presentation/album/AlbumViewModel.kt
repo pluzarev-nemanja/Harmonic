@@ -38,6 +38,11 @@ class AlbumViewModel  @Inject constructor(
 
     fun addAlbum(album: Album){
         albumNavigated.value = album
+        viewModelScope.launch {
+            musicUseCases.getAlbumWithSongs(album.albumName).collect{ albumsWithSongs->
+                albumNavigated.value!!.songs = albumsWithSongs[0].songs
+            }
+        }
     }
 
 

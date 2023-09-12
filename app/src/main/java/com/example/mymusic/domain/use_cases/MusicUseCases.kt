@@ -19,5 +19,6 @@ data class MusicUseCases(
     val deleteAlbum: DeleteAlbum,
     val getAllAlbumsAsc: GetAllAlbumsAsc,
     val getAllAlbumsArtist: GetAllAlbumsArtist,
-    val getAllAlbumsSongCount: GetAllAlbumsSongCount
+    val getAllAlbumsSongCount: GetAllAlbumsSongCount,
+    val getAlbumWithSongs: GetAlbumWithSongs
 )

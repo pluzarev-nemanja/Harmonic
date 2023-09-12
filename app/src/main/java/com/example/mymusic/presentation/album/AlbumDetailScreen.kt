@@ -22,6 +22,9 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Shuffle
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -87,6 +90,12 @@ fun AlbumInfo(
     onStart: () -> Unit,
 ) {
 
+    val songsText by remember{
+        if(album.songCount > 1)
+        mutableStateOf("songs")
+        else mutableStateOf("song")
+    }
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -112,7 +121,7 @@ fun AlbumInfo(
         Row (Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.Center){
             Text(text = album.artist)
-            Text(text = " · ${album.songCount}")
+            Text(text = " · ${album.songCount} $songsText")
         }
         Row(
             modifier = Modifier.fillMaxWidth(),
