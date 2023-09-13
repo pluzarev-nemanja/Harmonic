@@ -37,7 +37,14 @@ fun BottomNavGraph(
         startDestination = BottomBarScreen.Home.route
     ) {
         composable(BottomBarScreen.Home.route) {
-            HomeScreen()
+            HomeScreen(
+                navController = navController,
+                deleteAlbum = {
+                    albumsViewModel.deleteAlbum(it)
+                },
+                albumsViewModel,
+                currentPlayingAudio
+            )
         }
         composable(BottomBarScreen.Songs.route) {
             SongsScreen(

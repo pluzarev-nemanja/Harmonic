@@ -171,7 +171,7 @@ fun BottomBar(navController: NavHostController, bottomBarState: MutableState<Boo
         content = {
             BottomNavigation(modifier = Modifier.graphicsLayer {
                 shape = RoundedCornerShape(
-                    topStart = 20.dp, topEnd = 20.dp
+                    topStart = 17.dp, topEnd = 17.dp
                 )
                 clip = true
             }) {

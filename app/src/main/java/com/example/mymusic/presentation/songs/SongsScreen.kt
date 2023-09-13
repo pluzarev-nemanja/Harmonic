@@ -5,6 +5,7 @@ import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -42,7 +43,6 @@ import com.example.mymusic.domain.util.SortOrder
 import com.example.mymusic.presentation.navigation.Screen
 import com.example.mymusic.presentation.util.Marquee
 import com.example.mymusic.presentation.util.defaultMarqueeParams
-import com.example.mymusic.presentation.util.scrollbar
 import com.skydoves.landscapist.ImageOptions
 import com.skydoves.landscapist.glide.GlideImage
 import kotlin.math.floor
@@ -88,13 +88,6 @@ fun SongsScreen(
                 LazyColumn(
                     contentPadding = PaddingValues(bottom = animatedHeight),
                     modifier = Modifier
-                        .scrollbar(
-                            scrollState,
-                            thickness = 10.dp,
-                            knobColor = Color.Cyan,
-                            trackColor = Color.LightGray,
-                            padding = scrollKnobPadding,
-                        )
                         .padding(top = paddingLazyList),
                     state = scrollState
                 ) {
@@ -431,7 +424,7 @@ fun AudioItem(
                     }
 
                     AlertDialog(
-                        modifier = Modifier.height(350.dp),
+                        modifier = Modifier.fillMaxHeight(0.4f),
                         shape = RoundedCornerShape(10.dp),
                         onDismissRequest = {
                             openDialog = false
@@ -666,5 +659,5 @@ val LazyListState.isScrolled: Boolean
 val LazyStaggeredGridState.isScrolled: Boolean
     get() = firstVisibleItemIndex > 0 || firstVisibleItemScrollOffset > 0
 
-fun LazyListState.isScrolledToTheEnd() =
-    layoutInfo.visibleItemsInfo.lastOrNull()?.index == layoutInfo.totalItemsCount - 1
+//fun LazyListState.isScrolledToTheEnd() =
+//    layoutInfo.visibleItemsInfo.lastOrNull()?.index == layoutInfo.totalItemsCount - 1
