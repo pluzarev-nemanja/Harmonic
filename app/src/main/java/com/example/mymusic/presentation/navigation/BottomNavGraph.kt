@@ -9,6 +9,8 @@ import com.example.mymusic.domain.model.Song
 import com.example.mymusic.presentation.album.AlbumDetailScreen
 import com.example.mymusic.presentation.album.AlbumScreen
 import com.example.mymusic.presentation.album.AlbumViewModel
+import com.example.mymusic.presentation.history.HistoryScreen
+import com.example.mymusic.presentation.history.HistoryViewModel
 import com.example.mymusic.presentation.home.HomeScreen
 import com.example.mymusic.presentation.playlist.PlaylistDetailsScreen
 import com.example.mymusic.presentation.playlist.PlaylistScreen
@@ -29,7 +31,8 @@ fun BottomNavGraph(
     songs: List<Song>,
     currentPlayingAudio: Song?,
     onItemClick: (Song) -> Unit,
-    playlistViewModel: PlaylistViewModel = hiltViewModel()
+    playlistViewModel: PlaylistViewModel = hiltViewModel(),
+    historyViewModel: HistoryViewModel = hiltViewModel()
 ) {
 
     NavHost(
@@ -43,7 +46,10 @@ fun BottomNavGraph(
                     albumsViewModel.deleteAlbum(it)
                 },
                 albumsViewModel,
-                currentPlayingAudio
+                currentPlayingAudio,
+                shuffle = {
+                    songsViewModel.shuffleSongs()
+                },
             )
         }
         composable(BottomBarScreen.Songs.route) {
@@ -54,6 +60,7 @@ fun BottomNavGraph(
                     .currentPlayingAudio.value,
                 onItemClick = {
                     songsViewModel.playAudio(it)
+                    historyViewModel.updateHistory(it)
                 },
                 sortOrderChange = {
                     songsViewModel.changeSortOrderSongs(it)
@@ -99,7 +106,10 @@ fun BottomNavGraph(
                 songs,
                 searchViewModel,
                 currentPlayingAudio,
-                onItemClick,
+                onItemClick={
+                    songsViewModel.playAudio(it)
+                    historyViewModel.updateHistory(it)
+                },
                 playlists = playlistViewModel.playlists,
                 insertSongIntoPlaylist = { song, playlistName ->
                     playlistViewModel.insertSongIntoPlaylist(song, playlistName)
@@ -118,6 +128,7 @@ fun BottomNavGraph(
                 },
                 onItemClick = {
                     songsViewModel.playAudio(it)
+                    historyViewModel.updateHistory(it)
                 },
                 shuffle = { playlist ->
                     songsViewModel.shufflePlaylist(playlist = playlist)
@@ -138,6 +149,7 @@ fun BottomNavGraph(
                 },
                 onItemClick = {
                     songsViewModel.playAudio(it)
+                    historyViewModel.updateHistory(it)
                 },
                 currentPlayingAudio = songsViewModel.currentPlayingAudio.value,
                 shuffle = { album ->
@@ -148,6 +160,21 @@ fun BottomNavGraph(
                 },
 
                 )
+        }
+
+        composable(Screen.HistoryScreen.route){
+            HistoryScreen(
+                history = historyViewModel.history,
+                navController = navController,
+                currentPlayingAudio = songsViewModel.currentPlayingAudio.value,
+                onItemClick = {
+                    songsViewModel.playAudio(it)
+                },
+                playlists = playlistViewModel.playlists,
+                insertSongIntoPlaylist = { song, playlistName ->
+                    playlistViewModel.insertSongIntoPlaylist(song, playlistName)
+                }
+            )
         }
 
     }

@@ -2,6 +2,7 @@ package com.example.mymusic.domain.repository
 
 import com.example.mymusic.data.relations.AlbumWithSongs
 import com.example.mymusic.domain.model.Album
+import com.example.mymusic.domain.model.History
 import com.example.mymusic.domain.model.Playlist
 import com.example.mymusic.domain.model.Song
 import kotlinx.coroutines.flow.Flow
@@ -45,6 +46,11 @@ interface MusicRepository {
 
     fun getAllAlbumsSongCount(): Flow<List<Album>>
 
-     fun getAlbumWithSongs(albumName : String) : Flow<List<AlbumWithSongs>>
+    fun getAlbumWithSongs(albumName: String): Flow<List<AlbumWithSongs>>
+
+
+    suspend fun insertHistory(history: History)
+
+    fun getHistory(): Flow<History>
 
 }

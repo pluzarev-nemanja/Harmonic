@@ -68,6 +68,7 @@ fun HomeScreen(
     deleteAlbum: (Album) -> Unit,
     albumViewModel: AlbumViewModel,
     currentPlayingAudio: Song?,
+    shuffle : () -> Unit
     ) {
 
     val lazyState = rememberLazyListState()
@@ -90,7 +91,7 @@ fun HomeScreen(
         ) {
             UserInfo()
             Spacer(modifier = Modifier.height(8.dp))
-            Buttons()
+            Buttons(navController,shuffle)
             Suggestions()
             Spacer(modifier = Modifier.height(8.dp))
             RecentAlbums(
@@ -259,7 +260,10 @@ fun HomeTopBar(
 }
 
 @Composable
-fun Buttons() {
+fun Buttons(
+    navController: NavController,
+    shuffle: () -> Unit
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -267,7 +271,9 @@ fun Buttons() {
         horizontalArrangement = Arrangement.SpaceEvenly
     ) {
         Button(
-            onClick = { /*TODO*/ },
+            onClick = {
+                      navController.navigate(Screen.HistoryScreen.route)
+            },
             shape = RoundedCornerShape(20.dp),
             modifier = Modifier.height(60.dp)
         ) {
@@ -276,7 +282,7 @@ fun Buttons() {
             Text(text = "History")
         }
         Button(
-            onClick = { /*TODO*/ },
+            onClick = { shuffle.invoke() },
             shape = RoundedCornerShape(20.dp),
             modifier = Modifier.height(60.dp)
         ) {

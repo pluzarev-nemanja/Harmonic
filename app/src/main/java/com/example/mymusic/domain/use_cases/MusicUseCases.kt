@@ -20,5 +20,7 @@ data class MusicUseCases(
     val getAllAlbumsAsc: GetAllAlbumsAsc,
     val getAllAlbumsArtist: GetAllAlbumsArtist,
     val getAllAlbumsSongCount: GetAllAlbumsSongCount,
-    val getAlbumWithSongs: GetAlbumWithSongs
+    val getAlbumWithSongs: GetAlbumWithSongs,
+    val insertHistory: InsertHistory,
+    val getHistory: GetHistory,
 )

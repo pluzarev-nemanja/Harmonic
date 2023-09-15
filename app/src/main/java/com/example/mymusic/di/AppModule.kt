@@ -55,7 +55,9 @@ object AppModule {
             getAllAlbumsAsc = GetAllAlbumsAsc(repository),
             getAllAlbumsArtist = GetAllAlbumsArtist(repository),
             getAllAlbumsSongCount = GetAllAlbumsSongCount(repository),
-            getAlbumWithSongs = GetAlbumWithSongs(repository)
+            getAlbumWithSongs = GetAlbumWithSongs(repository),
+            insertHistory = InsertHistory(repository),
+            getHistory = GetHistory(repository),
         )
     }
 }
