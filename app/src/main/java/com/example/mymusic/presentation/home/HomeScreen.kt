@@ -291,7 +291,7 @@ fun Buttons(
             Text(text = "Shuffle")
         }
         Button(
-            onClick = { /*TODO*/ },
+            onClick = { navController.navigate(Screen.FavoriteScreen.route)},
             shape = RoundedCornerShape(20.dp),
             modifier = Modifier.height(60.dp)
         ) {

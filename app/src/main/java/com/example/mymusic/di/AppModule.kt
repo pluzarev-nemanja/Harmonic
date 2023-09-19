@@ -58,6 +58,8 @@ object AppModule {
             getAlbumWithSongs = GetAlbumWithSongs(repository),
             insertHistory = InsertHistory(repository),
             getHistory = GetHistory(repository),
+            insertFavorite = InsertFavorite(repository),
+            getFavorite = GetFavorite(repository)
         )
     }
 }

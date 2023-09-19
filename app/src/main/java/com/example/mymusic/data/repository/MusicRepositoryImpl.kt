@@ -3,6 +3,7 @@ package com.example.mymusic.data.repository
 import com.example.mymusic.data.data_source.MusicDao
 import com.example.mymusic.data.relations.AlbumWithSongs
 import com.example.mymusic.domain.model.Album
+import com.example.mymusic.domain.model.Favorite
 import com.example.mymusic.domain.model.History
 import com.example.mymusic.domain.model.Playlist
 import com.example.mymusic.domain.model.Song
@@ -100,8 +101,17 @@ class MusicRepositoryImpl @Inject constructor(
         dao.insertHistory(history)
     }
 
-    override fun getHistory(): Flow<History> {
-        return dao.getHistory()
+    override fun getHistory(id: Int): Flow<List<History>> {
+        return dao.getHistory(id)
     }
+
+    override fun getFavorite(id: Int): Flow<List<Favorite>> {
+        return dao.getFavorite(id)
+    }
+
+    override suspend fun insertFavorite(favorite: Favorite) {
+        dao.insertFavorite(favorite)
+    }
+
 
 }

@@ -4,12 +4,13 @@ import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.example.mymusic.domain.model.Album
+import com.example.mymusic.domain.model.Favorite
 import com.example.mymusic.domain.model.History
 import com.example.mymusic.domain.model.Playlist
 import com.example.mymusic.domain.model.Song
 
 @Database(
-    entities = [Song::class,Playlist::class,Album::class,History::class],
+    entities = [Song::class,Playlist::class,Album::class,History::class,Favorite::class],
     version = 1
 )
 @TypeConverters(UriConverters::class,DataConverters::class)

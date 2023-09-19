@@ -9,6 +9,8 @@ import com.example.mymusic.domain.model.Song
 import com.example.mymusic.presentation.album.AlbumDetailScreen
 import com.example.mymusic.presentation.album.AlbumScreen
 import com.example.mymusic.presentation.album.AlbumViewModel
+import com.example.mymusic.presentation.favorite.FavoriteScreen
+import com.example.mymusic.presentation.favorite.FavoriteViewModel
 import com.example.mymusic.presentation.history.HistoryScreen
 import com.example.mymusic.presentation.history.HistoryViewModel
 import com.example.mymusic.presentation.home.HomeScreen
@@ -32,7 +34,8 @@ fun BottomNavGraph(
     currentPlayingAudio: Song?,
     onItemClick: (Song) -> Unit,
     playlistViewModel: PlaylistViewModel = hiltViewModel(),
-    historyViewModel: HistoryViewModel = hiltViewModel()
+    historyViewModel: HistoryViewModel = hiltViewModel(),
+    favoriteViewModel: FavoriteViewModel = hiltViewModel()
 ) {
 
     NavHost(
@@ -169,6 +172,22 @@ fun BottomNavGraph(
                 currentPlayingAudio = songsViewModel.currentPlayingAudio.value,
                 onItemClick = {
                     songsViewModel.playAudio(it)
+                },
+                playlists = playlistViewModel.playlists,
+                insertSongIntoPlaylist = { song, playlistName ->
+                    playlistViewModel.insertSongIntoPlaylist(song, playlistName)
+                }
+            )
+        }
+
+        composable(Screen.FavoriteScreen.route){
+            FavoriteScreen(
+                navController = navController,
+                favorite = favoriteViewModel.favorite,
+                currentPlayingAudio = songsViewModel.currentPlayingAudio.value,
+                onItemClick = {
+                    songsViewModel.playAudio(it)
+                    historyViewModel.updateHistory(it)
                 },
                 playlists = playlistViewModel.playlists,
                 insertSongIntoPlaylist = { song, playlistName ->

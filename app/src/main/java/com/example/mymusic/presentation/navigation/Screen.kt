@@ -6,4 +6,6 @@ sealed class Screen(val route:String){
 
     object AlbumDetailScreen : Screen("album_detail_screen")
     object HistoryScreen : Screen("history_screen")
+
+    object FavoriteScreen : Screen("favorite_screen")
 }
