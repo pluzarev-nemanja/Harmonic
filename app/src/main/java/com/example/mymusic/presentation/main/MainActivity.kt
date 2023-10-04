@@ -19,6 +19,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.mymusic.presentation.favorite.FavoriteViewModel
 import com.example.mymusic.presentation.permission.PermissionDialog
 import com.example.mymusic.presentation.permission.ReadStoragePermissionTextProvider
 import com.example.mymusic.presentation.search.SearchViewModel
@@ -114,6 +115,7 @@ class MainActivity : ComponentActivity() {
                             modelClass = SongsViewModel::class.java
                         )
                         val searchViewModel = viewModel<SearchViewModel>()
+                        val favoriteViewModel = viewModel<FavoriteViewModel>()
 
                         val songList = songsViewModel.songList
 
@@ -154,6 +156,9 @@ class MainActivity : ComponentActivity() {
                             },
                             updateTimer = {
                                 songsViewModel.updateTimer()
+                            },
+                            addFavorite = {
+                                favoriteViewModel.upsertFavorite(it)
                             }
                         )
                     }

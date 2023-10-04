@@ -5,7 +5,6 @@ import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -57,7 +56,7 @@ fun SongsScreen(
     sortOrderChange: (SortOrder) -> Unit,
     navController: NavController,
     playlists: List<Playlist>,
-    insertSongIntoPlaylist : (Song,String) -> Unit
+    insertSongIntoPlaylist: (Song, String) -> Unit
 ) {
 
     val sortOrder by remember {
@@ -460,7 +459,7 @@ fun AudioItem(
                             Button(
                                 onClick = {
                                     //here comes function for updating data in playlist,pass selectedIndex as name
-                                    insertSongIntoPlaylist.invoke(audio,selectedIndex)
+                                    insertSongIntoPlaylist.invoke(audio, selectedIndex)
                                     openDialog = false
                                 }) {
                                 Text("Add")
@@ -520,6 +519,9 @@ fun MediaPlayerController(
     modifier: Modifier = Modifier,
     isAudioPlaying: Boolean,
     onStart: () -> Unit,
+    addFavorite: (Song) -> Unit,
+    song: Song,
+    isSelected: Boolean
 ) {
 
     Row(
@@ -531,11 +533,13 @@ fun MediaPlayerController(
             .padding(bottom = 10.dp)
     ) {
 
-        IconButton(onClick = {}) {
+        IconButton(onClick = { addFavorite.invoke(song) }
+        ) {
             Icon(
                 imageVector = Icons.Default.Favorite,
                 contentDescription = "favorite",
-                tint = Color.White,
+                tint = if (isSelected) Color.Red
+                else Color.Gray,
                 modifier = Modifier
                     .padding(end = 2.dp)
             )

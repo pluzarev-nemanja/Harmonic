@@ -183,7 +183,7 @@ fun BottomNavGraph(
         composable(Screen.FavoriteScreen.route){
             FavoriteScreen(
                 navController = navController,
-                favorite = favoriteViewModel.favorite,
+                favorite = favoriteViewModel.songList,
                 currentPlayingAudio = songsViewModel.currentPlayingAudio.value,
                 onItemClick = {
                     songsViewModel.playAudio(it)

@@ -104,7 +104,8 @@ class InsertSong @Inject constructor(
                             title = title,
                             album= album,
                             artUri = artUri,
-                           dateAdded =  dateAdded
+                            dateAdded =  dateAdded,
+                            isFavorite = false
                         )
                     }
                 }

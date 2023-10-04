@@ -22,6 +22,9 @@ interface MusicDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertSongs(songList: MutableList<Song>)
 
+    @Update
+    suspend fun updateSong(song: Song)
+
     @Query("SELECT * FROM song ORDER BY displayName ASC")
     fun getAllSongsAsc(): Flow<List<Song>>
 

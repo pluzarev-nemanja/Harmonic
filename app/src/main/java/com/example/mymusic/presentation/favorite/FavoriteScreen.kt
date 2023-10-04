@@ -15,7 +15,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.example.mymusic.domain.model.Favorite
 import com.example.mymusic.domain.model.Playlist
 import com.example.mymusic.domain.model.Song
 import com.example.mymusic.presentation.history.SimpleTopBar
@@ -25,7 +24,7 @@ import com.example.mymusic.presentation.songs.AudioItem
 @Composable
 fun FavoriteScreen(
     navController: NavController,
-    favorite: Favorite,
+    favorite: List<Song>,
     currentPlayingAudio: Song?,
     onItemClick: (Song) -> Unit,
     playlists: List<Playlist>,
@@ -49,7 +48,7 @@ fun FavoriteScreen(
                 state = scrollState
             ) {
                 items(
-                    items = favorite.songs,
+                    items = favorite,
 //                        key = {
 //                            it.id
 //                        }

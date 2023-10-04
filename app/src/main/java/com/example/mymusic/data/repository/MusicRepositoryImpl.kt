@@ -109,6 +109,10 @@ class MusicRepositoryImpl @Inject constructor(
         return dao.getFavorite(id)
     }
 
+    override suspend fun updateSong(song: Song) {
+        dao.updateSong(song)
+    }
+
     override suspend fun insertFavorite(favorite: Favorite) {
         dao.insertFavorite(favorite)
     }

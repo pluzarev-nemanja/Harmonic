@@ -40,7 +40,9 @@ fun PlayerScreen(
     skipPrevious: () -> Unit,
     shuffle: () -> Unit,
     repeat: (Int) -> Unit,
-    updateTimer: () -> String
+    updateTimer: () -> String,
+    addFavorite : (Song) -> Unit,
+    isSelected : Boolean
 ) {
 
     Surface(modifier = Modifier.background(MaterialTheme.colors.background)) {
@@ -83,7 +85,11 @@ fun PlayerScreen(
 
                 )
             Spacer(modifier = Modifier.height(18.dp))
-            MoreOptions()
+            MoreOptions(
+                addFavorite = addFavorite,
+                song = audio,
+                isSelected
+            )
         }
     }
 }
@@ -280,7 +286,12 @@ fun PlayerControls(
 }
 
 @Composable
-fun MoreOptions() {
+fun MoreOptions(
+    addFavorite: (Song) -> Unit,
+    song: Song,
+    isSelected: Boolean
+) {
+
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -288,15 +299,14 @@ fun MoreOptions() {
         horizontalArrangement = Arrangement.SpaceEvenly,
         verticalAlignment = CenterVertically
     ) {
-        IconButton(onClick = {}) {
+        IconButton(onClick = {
+            addFavorite.invoke(song)
+        }) {
             Icon(
                 imageVector = Icons.Default.Favorite,
                 contentDescription = "favorite",
-                tint = MaterialTheme.colors
-                    .onSurface
-                    .copy(alpha = .5f),
-
-                )
+                tint = if(isSelected) Color.Red else Color.Gray
+            )
         }
 
         IconButton(onClick = {}) {

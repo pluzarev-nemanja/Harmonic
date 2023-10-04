@@ -236,8 +236,10 @@ class SongsViewModel @Inject constructor(
     }
 
     fun shuffleSongs(){
-        val number = Random.nextInt(from = 0, until = songList.size)
-        playPlaylist(currentAudio = songList[number],songList)
+        if(songList.size != 0){
+            val number = Random.nextInt(from = 0, until = songList.size)
+            playPlaylist(currentAudio = songList[number],songList)
+        }
     }
     fun shufflePlaylist(playlist: Playlist){
         val number = Random.nextInt(from = 0, until = playlist.songCount)

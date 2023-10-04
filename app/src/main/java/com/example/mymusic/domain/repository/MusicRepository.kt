@@ -57,4 +57,6 @@ interface MusicRepository {
     fun getHistory(id: Int): Flow<List<History>>
 
     fun getFavorite(id: Int): Flow<List<Favorite>>
+
+    suspend fun updateSong(song: Song)
 }

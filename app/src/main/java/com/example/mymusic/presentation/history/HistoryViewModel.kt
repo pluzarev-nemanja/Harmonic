@@ -22,8 +22,9 @@ class HistoryViewModel @Inject constructor(
     init {
         viewModelScope.launch {
            musicUseCases.getHistory(1).collect{
-               if(it.isNotEmpty())
-               history = it[0]
+               if(it.isNotEmpty()) {
+                   history = it[0]
+               }
            }
         }
     }

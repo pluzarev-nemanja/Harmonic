@@ -52,7 +52,8 @@ fun MainScreen(
     skipPrevious: () -> Unit,
     shuffle: () -> Unit,
     repeat: (Int) -> Unit,
-    updateTimer: () -> String
+    updateTimer: () -> String,
+    addFavorite : (Song) -> Unit
 ) {
 
     val navController = rememberNavController()
@@ -90,6 +91,11 @@ fun MainScreen(
     val radius = 30.dp
 
 
+    var isSelected by remember{
+        mutableStateOf(currentPlayingAudio?.isFavorite)
+    }
+
+
     Scaffold(bottomBar = {
         BottomBar(navController = navController, bottomBarState = bottomBarState)
     }) { innerPadding ->
@@ -98,6 +104,7 @@ fun MainScreen(
                 SheetContent {
                     SheetExpanded {
                         currentPlayingAudio?.let { currentPlayingAudio ->
+                            isSelected = currentPlayingAudio.isFavorite
                             PlayerScreen(
                                 image = currentPlayingAudio.artUri,
                                 songName = currentPlayingAudio.displayName,
@@ -112,7 +119,12 @@ fun MainScreen(
                                 skipPrevious = { skipPrevious.invoke() },
                                 shuffle = { shuffle.invoke() },
                                 repeat = repeat,
-                                updateTimer = { updateTimer.invoke() }
+                                updateTimer = { updateTimer.invoke() },
+                                addFavorite = {
+                                              addFavorite.invoke(currentPlayingAudio)
+                                    isSelected = !isSelected!!
+                                },
+                                isSelected = isSelected!!
                             )
                         }
                     }
@@ -123,10 +135,16 @@ fun MainScreen(
                         onSheetClick = sheetToggle
                     ) {
                         currentPlayingAudio?.let { currentPlayingAudio ->
+                            isSelected = currentPlayingAudio.isFavorite
                             BottomBarPlayer(
                                 song = currentPlayingAudio,
                                 isAudioPlaying = isAudioPlaying,
                                 onStart = { onStart.invoke(currentPlayingAudio) },
+                                addFavorite = {
+                                    addFavorite.invoke(currentPlayingAudio)
+                                    isSelected = !isSelected!!
+                                },
+                                isSelected = isSelected
                             )
                         }
                     }
@@ -218,11 +236,13 @@ fun BottomBarPlayer(
     song: Song,
     isAudioPlaying: Boolean,
     onStart: () -> Unit,
+    addFavorite: (Song) -> Unit,
+    isSelected : Boolean?
 ) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .background(Color.Gray),
+            .background(Color.DarkGray),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -232,6 +252,9 @@ fun BottomBarPlayer(
         MediaPlayerController(
             isAudioPlaying = isAudioPlaying,
             onStart = { onStart.invoke() },
+            addFavorite = addFavorite,
+            song = song,
+            isSelected = isSelected!!
         )
         Spacer(modifier = Modifier.width(20.dp))
     }
