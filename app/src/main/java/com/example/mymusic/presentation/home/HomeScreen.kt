@@ -4,11 +4,12 @@ import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -48,6 +49,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -68,8 +70,11 @@ fun HomeScreen(
     deleteAlbum: (Album) -> Unit,
     albumViewModel: AlbumViewModel,
     currentPlayingAudio: Song?,
-    shuffle : () -> Unit
-    ) {
+    shuffle: () -> Unit,
+    refreshSuggestions: () -> Unit,
+    suggestions: List<Song>,
+    onItemClick: (Song) -> Unit
+) {
 
     val lazyState = rememberLazyListState()
 
@@ -91,8 +96,12 @@ fun HomeScreen(
         ) {
             UserInfo()
             Spacer(modifier = Modifier.height(8.dp))
-            Buttons(navController,shuffle)
-            Suggestions()
+            Buttons(navController, shuffle)
+            Suggestions(
+                refreshSuggestions = refreshSuggestions,
+                suggestions = suggestions,
+                onItemClick
+            )
             Spacer(modifier = Modifier.height(8.dp))
             RecentAlbums(
                 albums = albumViewModel.albums,
@@ -154,7 +163,11 @@ fun UserInfo() {
 }
 
 @Composable
-fun Suggestions() {
+fun Suggestions(
+    refreshSuggestions: () -> Unit,
+    suggestions: List<Song>,
+    onItemClick: (Song) -> Unit
+) {
     Column(
         modifier = Modifier.padding(5.dp)
     ) {
@@ -163,20 +176,61 @@ fun Suggestions() {
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Text(text = "Suggestions")
-            Icon(imageVector = Icons.Filled.Refresh, contentDescription = "refresh")
+            IconButton(onClick = {
+                refreshSuggestions.invoke()
+            }) {
+                Icon(imageVector = Icons.Filled.Refresh, contentDescription = "refresh")
+            }
         }
         LazyRow(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(5.dp),
         ) {
-            items(5) {
-                Box(modifier = Modifier
-                    .size(70.dp)
-                    .background(Color.Magenta))
+            items(suggestions) { song ->
+                SuggestionSongItem(
+                    song = song,
+                    onItemClick = onItemClick
+                )
                 Spacer(modifier = Modifier.width(5.dp))
             }
         }
+    }
+}
+
+@Composable
+fun SuggestionSongItem(
+    song: Song,
+    onItemClick: (Song) -> Unit
+) {
+    Column(
+        modifier = Modifier
+            .width(100.dp)
+            .fillMaxSize()
+            .clickable {
+                onItemClick.invoke(song)
+            },
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.SpaceBetween
+    ) {
+        GlideImage(
+            modifier = Modifier
+                .padding(5.dp)
+                .fillMaxWidth()
+                .clip(CircleShape),
+            imageModel = { R.mipmap.ic_launcher },
+            imageOptions = ImageOptions(
+                contentScale = ContentScale.Crop,
+                alignment = Alignment.Center
+            ),
+        )
+        Text(
+            text = song.displayName,
+            fontWeight = FontWeight.Bold,
+            fontSize = 18.sp,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis
+        )
     }
 }
 
@@ -272,7 +326,7 @@ fun Buttons(
     ) {
         Button(
             onClick = {
-                      navController.navigate(Screen.HistoryScreen.route)
+                navController.navigate(Screen.HistoryScreen.route)
             },
             shape = RoundedCornerShape(20.dp),
             modifier = Modifier.height(60.dp)
@@ -291,7 +345,7 @@ fun Buttons(
             Text(text = "Shuffle")
         }
         Button(
-            onClick = { navController.navigate(Screen.FavoriteScreen.route)},
+            onClick = { navController.navigate(Screen.FavoriteScreen.route) },
             shape = RoundedCornerShape(20.dp),
             modifier = Modifier.height(60.dp)
         ) {

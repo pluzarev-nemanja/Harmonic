@@ -132,9 +132,6 @@ class MainActivity : ComponentActivity() {
                             isAudioPlaying = songsViewModel.isAudioPlaying,
                             searchText = searchText,
                             songs = songs,
-                            onItemClick = {
-                                songsViewModel.playAudio(it)
-                            },
                             onDataLoaded = {
                                 keepSplashOpened = false
                             },

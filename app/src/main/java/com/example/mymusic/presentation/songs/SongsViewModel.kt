@@ -35,6 +35,7 @@ class SongsViewModel @Inject constructor(
 
 
     var songList = mutableStateListOf<Song>()
+    var suggestions = mutableStateListOf<Song>()
 
     private var timer by mutableStateOf("")
     private var shuffleMode by mutableStateOf(false)
@@ -82,6 +83,7 @@ class SongsViewModel @Inject constructor(
                         artist = artist
                     )
                 }
+                suggestions()
             }
         }
         viewModelScope.launch {
@@ -97,6 +99,23 @@ class SongsViewModel @Inject constructor(
         }
     }
 
+    fun suggestions() {
+        suggestions.clear()
+        if(songList.size != 0 ){
+            if (songList.size >= 5) {
+                val number = Random.nextInt(from = 0, until = songList.size)
+                for (i in 0..5) {
+                    suggestions.add(i, songList[number])
+                }
+            }
+            else{
+                val number = Random.nextInt(from = 0, until = songList.size)
+                for (i in 0 until songList.size) {
+                    suggestions.add(i, songList[number])
+                }
+            }
+        }
+    }
     fun changeSortOrderSongs(sortOrder: SortOrder) {
         when (sortOrder) {
             SortOrder.ASCENDING -> {

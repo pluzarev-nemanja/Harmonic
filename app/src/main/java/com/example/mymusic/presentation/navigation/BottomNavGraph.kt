@@ -32,7 +32,6 @@ fun BottomNavGraph(
     searchText: String,
     songs: List<Song>,
     currentPlayingAudio: Song?,
-    onItemClick: (Song) -> Unit,
     playlistViewModel: PlaylistViewModel = hiltViewModel(),
     historyViewModel: HistoryViewModel = hiltViewModel(),
     favoriteViewModel: FavoriteViewModel = hiltViewModel()
@@ -53,6 +52,14 @@ fun BottomNavGraph(
                 shuffle = {
                     songsViewModel.shuffleSongs()
                 },
+                refreshSuggestions = {
+                    songsViewModel.suggestions()
+                },
+                suggestions = songsViewModel.suggestions,
+                onItemClick = {
+                    songsViewModel.playAudio(it)
+                    historyViewModel.updateHistory(it)
+                }
             )
         }
         composable(BottomBarScreen.Songs.route) {

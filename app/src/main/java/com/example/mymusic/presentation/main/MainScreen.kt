@@ -44,7 +44,6 @@ fun MainScreen(
     onStart: (Song) -> Unit,
     searchText: String,
     songs: List<Song>,
-    onItemClick: (Song) -> Unit,
     onDataLoaded: () -> Unit,
     progress: Float,
     onProgressChange: (Float) -> Unit,
@@ -164,7 +163,6 @@ fun MainScreen(
                     songs = songs,
                     searchText = searchText,
                     currentPlayingAudio = currentPlayingAudio,
-                    onItemClick = onItemClick
                 )
             }
         }
