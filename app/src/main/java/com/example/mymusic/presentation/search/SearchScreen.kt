@@ -32,16 +32,16 @@ import com.example.mymusic.presentation.songs.AudioItem
 fun SearchScreen(
     searchText: String,
     songs: List<Song>,
-    searchViewModel: SearchViewModel,
     currentPlayingAudio: Song?,
     onItemClick: (Song) -> Unit,
-    playlists : List<Playlist>,
-    insertSongIntoPlaylist : (Song,String) -> Unit
+    playlists: List<Playlist>,
+    insertSongIntoPlaylist: (Song, String) -> Unit,
+    onSearchTextChange: (String) -> Unit
 ) {
 
     val animatedHeight by animateDpAsState(
         targetValue = if (currentPlayingAudio == null) 0.dp
-        else 80.dp
+        else 80.dp, label = ""
     )
 
     val scrollState = rememberLazyListState()
@@ -52,22 +52,26 @@ fun SearchScreen(
             .fillMaxSize()
             .padding(16.dp)
     ) {
-        SearchAppBar(searchText,searchViewModel)
+        SearchAppBar(searchText,
+            onSearchTextChange = onSearchTextChange)
         Spacer(modifier = Modifier.height(16.dp))
         if (searchText.isEmpty()) {
-            Box(modifier = Modifier
-                .fillMaxSize()
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
             ) {
-                Text(text = "No results...",modifier = Modifier.align(Alignment.Center))
-                OpenKeyboardExample(modifier = Modifier
-                    .align(Alignment.BottomEnd)
-                    .padding(bottom = animatedHeight)
+                Text(text = "No results...", modifier = Modifier.align(Alignment.Center))
+                OpenKeyboardExample(
+                    modifier = Modifier
+                        .align(Alignment.BottomEnd)
+                        .padding(bottom = animatedHeight)
                 )
             }
 
         } else {
-            Box(modifier = Modifier
-                .fillMaxSize()
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
             ) {
                 LazyColumn(
                     contentPadding = PaddingValues(bottom = animatedHeight),
@@ -75,7 +79,7 @@ fun SearchScreen(
                 ) {
                     items(
                         items = songs,
-                        key = { song->
+                        key = { song ->
                             song.id
                         }
                     ) { song: Song ->
@@ -91,9 +95,10 @@ fun SearchScreen(
                     }
 
                 }
-                OpenKeyboardExample(modifier = Modifier
-                    .align(Alignment.BottomEnd)
-                    .padding(bottom = animatedHeight)
+                OpenKeyboardExample(
+                    modifier = Modifier
+                        .align(Alignment.BottomEnd)
+                        .padding(bottom = animatedHeight)
                 )
             }
         }
@@ -103,7 +108,7 @@ fun SearchScreen(
 @Composable
 fun SearchAppBar(
     searchText: String,
-    searchViewModel: SearchViewModel,
+    onSearchTextChange : (String) -> Unit
 ) {
     OutlinedTextField(
         modifier = Modifier.fillMaxWidth(),
@@ -111,7 +116,9 @@ fun SearchAppBar(
         maxLines = 1,
         keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
         shape = RoundedCornerShape(12.dp),
-        onValueChange = searchViewModel::onSearchTextChange,
+        onValueChange = {
+            onSearchTextChange.invoke(it)
+        },
         placeholder = { Text(text = "Search...") },
         leadingIcon = {
             Icon(
@@ -124,7 +131,7 @@ fun SearchAppBar(
         },
         trailingIcon = {
             IconButton(onClick = {
-                searchViewModel.onSearchTextChange("")
+                onSearchTextChange.invoke("")
             }) {
                 Icon(
                     imageVector = Icons.Filled.Close,
@@ -142,6 +149,7 @@ fun SearchAppBar(
         )
     )
 }
+
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun OpenKeyboardExample(modifier: Modifier) {

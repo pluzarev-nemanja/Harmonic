@@ -89,8 +89,6 @@ fun BottomNavGraph(
         }
         composable(BottomBarScreen.Playlists.route) {
             PlaylistScreen(
-                //here
-                playlistViewModel = playlistViewModel,
                 sortOrderChange = {
                     playlistViewModel.changeSortOrder(it)
                 },
@@ -99,6 +97,13 @@ fun BottomNavGraph(
                     .currentPlayingAudio.value,
                 deletePlaylist = {
                     playlistViewModel.deletePlaylist(it)
+                },
+                playlists = playlistViewModel.playlists,
+                addPlaylist = {
+                    playlistViewModel.addPlaylist(it)
+                },
+                insertPlaylist = {
+                    playlistViewModel.insertPlaylist(it)
                 }
             )
         }
@@ -120,10 +125,8 @@ fun BottomNavGraph(
         }
         composable(Screen.SearchScreen.route) {
             SearchScreen(
-                //here
                 searchText,
                 songs,
-                searchViewModel,
                 currentPlayingAudio,
                 onItemClick={
                     songsViewModel.playAudio(it)
@@ -132,6 +135,9 @@ fun BottomNavGraph(
                 playlists = playlistViewModel.playlists,
                 insertSongIntoPlaylist = { song, playlistName ->
                     playlistViewModel.insertSongIntoPlaylist(song, playlistName)
+                },
+                onSearchTextChange = {
+                    searchViewModel.onSearchTextChange(it)
                 }
             )
         }

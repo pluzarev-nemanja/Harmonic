@@ -76,11 +76,13 @@ import com.skydoves.landscapist.glide.GlideImage
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun PlaylistScreen(
-    playlistViewModel: PlaylistViewModel,
+    playlists : List<Playlist>,
     sortOrderChange: (PlaylistSortOrder) -> Unit,
     navController: NavController,
     currentPlayingAudio: Song?,
-    deletePlaylist: (Playlist) -> Unit
+    deletePlaylist: (Playlist) -> Unit,
+    addPlaylist: (Playlist) -> Unit,
+    insertPlaylist : (String) -> Unit
 ) {
 
     var openDialog by remember {
@@ -128,7 +130,7 @@ fun PlaylistScreen(
             state = scrollState,
         ) {
             items(
-                items = playlistViewModel.playlists,
+                items = playlists,
                 key = {
                     it.playlistName
                 }
@@ -139,7 +141,7 @@ fun PlaylistScreen(
                         .padding(top = 10.dp),
                     deletePlaylist = deletePlaylist,
                     navController = navController,
-                    playlistViewModel = playlistViewModel
+                    addPlaylist = addPlaylist
                 )
             }
         }
@@ -178,7 +180,7 @@ fun PlaylistScreen(
                     Button(
                         onClick = {
                             openDialog = false
-                            playlistViewModel.insertPlaylist(filledText)
+                            insertPlaylist.invoke(filledText)
                             filledText = ""
                         }) {
                         Text("Create playlist")
@@ -208,7 +210,7 @@ fun PlaylistItem(
     modifier: Modifier = Modifier,
     deletePlaylist: (Playlist) -> Unit,
     navController: NavController,
-    playlistViewModel: PlaylistViewModel,
+    addPlaylist : (Playlist) -> Unit
     ) {
 
     var showMenu by remember {
@@ -223,7 +225,7 @@ fun PlaylistItem(
         modifier = modifier
             .fillMaxSize()
             .clickable {
-                playlistViewModel.addPlaylist(playlist)
+               addPlaylist.invoke(playlist)
                 navController.navigate(Screen.PlaylistDetailsScreen.route)
             },
     ) {
