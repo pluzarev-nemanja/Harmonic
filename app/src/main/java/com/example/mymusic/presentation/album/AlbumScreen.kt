@@ -45,7 +45,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
@@ -55,10 +54,8 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.mymusic.R
 import com.example.mymusic.domain.model.Album
-import com.example.mymusic.domain.model.Playlist
 import com.example.mymusic.domain.model.Song
 import com.example.mymusic.domain.util.AlbumSortOrder
-import com.example.mymusic.domain.util.PlaylistSortOrder
 import com.example.mymusic.presentation.navigation.Screen
 import com.example.mymusic.presentation.songs.SortOrderItem
 import com.example.mymusic.presentation.songs.TOP_BAR_HEIGHT
@@ -74,7 +71,7 @@ fun AlbumScreen(
     albums: List<Album>,
     sortOrderChange: (AlbumSortOrder) -> Unit,
     deleteAlbum: (Album) -> Unit,
-    albumViewModel: AlbumViewModel
+    addAlbum: (Album) -> Unit
 ) {
     val sortOrder by remember {
         mutableStateOf(AlbumSortOrder.ALBUM_NAME)
@@ -109,7 +106,7 @@ fun AlbumScreen(
                         .padding(top = 10.dp),
                     deleteAlbum = deleteAlbum,
                     navController,
-                    albumViewModel = albumViewModel
+                    addAlbum = addAlbum
                 )
             }
         }
@@ -131,7 +128,7 @@ fun AlbumItem(
     modifier: Modifier = Modifier,
     deleteAlbum: (Album) -> Unit,
     navController: NavController,
-    albumViewModel: AlbumViewModel
+    addAlbum: (Album) -> Unit
 ) {
 
     var showMenu by remember {
@@ -145,7 +142,7 @@ fun AlbumItem(
         modifier = modifier
             .fillMaxSize()
             .clickable {
-                albumViewModel.addAlbum(album)
+                addAlbum.invoke(album)
                 navController.navigate(Screen.AlbumDetailScreen.route)
             },
     ) {

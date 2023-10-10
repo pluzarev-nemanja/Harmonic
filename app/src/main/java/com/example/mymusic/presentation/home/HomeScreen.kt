@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -57,7 +56,6 @@ import com.example.mymusic.R
 import com.example.mymusic.domain.model.Album
 import com.example.mymusic.domain.model.Song
 import com.example.mymusic.presentation.album.AlbumItem
-import com.example.mymusic.presentation.album.AlbumViewModel
 import com.example.mymusic.presentation.navigation.Screen
 import com.example.mymusic.presentation.songs.TOP_BAR_HEIGHT
 import com.example.mymusic.presentation.songs.isScrolled
@@ -68,12 +66,13 @@ import com.skydoves.landscapist.glide.GlideImage
 fun HomeScreen(
     navController: NavController,
     deleteAlbum: (Album) -> Unit,
-    albumViewModel: AlbumViewModel,
+    albums: List<Album>,
     currentPlayingAudio: Song?,
     shuffle: () -> Unit,
     refreshSuggestions: () -> Unit,
     suggestions: List<Song>,
-    onItemClick: (Song) -> Unit
+    onItemClick: (Song) -> Unit,
+    addAlbum: (Album) -> Unit
 ) {
 
     val lazyState = rememberLazyListState()
@@ -104,18 +103,18 @@ fun HomeScreen(
             )
             Spacer(modifier = Modifier.height(8.dp))
             RecentAlbums(
-                albums = albumViewModel.albums,
+                albums = albums,
                 deleteAlbum = deleteAlbum,
-                albumViewModel,
-                navController
+                navController,
+                addAlbum
             )
             Spacer(modifier = Modifier.height(8.dp))
             TopArtist(
-                albums = albumViewModel.albums,
+                albums = albums,
                 deleteAlbum = deleteAlbum,
-                albumViewModel,
                 navController,
-                modifier = Modifier.padding(bottom = animatedHeight)
+                modifier = Modifier.padding(bottom = animatedHeight),
+                addAlbum
             )
         }
 
@@ -238,8 +237,8 @@ fun SuggestionSongItem(
 fun RecentAlbums(
     albums: List<Album>,
     deleteAlbum: (Album) -> Unit,
-    albumViewModel: AlbumViewModel,
-    navController: NavController
+    navController: NavController,
+    addAlbum: (Album) -> Unit
 ) {
     Column(
         modifier = Modifier.padding(5.dp)
@@ -249,7 +248,13 @@ fun RecentAlbums(
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Text(text = "All Albums")
-            Icon(imageVector = Icons.Filled.ArrowForward, contentDescription = "open")
+            IconButton(onClick = {
+
+                navController.navigate(Screen.AllAlbumsScreen.route)
+
+            }) {
+                Icon(imageVector = Icons.Filled.ArrowForward, contentDescription = "open")
+            }
         }
         LazyRow(
             modifier = Modifier
@@ -263,7 +268,7 @@ fun RecentAlbums(
                         .padding(top = 10.dp),
                     deleteAlbum = deleteAlbum,
                     navController,
-                    albumViewModel = albumViewModel
+                    addAlbum = addAlbum
                 )
             }
         }
@@ -360,9 +365,9 @@ fun Buttons(
 fun TopArtist(
     albums: List<Album>,
     deleteAlbum: (Album) -> Unit,
-    albumViewModel: AlbumViewModel,
     navController: NavController,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    addAlbum: (Album) -> Unit
 ) {
     Column(
         modifier = modifier.padding(5.dp)
@@ -372,7 +377,11 @@ fun TopArtist(
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Text(text = "All Artists")
-            Icon(imageVector = Icons.Filled.ArrowForward, contentDescription = "open")
+            IconButton(onClick = {
+                navController.navigate(Screen.AllArtistsScreen.route)
+            }) {
+                Icon(imageVector = Icons.Filled.ArrowForward, contentDescription = "open")
+            }
         }
         LazyRow(
             modifier = Modifier
@@ -386,7 +395,7 @@ fun TopArtist(
                         .padding(top = 10.dp),
                     deleteAlbum = deleteAlbum,
                     navController,
-                    albumViewModel = albumViewModel
+                    addAlbum = addAlbum
                 )
             }
         }

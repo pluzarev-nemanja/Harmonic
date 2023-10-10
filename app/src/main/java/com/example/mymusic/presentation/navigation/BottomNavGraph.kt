@@ -9,10 +9,12 @@ import com.example.mymusic.domain.model.Song
 import com.example.mymusic.presentation.album.AlbumDetailScreen
 import com.example.mymusic.presentation.album.AlbumScreen
 import com.example.mymusic.presentation.album.AlbumViewModel
+import com.example.mymusic.presentation.artist.AllArtistsScreen
 import com.example.mymusic.presentation.favorite.FavoriteScreen
 import com.example.mymusic.presentation.favorite.FavoriteViewModel
 import com.example.mymusic.presentation.history.HistoryScreen
 import com.example.mymusic.presentation.history.HistoryViewModel
+import com.example.mymusic.presentation.home.AllAlbumsScreen
 import com.example.mymusic.presentation.home.HomeScreen
 import com.example.mymusic.presentation.playlist.PlaylistDetailsScreen
 import com.example.mymusic.presentation.playlist.PlaylistScreen
@@ -47,8 +49,7 @@ fun BottomNavGraph(
                 deleteAlbum = {
                     albumsViewModel.deleteAlbum(it)
                 },
-                albumsViewModel,
-                currentPlayingAudio,
+                currentPlayingAudio = currentPlayingAudio,
                 shuffle = {
                     songsViewModel.shuffleSongs()
                 },
@@ -59,6 +60,10 @@ fun BottomNavGraph(
                 onItemClick = {
                     songsViewModel.playAudio(it)
                     historyViewModel.updateHistory(it)
+                },
+                albums = albumsViewModel.albums,
+                addAlbum = {
+                    albumsViewModel.addAlbum(it)
                 }
             )
         }
@@ -84,6 +89,7 @@ fun BottomNavGraph(
         }
         composable(BottomBarScreen.Playlists.route) {
             PlaylistScreen(
+                //here
                 playlistViewModel = playlistViewModel,
                 sortOrderChange = {
                     playlistViewModel.changeSortOrder(it)
@@ -107,11 +113,14 @@ fun BottomNavGraph(
                 deleteAlbum = {
                     albumsViewModel.deleteAlbum(it)
                 },
-                albumsViewModel
+                addAlbum = {
+                    albumsViewModel.addAlbum(it)
+                }
             )
         }
         composable(Screen.SearchScreen.route) {
             SearchScreen(
+                //here
                 searchText,
                 songs,
                 searchViewModel,
@@ -201,6 +210,24 @@ fun BottomNavGraph(
                     playlistViewModel.insertSongIntoPlaylist(song, playlistName)
                 }
             )
+        }
+
+        composable(Screen.AllAlbumsScreen.route){
+            AllAlbumsScreen(
+                albums = albumsViewModel.albums,
+                currentPlayingAudio = songsViewModel.currentPlayingAudio.value,
+                deleteAlbum = {
+                    albumsViewModel.deleteAlbum(it)
+                },
+                addAlbum = {
+                    albumsViewModel.addAlbum(it)
+                },
+                navController = navController
+            )
+        }
+
+        composable(Screen.AllArtistsScreen.route){
+            AllArtistsScreen()
         }
 
     }
