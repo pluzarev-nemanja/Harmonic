@@ -25,5 +25,7 @@ data class MusicUseCases(
     val getHistory: GetHistory,
     val insertFavorite: InsertFavorite,
     val getFavorite: GetFavorite,
-    val updateSong: UpdateSong
+    val updateSong: UpdateSong,
+    val getArtists: GetArtists,
+    val insertArtists: InsertArtists
 )

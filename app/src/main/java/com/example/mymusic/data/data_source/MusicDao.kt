@@ -10,6 +10,7 @@ import androidx.room.Update
 import androidx.room.Upsert
 import com.example.mymusic.data.relations.AlbumWithSongs
 import com.example.mymusic.domain.model.Album
+import com.example.mymusic.domain.model.Artist
 import com.example.mymusic.domain.model.Favorite
 import com.example.mymusic.domain.model.History
 import com.example.mymusic.domain.model.Playlist
@@ -91,5 +92,11 @@ interface MusicDao {
 
     @Query("SELECT * FROM favorite WHERE id = :id ORDER BY id DESC")
      fun getFavorite(id : Int): Flow<List<Favorite>>
+
+     @Upsert
+     suspend fun insertArtist(artist: MutableList<Artist>)
+
+     @Query("SELECT * FROM artist ORDER BY artist ASC")
+     fun getArtists(): Flow<List<Artist>>
 
 }

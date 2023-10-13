@@ -60,7 +60,9 @@ object AppModule {
             getHistory = GetHistory(repository),
             insertFavorite = InsertFavorite(repository),
             getFavorite = GetFavorite(repository),
-            updateSong = UpdateSong(repository)
+            updateSong = UpdateSong(repository),
+            getArtists = GetArtists(repository),
+            insertArtists = InsertArtists(repository,app)
         )
     }
 }

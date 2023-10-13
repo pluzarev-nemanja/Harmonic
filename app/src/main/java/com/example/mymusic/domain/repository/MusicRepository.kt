@@ -2,6 +2,7 @@ package com.example.mymusic.domain.repository
 
 import com.example.mymusic.data.relations.AlbumWithSongs
 import com.example.mymusic.domain.model.Album
+import com.example.mymusic.domain.model.Artist
 import com.example.mymusic.domain.model.Favorite
 import com.example.mymusic.domain.model.History
 import com.example.mymusic.domain.model.Playlist
@@ -59,4 +60,7 @@ interface MusicRepository {
     fun getFavorite(id: Int): Flow<List<Favorite>>
 
     suspend fun updateSong(song: Song)
+    suspend fun insertArtist(artist: MutableList<Artist>)
+
+    fun getArtists(): Flow<List<Artist>>
 }

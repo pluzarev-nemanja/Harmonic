@@ -10,6 +10,7 @@ import com.example.mymusic.presentation.album.AlbumDetailScreen
 import com.example.mymusic.presentation.album.AlbumScreen
 import com.example.mymusic.presentation.album.AlbumViewModel
 import com.example.mymusic.presentation.artist.AllArtistsScreen
+import com.example.mymusic.presentation.artist.ArtistViewModel
 import com.example.mymusic.presentation.favorite.FavoriteScreen
 import com.example.mymusic.presentation.favorite.FavoriteViewModel
 import com.example.mymusic.presentation.history.HistoryScreen
@@ -36,7 +37,8 @@ fun BottomNavGraph(
     currentPlayingAudio: Song?,
     playlistViewModel: PlaylistViewModel = hiltViewModel(),
     historyViewModel: HistoryViewModel = hiltViewModel(),
-    favoriteViewModel: FavoriteViewModel = hiltViewModel()
+    favoriteViewModel: FavoriteViewModel = hiltViewModel(),
+    artistViewModel: ArtistViewModel = hiltViewModel()
 ) {
 
     NavHost(
