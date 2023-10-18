@@ -11,6 +11,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.mymusic.domain.model.Album
+import com.example.mymusic.domain.model.Artist
 import com.example.mymusic.domain.model.Playlist
 import com.example.mymusic.domain.model.Song
 import com.example.mymusic.domain.use_cases.MusicUseCases
@@ -253,7 +254,10 @@ class SongsViewModel @Inject constructor(
         val number = Random.nextInt(from = 0, until = album.songCount)
         playPlaylist(currentAudio = album.songs[number],songs = album.songs)
     }
-
+    fun shuffleArtist(artist: Artist){
+        val number = Random.nextInt(from = 0, until = artist.numberSongs)
+        playPlaylist(currentAudio = artist.songs[number],songs = artist.songs)
+    }
     fun shuffleSongs(){
         if(songList.size != 0){
             val number = Random.nextInt(from = 0, until = songList.size)

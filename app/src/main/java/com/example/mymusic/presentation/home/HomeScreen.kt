@@ -54,8 +54,10 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.mymusic.R
 import com.example.mymusic.domain.model.Album
+import com.example.mymusic.domain.model.Artist
 import com.example.mymusic.domain.model.Song
 import com.example.mymusic.presentation.album.AlbumItem
+import com.example.mymusic.presentation.artist.ArtistItem
 import com.example.mymusic.presentation.navigation.Screen
 import com.example.mymusic.presentation.songs.TOP_BAR_HEIGHT
 import com.example.mymusic.presentation.songs.isScrolled
@@ -72,7 +74,9 @@ fun HomeScreen(
     refreshSuggestions: () -> Unit,
     suggestions: List<Song>,
     onItemClick: (Song) -> Unit,
-    addAlbum: (Album) -> Unit
+    addAlbum: (Album) -> Unit,
+    artists : List<Artist>,
+    addArtist: (Artist) -> Unit
 ) {
 
     val lazyState = rememberLazyListState()
@@ -110,11 +114,10 @@ fun HomeScreen(
             )
             Spacer(modifier = Modifier.height(8.dp))
             TopArtist(
-                albums = albums,
-                deleteAlbum = deleteAlbum,
+                artists = artists,
                 navController,
                 modifier = Modifier.padding(bottom = animatedHeight),
-                addAlbum
+                addArtist = addArtist
             )
         }
 
@@ -363,11 +366,10 @@ fun Buttons(
 
 @Composable
 fun TopArtist(
-    albums: List<Album>,
-    deleteAlbum: (Album) -> Unit,
+    artists : List<Artist>,
     navController: NavController,
     modifier: Modifier = Modifier,
-    addAlbum: (Album) -> Unit
+    addArtist : (Artist) -> Unit
 ) {
     Column(
         modifier = modifier.padding(5.dp)
@@ -388,15 +390,8 @@ fun TopArtist(
                 .fillMaxWidth()
                 .padding(5.dp),
         ) {
-            items(albums) { album ->
-                AlbumItem(
-                    album = album,
-                    modifier = Modifier
-                        .padding(top = 10.dp),
-                    deleteAlbum = deleteAlbum,
-                    navController,
-                    addAlbum = addAlbum
-                )
+            items(artists) { artist ->
+                ArtistItem(navController = navController, artist = artist, addArtist = addArtist)
             }
         }
     }

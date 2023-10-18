@@ -11,6 +11,7 @@ import com.example.mymusic.presentation.album.AlbumScreen
 import com.example.mymusic.presentation.album.AlbumViewModel
 import com.example.mymusic.presentation.artist.AllArtistsScreen
 import com.example.mymusic.presentation.artist.ArtistViewModel
+import com.example.mymusic.presentation.artist.ArtistsDetailScreen
 import com.example.mymusic.presentation.favorite.FavoriteScreen
 import com.example.mymusic.presentation.favorite.FavoriteViewModel
 import com.example.mymusic.presentation.history.HistoryScreen
@@ -66,6 +67,10 @@ fun BottomNavGraph(
                 albums = albumsViewModel.albums,
                 addAlbum = {
                     albumsViewModel.addAlbum(it)
+                },
+                artists = artistViewModel.artists,
+                addArtist = {
+                    artistViewModel.addArtist(it)
                 }
             )
         }
@@ -235,8 +240,36 @@ fun BottomNavGraph(
         }
 
         composable(Screen.AllArtistsScreen.route){
-            AllArtistsScreen()
+            AllArtistsScreen(
+                navController = navController,
+                currentPlayingAudio = songsViewModel.currentPlayingAudio.value,
+                artists = artistViewModel.artists,
+                addArtist = {
+                    artistViewModel.addArtist(it)
+                }
+            )
         }
 
+        composable(Screen.ArtistDetailScreen.route){
+            ArtistsDetailScreen(
+                navController = navController,
+                artist = artistViewModel.artistNavigated.value,
+                allPlaylists = playlistViewModel.playlists,
+                insertSongIntoPlaylist = { song, playlistName ->
+                    playlistViewModel.insertSongIntoPlaylist(song, playlistName)
+                },
+                onItemClick = {
+                    songsViewModel.playAudio(it)
+                    historyViewModel.updateHistory(it)
+                },
+                currentPlayingAudio = songsViewModel.currentPlayingAudio.value,
+                shuffle = { artist ->
+                    songsViewModel.shuffleArtist(artist)
+                },
+                onStart = { currentPlayingAudio, songs ->
+                    songsViewModel.playPlaylist(currentPlayingAudio, songs)
+                },
+            )
+        }
     }
 }

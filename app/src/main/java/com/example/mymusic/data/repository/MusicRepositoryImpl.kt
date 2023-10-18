@@ -2,6 +2,7 @@ package com.example.mymusic.data.repository
 
 import com.example.mymusic.data.data_source.MusicDao
 import com.example.mymusic.data.relations.AlbumWithSongs
+import com.example.mymusic.data.relations.ArtistWithSongs
 import com.example.mymusic.domain.model.Album
 import com.example.mymusic.domain.model.Artist
 import com.example.mymusic.domain.model.Favorite
@@ -126,5 +127,7 @@ class MusicRepositoryImpl @Inject constructor(
         dao.insertFavorite(favorite)
     }
 
-
+    override fun getArtistWithSongs(artistName: String): Flow<List<ArtistWithSongs>> {
+        return dao.getArtistWithSongs(artistName)
+    }
 }

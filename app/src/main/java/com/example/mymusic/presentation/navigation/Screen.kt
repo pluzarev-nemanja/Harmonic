@@ -10,4 +10,6 @@ sealed class Screen(val route:String){
     object FavoriteScreen : Screen("favorite_screen")
     object AllAlbumsScreen : Screen("all_albums_screen")
     object AllArtistsScreen : Screen("all_artists_screen")
+
+    object ArtistDetailScreen : Screen("artist_detail_screen")
 }

@@ -9,6 +9,7 @@ import androidx.room.Transaction
 import androidx.room.Update
 import androidx.room.Upsert
 import com.example.mymusic.data.relations.AlbumWithSongs
+import com.example.mymusic.data.relations.ArtistWithSongs
 import com.example.mymusic.domain.model.Album
 import com.example.mymusic.domain.model.Artist
 import com.example.mymusic.domain.model.Favorite
@@ -81,6 +82,9 @@ interface MusicDao {
     @Query("SELECT * FROM album WHERE albumName = :albumName")
      fun getAlbumWithSongs(albumName : String) : Flow<List<AlbumWithSongs>>
 
+    @Transaction
+    @Query("SELECT * FROM Artist WHERE artist = :artistName")
+    fun getArtistWithSongs(artistName : String) : Flow<List<ArtistWithSongs>>
     @Upsert
     suspend fun insertHistory(history: History)
 

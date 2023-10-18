@@ -1,6 +1,7 @@
 package com.example.mymusic.presentation.artist
 
 import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.mymusic.domain.model.Album
@@ -18,7 +19,8 @@ class ArtistViewModel @Inject constructor(
 
     var artists = mutableStateListOf<Artist>()
 
-
+    var artistNavigated = mutableStateOf<Artist?>(null)
+        private set
     init {
 
         viewModelScope.launch {
@@ -31,4 +33,15 @@ class ArtistViewModel @Inject constructor(
             }
         }
     }
+
+
+    fun addArtist(artist: Artist){
+        artistNavigated.value = artist
+        viewModelScope.launch {
+            musicUseCases.getArtistWithSongs(artist.artist).collect{ artistWithSongs->
+                artistNavigated.value!!.songs = artistWithSongs[0].songs
+            }
+        }
+    }
+
 }

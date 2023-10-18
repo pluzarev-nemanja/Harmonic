@@ -62,7 +62,8 @@ object AppModule {
             getFavorite = GetFavorite(repository),
             updateSong = UpdateSong(repository),
             getArtists = GetArtists(repository),
-            insertArtists = InsertArtists(repository,app)
+            insertArtists = InsertArtists(repository,app),
+            getArtistWithSongs = GetArtistWithSongs(repository)
         )
     }
 }
