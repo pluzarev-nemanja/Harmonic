@@ -2,7 +2,7 @@
 <resources>
 
     <style name="Theme.MyMusic" parent="android:Theme.Material.Light.NoActionBar">
-        <item name="android:statusBarColor">#DDE6ED</item>
-        <item name="android:navigationBarColor">#DDE6ED</item>
+        <item name="android:statusBarColor">#171C26</item>
+        <item name="android:navigationBarColor">#171C26</item>
     </style>
 </resources>

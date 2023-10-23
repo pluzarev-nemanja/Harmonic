@@ -42,6 +42,10 @@ import com.example.mymusic.domain.util.SortOrder
 import com.example.mymusic.presentation.navigation.Screen
 import com.example.mymusic.presentation.util.Marquee
 import com.example.mymusic.presentation.util.defaultMarqueeParams
+import com.example.mymusic.ui.theme.bottomBarColor
+import com.example.mymusic.ui.theme.heartColor
+import com.example.mymusic.ui.theme.textColor
+import com.example.mymusic.ui.theme.textOnBottomBar
 import com.skydoves.landscapist.ImageOptions
 import com.skydoves.landscapist.glide.GlideImage
 import kotlin.math.floor
@@ -156,8 +160,7 @@ fun TopBar(
                 text = "Songs",
                 style = TextStyle(
                     fontSize = MaterialTheme.typography.h6.fontSize,
-                    color = MaterialTheme.colors.surface,
-                    fontStyle = FontStyle.Italic
+                    fontWeight = FontWeight.Bold
                 )
             )
             Box(modifier = Modifier.padding(end = 8.dp)) {
@@ -539,7 +542,7 @@ fun MediaPlayerController(
                 imageVector = Icons.Default.Favorite,
                 contentDescription = "favorite",
                 tint = if (isSelected) Color.Red
-                else Color.Gray,
+                else MaterialTheme.colors.heartColor,
                 modifier = Modifier
                     .padding(end = 2.dp)
             )
@@ -599,7 +602,8 @@ fun ArtistInfo(
                     fontWeight = FontWeight.Bold,
                     style = MaterialTheme.typography.h6,
                     maxLines = 1,
-                    fontSize = 15.sp
+                    fontSize = 15.sp,
+                    color = MaterialTheme.colors.textOnBottomBar
                 )
             }
             Spacer(modifier = Modifier.size(4.dp))
@@ -609,7 +613,8 @@ fun ArtistInfo(
                 style = MaterialTheme.typography.subtitle1,
                 overflow = TextOverflow.Ellipsis,
                 maxLines = 1,
-                fontSize = 10.sp
+                fontSize = 10.sp,
+                color = MaterialTheme.colors.textOnBottomBar
             )
             Spacer(modifier = Modifier.size(4.dp))
         }
@@ -624,7 +629,7 @@ fun PlayerIconItem(
     border: BorderStroke? = null,
     backgroundColor: Color = MaterialTheme.colors.surface,
     color: Color = MaterialTheme.colors.onSurface,
-    onClick: () -> Unit
+    onClick: () -> Unit,
 ) {
 
     Surface(
@@ -645,6 +650,7 @@ fun PlayerIconItem(
             Icon(
                 imageVector = icon,
                 contentDescription = null,
+                tint = color
             )
 
         }

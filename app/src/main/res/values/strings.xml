@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">MyMusic</string>
+    <string name="app_name">Harmonic</string>
     <string name="generic_error">Unknown Error occurred</string>
     <string name="error_media_not_found">Error media not found!</string>
     <string name="notification_channel">notificationChannel</string>

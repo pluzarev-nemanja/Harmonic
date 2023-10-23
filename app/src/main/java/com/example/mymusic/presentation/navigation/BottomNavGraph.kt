@@ -23,6 +23,7 @@ import com.example.mymusic.presentation.playlist.PlaylistScreen
 import com.example.mymusic.presentation.playlist.PlaylistViewModel
 import com.example.mymusic.presentation.search.SearchScreen
 import com.example.mymusic.presentation.search.SearchViewModel
+import com.example.mymusic.presentation.settings.SettingsScreen
 import com.example.mymusic.presentation.songs.SongsScreen
 import com.example.mymusic.presentation.songs.SongsViewModel
 
@@ -270,6 +271,10 @@ fun BottomNavGraph(
                     songsViewModel.playPlaylist(currentPlayingAudio, songs)
                 },
             )
+        }
+
+        composable(Screen.SettingsScreen.route){
+            SettingsScreen()
         }
     }
 }

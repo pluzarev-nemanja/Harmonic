@@ -22,6 +22,8 @@ import com.example.mymusic.presentation.songs.timeStampToDuration
 import com.example.mymusic.presentation.util.Marquee
 import com.example.mymusic.presentation.util.defaultMarqueeParams
 import com.example.mymusic.presentation.util.shadow
+import com.example.mymusic.ui.theme.bottomBarColor
+import com.example.mymusic.ui.theme.textOnBottomBar
 import com.skydoves.landscapist.ImageOptions
 import com.skydoves.landscapist.glide.GlideImage
 
@@ -243,9 +245,10 @@ fun PlayerControls(
         PlayerIconItem(
             icon = if (isAudioPlaying) Icons.Default.Pause
             else Icons.Default.PlayArrow,
-            backgroundColor = MaterialTheme.colors.primary,
+            backgroundColor = MaterialTheme.colors.bottomBarColor,
             modifier = Modifier
-                .size(60.dp)
+                .size(60.dp),
+            color = MaterialTheme.colors.textOnBottomBar
         ) {
             onStart.invoke()
         }

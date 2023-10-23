@@ -12,4 +12,5 @@ sealed class Screen(val route:String){
     object AllArtistsScreen : Screen("all_artists_screen")
 
     object ArtistDetailScreen : Screen("artist_detail_screen")
+    object SettingsScreen : Screen("settings_screen")
 }

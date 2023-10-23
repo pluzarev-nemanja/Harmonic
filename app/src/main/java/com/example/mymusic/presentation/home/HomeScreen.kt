@@ -24,6 +24,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Button
+import androidx.compose.material.Colors
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
@@ -61,6 +62,7 @@ import com.example.mymusic.presentation.artist.ArtistItem
 import com.example.mymusic.presentation.navigation.Screen
 import com.example.mymusic.presentation.songs.TOP_BAR_HEIGHT
 import com.example.mymusic.presentation.songs.isScrolled
+import com.example.mymusic.ui.theme.textColor
 import com.skydoves.landscapist.ImageOptions
 import com.skydoves.landscapist.glide.GlideImage
 
@@ -303,17 +305,16 @@ fun HomeTopBar(
                 Icon(imageVector = Icons.Default.Search, contentDescription = "Search button")
             }
             Text(
-                text = "MY music",
+                text = "Harmonic",
                 style = TextStyle(
                     fontSize = MaterialTheme.typography.h6.fontSize,
-                    color = Color.Red,
-                    fontStyle = FontStyle.Italic
+                   fontWeight = FontWeight.Bold
                 )
 
             )
 
             IconButton(onClick = {
-                //navigate to settings Screen
+               navController.navigate(Screen.SettingsScreen.route)
             }) {
                 Icon(imageVector = Icons.Filled.Settings, contentDescription = "Settings button")
             }
@@ -341,7 +342,7 @@ fun Buttons(
         ) {
             Icon(imageVector = Icons.Filled.History, contentDescription = "history")
             Spacer(modifier = Modifier.width(5.dp))
-            Text(text = "History")
+            Text(text = "History",color = MaterialTheme.colors.textColor)
         }
         Button(
             onClick = { shuffle.invoke() },

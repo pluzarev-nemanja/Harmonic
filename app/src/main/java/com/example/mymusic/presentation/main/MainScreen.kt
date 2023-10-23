@@ -32,6 +32,7 @@ import com.example.mymusic.presentation.player.SheetExpanded
 import com.example.mymusic.presentation.songs.ArtistInfo
 import com.example.mymusic.presentation.songs.MediaPlayerController
 import com.example.mymusic.presentation.util.currentFraction
+import com.example.mymusic.ui.theme.bottomBarColor
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterialApi::class)
@@ -131,7 +132,7 @@ fun MainScreen(
                     SheetCollapsed(
                         isCollapsed = scaffoldState.bottomSheetState.isCollapsed,
                         currentFraction = scaffoldState.currentFraction,
-                        onSheetClick = sheetToggle
+                        onSheetClick = sheetToggle,
                     ) {
                         currentPlayingAudio?.let { currentPlayingAudio ->
                             isSelected = currentPlayingAudio.isFavorite
@@ -240,7 +241,7 @@ fun BottomBarPlayer(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .background(Color.DarkGray),
+            .background(MaterialTheme.colors.bottomBarColor),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {

@@ -280,8 +280,7 @@ fun AlbumTopBar(
                 text = "Albums",
                 style = TextStyle(
                     fontSize = MaterialTheme.typography.h6.fontSize,
-                    color = MaterialTheme.colors.surface,
-                    fontStyle = FontStyle.Italic
+                    fontWeight = FontWeight.Bold
                 )
             )
             Box(modifier = Modifier.padding(end = 8.dp)) {
