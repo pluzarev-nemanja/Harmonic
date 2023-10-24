@@ -25,6 +25,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.AlertDialog
 import androidx.compose.material.Button
+import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.DropdownMenu
 import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.FabPosition
@@ -51,9 +52,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
@@ -69,6 +68,8 @@ import com.example.mymusic.presentation.songs.TOP_BAR_HEIGHT
 import com.example.mymusic.presentation.songs.isScrolled
 import com.example.mymusic.presentation.songs.timeStampToDuration
 import com.example.mymusic.presentation.util.shadow
+import com.example.mymusic.ui.theme.whiteToDarkGrey
+import com.example.mymusic.ui.theme.lightBlueToWhite
 import com.skydoves.landscapist.ImageOptions
 import com.skydoves.landscapist.glide.GlideImage
 
@@ -182,8 +183,12 @@ fun PlaylistScreen(
                             openDialog = false
                             insertPlaylist.invoke(filledText)
                             filledText = ""
-                        }) {
-                        Text("Create playlist")
+                        },
+                        colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.lightBlueToWhite)
+                    ) {
+                        Text("Create playlist",
+                        color = MaterialTheme.colors.whiteToDarkGrey
+                        )
                     }
                 },
                 dismissButton = {
@@ -192,7 +197,7 @@ fun PlaylistScreen(
                         onClick = {
                             openDialog = false
                             filledText = ""
-                        }
+                        },
                     ) {
                         Text("Cancel")
                     }
@@ -234,7 +239,7 @@ fun PlaylistItem(
             horizontalArrangement = Arrangement.Center
         ) {
             GlideImage(
-                imageModel = { R.mipmap.ic_launcher },
+                imageModel = { R.drawable.playlist },
                 imageOptions = ImageOptions(
                     contentScale = ContentScale.Crop,
                     alignment = Alignment.Center
@@ -301,8 +306,12 @@ fun PlaylistItem(
                                     onClick = {
                                         deletePlaylist(playlist)
                                         openDialog = false
-                                    }) {
-                                    Text("Delete")
+                                    },
+                                    colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.lightBlueToWhite)
+                                ) {
+                                    Text("Delete",
+                                        color = MaterialTheme.colors.whiteToDarkGrey
+                                    )
                                 }
                             },
                             dismissButton = {
@@ -356,7 +365,6 @@ fun TopBarPlaylist(
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             IconButton(onClick = {
-                //navigate to search screen
                 navController.navigate(Screen.SearchScreen.route)
             }) {
                 Icon(imageVector = Icons.Default.Search, contentDescription = "Search button")

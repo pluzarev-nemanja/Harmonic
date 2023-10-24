@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -14,7 +13,9 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
+import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Icon
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.OutlinedButton
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
@@ -40,6 +41,8 @@ import com.example.mymusic.domain.model.Playlist
 import com.example.mymusic.domain.model.Song
 import com.example.mymusic.presentation.playlist.SongsList
 import com.example.mymusic.presentation.playlist.TopBarPlaylist
+import com.example.mymusic.ui.theme.lightBlueToWhite
+import com.example.mymusic.ui.theme.whiteToDarkGrey
 import com.skydoves.landscapist.ImageOptions
 import com.skydoves.landscapist.glide.GlideImage
 
@@ -103,7 +106,7 @@ fun AlbumInfo(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         GlideImage(
-            imageModel = { R.mipmap.ic_launcher },
+            imageModel = { R.drawable.album },
             imageOptions = ImageOptions(
                 contentScale = ContentScale.Crop,
                 alignment = Alignment.Center
@@ -133,13 +136,16 @@ fun AlbumInfo(
                     onStart.invoke()
                 },
                 shape = RoundedCornerShape(35.dp),
-                modifier = Modifier.weight(1f)
+                modifier = Modifier.weight(1f),
+                colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.lightBlueToWhite)
             ) {
                     Icon(
                         imageVector = Icons.Default.PlayArrow,
-                        contentDescription = "Play album"
+                        contentDescription = "Play album",
+                        tint = MaterialTheme.colors.whiteToDarkGrey
                     )
-                    Text(text = " Play")
+                    Text(text = " Play",
+                        color = MaterialTheme.colors.whiteToDarkGrey)
             }
             Spacer(modifier = Modifier.width(4.dp))
             Button(

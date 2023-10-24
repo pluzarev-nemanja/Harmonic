@@ -157,7 +157,6 @@ fun OpenKeyboardExample(modifier: Modifier) {
     Button(
         onClick = { kc?.show() },
         shape = RoundedCornerShape(12.dp),
-        colors = ButtonDefaults.buttonColors(backgroundColor = Color.Red),
         modifier = modifier
     ) {
         Icon(imageVector = Icons.Default.Keyboard, contentDescription = "open keyboard")

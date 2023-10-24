@@ -16,20 +16,21 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.mymusic.R
 import com.example.mymusic.domain.model.Song
 import com.example.mymusic.presentation.songs.PlayerIconItem
 import com.example.mymusic.presentation.songs.timeStampToDuration
 import com.example.mymusic.presentation.util.Marquee
 import com.example.mymusic.presentation.util.defaultMarqueeParams
 import com.example.mymusic.presentation.util.shadow
-import com.example.mymusic.ui.theme.bottomBarColor
-import com.example.mymusic.ui.theme.textOnBottomBar
+import com.example.mymusic.ui.theme.darkestBlueToWhite
+import com.example.mymusic.ui.theme.lightBlueToWhite
+import com.example.mymusic.ui.theme.whiteToDarkestBlue
 import com.skydoves.landscapist.ImageOptions
 import com.skydoves.landscapist.glide.GlideImage
 
 @Composable
 fun PlayerScreen(
-    image: String,
     songName: String,
     artist: String,
     close: () -> Unit,
@@ -56,7 +57,7 @@ fun PlayerScreen(
             Header(close)
             Spacer(modifier = Modifier.height(18.dp))
             GlideImage(
-                imageModel = { image },
+                imageModel = { R.drawable.note },
                 imageOptions = ImageOptions(
                     contentScale = ContentScale.Crop,
                     alignment = Alignment.Center
@@ -113,9 +114,7 @@ fun Header(
             Icon(
                 imageVector = Icons.Default.ExpandMore,
                 contentDescription = "back",
-                tint = MaterialTheme.colors
-                    .onSurface
-                    .copy(alpha = .5f),
+                tint = MaterialTheme.colors.lightBlueToWhite
             )
         }
         Text(
@@ -129,11 +128,8 @@ fun Header(
             Icon(
                 imageVector = Icons.Default.MoreHoriz,
                 contentDescription = "More options",
-                tint = MaterialTheme.colors
-                    .onSurface
-                    .copy(alpha = .5f),
-
-                )
+                tint = MaterialTheme.colors.lightBlueToWhite
+            )
         }
     }
 }
@@ -245,10 +241,10 @@ fun PlayerControls(
         PlayerIconItem(
             icon = if (isAudioPlaying) Icons.Default.Pause
             else Icons.Default.PlayArrow,
-            backgroundColor = MaterialTheme.colors.bottomBarColor,
+            backgroundColor = MaterialTheme.colors.darkestBlueToWhite,
             modifier = Modifier
                 .size(60.dp),
-            color = MaterialTheme.colors.textOnBottomBar
+            color = MaterialTheme.colors.whiteToDarkestBlue
         ) {
             onStart.invoke()
         }

@@ -9,14 +9,14 @@ val lightBlue = Color(0xFF526D82)
 val softGrey = Color(0xFF9DB2BF)
 val white = Color(0xFFDDE6ED)
 
-val Colors.textColor
+val Colors.lightBlueToWhite
     get() = if(isLight) lightBlue else white
 
-val Colors.bottomBarColor
+val Colors.darkestBlueToWhite
     get() = if (isLight) darkestBlue else white
 
-val Colors.heartColor
+val Colors.whiteToDarkGrey
     get() = if (isLight) white else darkGrey
 
-val Colors.textOnBottomBar
+val Colors.whiteToDarkestBlue
     get() = if (isLight) white else darkestBlue

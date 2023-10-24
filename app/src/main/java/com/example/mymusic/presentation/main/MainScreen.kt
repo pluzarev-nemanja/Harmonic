@@ -13,7 +13,6 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavDestination
@@ -32,7 +31,7 @@ import com.example.mymusic.presentation.player.SheetExpanded
 import com.example.mymusic.presentation.songs.ArtistInfo
 import com.example.mymusic.presentation.songs.MediaPlayerController
 import com.example.mymusic.presentation.util.currentFraction
-import com.example.mymusic.ui.theme.bottomBarColor
+import com.example.mymusic.ui.theme.darkestBlueToWhite
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterialApi::class)
@@ -106,7 +105,6 @@ fun MainScreen(
                         currentPlayingAudio?.let { currentPlayingAudio ->
                             isSelected = currentPlayingAudio.isFavorite
                             PlayerScreen(
-                                image = currentPlayingAudio.artUri,
                                 songName = currentPlayingAudio.displayName,
                                 artist = currentPlayingAudio.artist,
                                 close = { sheetToggle() },
@@ -241,7 +239,7 @@ fun BottomBarPlayer(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .background(MaterialTheme.colors.bottomBarColor),
+            .background(MaterialTheme.colors.darkestBlueToWhite),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {

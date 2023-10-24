@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources xmlns:tools="http://schemas.android.com/tools">
-    
+<resources>
+
+
     <style name="Theme.App.Starting" parent="Theme.SplashScreen">
 
-        <item name="windowSplashScreenBackground">#DDE6ED</item>
+        <item name="windowSplashScreenBackground">#27374D</item>
         <item name="windowSplashScreenAnimatedIcon">@drawable/splash_image</item>
         <item name="postSplashScreenTheme">@style/Theme.MyMusic</item>
     </style>

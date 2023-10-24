@@ -30,22 +30,21 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.mymusic.R
 import com.example.mymusic.domain.model.Playlist
 import com.example.mymusic.domain.model.Song
 import com.example.mymusic.domain.util.SortOrder
 import com.example.mymusic.presentation.navigation.Screen
 import com.example.mymusic.presentation.util.Marquee
 import com.example.mymusic.presentation.util.defaultMarqueeParams
-import com.example.mymusic.ui.theme.bottomBarColor
-import com.example.mymusic.ui.theme.heartColor
-import com.example.mymusic.ui.theme.textColor
-import com.example.mymusic.ui.theme.textOnBottomBar
+import com.example.mymusic.ui.theme.whiteToDarkGrey
+import com.example.mymusic.ui.theme.lightBlueToWhite
+import com.example.mymusic.ui.theme.whiteToDarkestBlue
 import com.skydoves.landscapist.ImageOptions
 import com.skydoves.landscapist.glide.GlideImage
 import kotlin.math.floor
@@ -339,7 +338,7 @@ fun AudioItem(
         Row(verticalAlignment = Alignment.CenterVertically) {
 
             GlideImage(
-                imageModel = { audio.artUri },
+                imageModel = { R.drawable.note },
                 imageOptions = ImageOptions(
                     contentScale = ContentScale.Crop,
                     alignment = Alignment.Center
@@ -461,11 +460,14 @@ fun AudioItem(
                         confirmButton = {
                             Button(
                                 onClick = {
-                                    //here comes function for updating data in playlist,pass selectedIndex as name
                                     insertSongIntoPlaylist.invoke(audio, selectedIndex)
                                     openDialog = false
-                                }) {
-                                Text("Add")
+                                } ,
+                                colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.lightBlueToWhite)
+                            ) {
+                                Text("Add",
+                                    color = MaterialTheme.colors.whiteToDarkGrey
+                                )
                             }
                         },
                         dismissButton = {
@@ -542,7 +544,7 @@ fun MediaPlayerController(
                 imageVector = Icons.Default.Favorite,
                 contentDescription = "favorite",
                 tint = if (isSelected) Color.Red
-                else MaterialTheme.colors.heartColor,
+                else MaterialTheme.colors.whiteToDarkGrey,
                 modifier = Modifier
                     .padding(end = 2.dp)
             )
@@ -571,7 +573,7 @@ fun ArtistInfo(
     ) {
 
         GlideImage(
-            imageModel = { audio.artUri },
+            imageModel = { R.drawable.note },
             imageOptions = ImageOptions(
                 contentScale = ContentScale.Crop,
                 alignment = Alignment.Center
@@ -603,7 +605,7 @@ fun ArtistInfo(
                     style = MaterialTheme.typography.h6,
                     maxLines = 1,
                     fontSize = 15.sp,
-                    color = MaterialTheme.colors.textOnBottomBar
+                    color = MaterialTheme.colors.whiteToDarkestBlue
                 )
             }
             Spacer(modifier = Modifier.size(4.dp))
@@ -614,7 +616,7 @@ fun ArtistInfo(
                 overflow = TextOverflow.Ellipsis,
                 maxLines = 1,
                 fontSize = 10.sp,
-                color = MaterialTheme.colors.textOnBottomBar
+                color = MaterialTheme.colors.whiteToDarkestBlue
             )
             Spacer(modifier = Modifier.size(4.dp))
         }

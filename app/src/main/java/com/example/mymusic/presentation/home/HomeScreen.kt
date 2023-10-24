@@ -24,7 +24,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Button
-import androidx.compose.material.Colors
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
@@ -44,10 +43,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -62,7 +59,7 @@ import com.example.mymusic.presentation.artist.ArtistItem
 import com.example.mymusic.presentation.navigation.Screen
 import com.example.mymusic.presentation.songs.TOP_BAR_HEIGHT
 import com.example.mymusic.presentation.songs.isScrolled
-import com.example.mymusic.ui.theme.textColor
+import com.example.mymusic.ui.theme.lightBlueToWhite
 import com.skydoves.landscapist.ImageOptions
 import com.skydoves.landscapist.glide.GlideImage
 
@@ -145,7 +142,7 @@ fun UserInfo() {
                 .padding(5.dp)
                 .size(70.dp)
                 .clip(CircleShape),
-            imageModel = { R.mipmap.ic_launcher },
+            imageModel = { R.drawable.artist },
             imageOptions = ImageOptions(
                 contentScale = ContentScale.Crop,
                 alignment = Alignment.Center
@@ -209,7 +206,7 @@ fun SuggestionSongItem(
 ) {
     Column(
         modifier = Modifier
-            .width(100.dp)
+            .width(150.dp)
             .fillMaxSize()
             .clickable {
                 onItemClick.invoke(song)
@@ -219,10 +216,11 @@ fun SuggestionSongItem(
     ) {
         GlideImage(
             modifier = Modifier
+                .size(150.dp)
                 .padding(5.dp)
                 .fillMaxWidth()
                 .clip(CircleShape),
-            imageModel = { R.mipmap.ic_launcher },
+            imageModel = { R.drawable.note },
             imageOptions = ImageOptions(
                 contentScale = ContentScale.Crop,
                 alignment = Alignment.Center
@@ -342,7 +340,7 @@ fun Buttons(
         ) {
             Icon(imageVector = Icons.Filled.History, contentDescription = "history")
             Spacer(modifier = Modifier.width(5.dp))
-            Text(text = "History",color = MaterialTheme.colors.textColor)
+            Text(text = "History",color = MaterialTheme.colors.lightBlueToWhite)
         }
         Button(
             onClick = { shuffle.invoke() },

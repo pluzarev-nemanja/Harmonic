@@ -1,12 +1,8 @@
 package com.example.mymusic.presentation.artist
 
-import androidx.compose.animation.core.animateDpAsState
-import androidx.compose.animation.core.tween
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -14,12 +10,12 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
+import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Icon
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.OutlinedButton
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
@@ -40,14 +36,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.mymusic.R
-import com.example.mymusic.domain.model.Album
 import com.example.mymusic.domain.model.Artist
 import com.example.mymusic.domain.model.Playlist
 import com.example.mymusic.domain.model.Song
-import com.example.mymusic.presentation.album.AlbumInfo
 import com.example.mymusic.presentation.playlist.SongsList
 import com.example.mymusic.presentation.playlist.TopBarPlaylist
-import com.example.mymusic.presentation.songs.AudioItem
+import com.example.mymusic.ui.theme.lightBlueToWhite
+import com.example.mymusic.ui.theme.whiteToDarkGrey
 import com.skydoves.landscapist.ImageOptions
 import com.skydoves.landscapist.glide.GlideImage
 
@@ -116,7 +111,7 @@ fun ArtistInfo(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         GlideImage(
-            imageModel = { R.mipmap.ic_launcher },
+            imageModel = { R.drawable.artist },
             imageOptions = ImageOptions(
                 contentScale = ContentScale.Crop,
                 alignment = Alignment.Center
@@ -146,13 +141,16 @@ fun ArtistInfo(
                     onStart.invoke()
                 },
                 shape = RoundedCornerShape(35.dp),
-                modifier = Modifier.weight(1f)
+                modifier = Modifier.weight(1f),
+                colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.lightBlueToWhite)
             ) {
                 Icon(
                     imageVector = Icons.Default.PlayArrow,
-                    contentDescription = "Play songs"
+                    contentDescription = "Play songs",
+                    tint = MaterialTheme.colors.whiteToDarkGrey
                 )
-                Text(text = " Play")
+                Text(text = " Play",
+                    color = MaterialTheme.colors.whiteToDarkGrey)
             }
             Spacer(modifier = Modifier.width(4.dp))
             Button(

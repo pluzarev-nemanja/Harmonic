@@ -25,6 +25,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.AlertDialog
 import androidx.compose.material.Button
+import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.DropdownMenu
 import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.Icon
@@ -47,7 +48,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -60,6 +60,8 @@ import com.example.mymusic.presentation.navigation.Screen
 import com.example.mymusic.presentation.songs.SortOrderItem
 import com.example.mymusic.presentation.songs.TOP_BAR_HEIGHT
 import com.example.mymusic.presentation.songs.isScrolled
+import com.example.mymusic.ui.theme.whiteToDarkGrey
+import com.example.mymusic.ui.theme.lightBlueToWhite
 import com.skydoves.landscapist.ImageOptions
 import com.skydoves.landscapist.glide.GlideImage
 
@@ -155,7 +157,7 @@ fun AlbumItem(
                     .padding(5.dp)
                     .fillMaxWidth()
                     .clip(CircleShape),
-                imageModel = { R.mipmap.ic_launcher },
+                imageModel = { R.drawable.album },
                 imageOptions = ImageOptions(
                     contentScale = ContentScale.Crop,
                     alignment = Alignment.Center
@@ -217,8 +219,12 @@ fun AlbumItem(
                                     onClick = {
                                         deleteAlbum(album)
                                         openDialog = false
-                                    }) {
-                                    Text("Delete")
+                                    },
+                                    colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.lightBlueToWhite)
+                                ) {
+                                    Text("Delete",
+                                        color = MaterialTheme.colors.whiteToDarkGrey
+                                    )
                                 }
                             },
                             dismissButton = {
