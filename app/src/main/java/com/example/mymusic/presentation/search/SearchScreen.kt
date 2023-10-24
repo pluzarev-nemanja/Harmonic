@@ -26,6 +26,7 @@ import androidx.compose.ui.unit.dp
 import com.example.mymusic.domain.model.Playlist
 import com.example.mymusic.domain.model.Song
 import com.example.mymusic.presentation.songs.AudioItem
+import com.example.mymusic.ui.theme.darkestBlueToWhite
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -124,9 +125,7 @@ fun SearchAppBar(
             Icon(
                 imageVector = Icons.Filled.Search,
                 contentDescription = "Search Icon",
-                tint = Color.White.copy(
-                    alpha = ContentAlpha.medium
-                )
+                tint = MaterialTheme.colors.darkestBlueToWhite
             )
         },
         trailingIcon = {
@@ -136,16 +135,14 @@ fun SearchAppBar(
                 Icon(
                     imageVector = Icons.Filled.Close,
                     contentDescription = "Close Icon",
-                    tint = Color.White
+                    tint = MaterialTheme.colors.darkestBlueToWhite
                 )
             }
         },
         colors = TextFieldDefaults.outlinedTextFieldColors(
-            unfocusedBorderColor = Color.White.copy(
-                alpha = ContentAlpha.medium
-            ),
-            focusedBorderColor = Color.White,
-            cursorColor = Color.White
+            unfocusedBorderColor = MaterialTheme.colors.darkestBlueToWhite,
+            focusedBorderColor = MaterialTheme.colors.darkestBlueToWhite,
+            cursorColor =MaterialTheme.colors.darkestBlueToWhite
         )
     )
 }

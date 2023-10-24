@@ -116,7 +116,10 @@ fun PlaylistScreen(
                 },
                 modifier = Modifier.padding(bottom = animatedHeight)
             ) {
-                Icon(imageVector = Icons.Filled.Add, contentDescription = "Add new playlist")
+                Icon(imageVector = Icons.Filled.Add,
+                    contentDescription = "Add new playlist",
+                    tint = MaterialTheme.colors.whiteToDarkGrey
+                )
             }
         },
         floatingActionButtonPosition = FabPosition.End

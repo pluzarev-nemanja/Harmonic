@@ -340,7 +340,7 @@ fun Buttons(
         ) {
             Icon(imageVector = Icons.Filled.History, contentDescription = "history")
             Spacer(modifier = Modifier.width(5.dp))
-            Text(text = "History",color = MaterialTheme.colors.lightBlueToWhite)
+            Text(text = "History")
         }
         Button(
             onClick = { shuffle.invoke() },
