@@ -62,10 +62,10 @@ class InsertAlbum @Inject constructor(
                     Log.e("Cursor Album", "getCursorData: Cursor is Empty")
                 } else {
                     while (cursor.moveToNext()) {
-                        val albumName = getString(album)
-                        val id = getString(idColumn)
-                        val numberSongs = getString(numberOfSongs)
-                        val artistName = getString(artist)
+                        val albumName = getString(album) ?: "Unknown"
+                        val id = getString(idColumn) ?: ""
+                        val numberSongs = getString(numberOfSongs) ?: "0"
+                        val artistName = getString(artist) ?: "Unknown"
                         albumList+= Album(
                             albumId = id,
                             albumName = albumName,

@@ -35,7 +35,6 @@ class InsertSong @Inject constructor(
 
     private val sortOrder = "${MediaStore.Audio.AudioColumns.DISPLAY_NAME} ASC"
 
-    //logic for inserting songs
     suspend operator fun invoke() {
         val songs = getCursorData()
         repository.insertSongs(songs)

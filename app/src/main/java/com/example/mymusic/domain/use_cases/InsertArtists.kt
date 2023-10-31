@@ -54,7 +54,7 @@ class InsertArtists @Inject constructor(
                     Log.e("Cursor Artist", "getCursorData: Cursor is Empty")
                 } else {
                     while (cursor.moveToNext()) {
-                        val artName = getString(artistName)
+                        val artName = getString(artistName) ?: "Unknown"
                         val numAlbm = getInt(numAlbum)
                         val numberSongs = getInt(numSongs)
                         artistList += Artist(

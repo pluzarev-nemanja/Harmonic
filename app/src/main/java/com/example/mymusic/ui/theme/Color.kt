@@ -11,12 +11,14 @@ val white = Color(0xFFDDE6ED)
 
 val Colors.lightBlueToWhite
     get() = if(isLight) lightBlue else white
-
+val Colors.lightBlueToDarkestBlue
+    get() = if(isLight) lightBlue else darkestBlue
 val Colors.darkestBlueToWhite
     get() = if (isLight) darkestBlue else white
 
 val Colors.whiteToDarkGrey
     get() = if (isLight) white else darkGrey
-
+val Colors.darkGreyToSoftGrey
+    get() = if (isLight) darkGrey else softGrey
 val Colors.whiteToDarkestBlue
     get() = if (isLight) white else darkestBlue

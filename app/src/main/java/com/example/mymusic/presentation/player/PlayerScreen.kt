@@ -23,8 +23,11 @@ import com.example.mymusic.presentation.songs.timeStampToDuration
 import com.example.mymusic.presentation.util.Marquee
 import com.example.mymusic.presentation.util.defaultMarqueeParams
 import com.example.mymusic.presentation.util.shadow
+import com.example.mymusic.ui.theme.darkGreyToSoftGrey
 import com.example.mymusic.ui.theme.darkestBlueToWhite
+import com.example.mymusic.ui.theme.lightBlueToDarkestBlue
 import com.example.mymusic.ui.theme.lightBlueToWhite
+import com.example.mymusic.ui.theme.whiteToDarkGrey
 import com.example.mymusic.ui.theme.whiteToDarkestBlue
 import com.skydoves.landscapist.ImageOptions
 import com.skydoves.landscapist.glide.GlideImage
@@ -172,6 +175,11 @@ fun ProgressBar(
         value = progress,
         onValueChange = { onProgressChange.invoke(it) },
         valueRange = 0f..100f,
+        colors = SliderDefaults.colors(
+            thumbColor = MaterialTheme.colors.darkestBlueToWhite,
+            activeTrackColor = MaterialTheme.colors.darkGreyToSoftGrey,
+            inactiveTrackColor = MaterialTheme.colors.lightBlueToWhite,
+        )
     )
     Row(
         modifier = Modifier

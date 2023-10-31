@@ -74,27 +74,38 @@ fun SearchScreen(
                 modifier = Modifier
                     .fillMaxSize()
             ) {
-                LazyColumn(
-                    contentPadding = PaddingValues(bottom = animatedHeight),
-                    state = scrollState
-                ) {
-                    items(
-                        items = songs,
-                        key = { song ->
-                            song.id
-                        }
-                    ) { song: Song ->
-                        AudioItem(
-                            audio = song,
-                            onItemClick = { onItemClick.invoke(song) },
-                            modifier = Modifier.animateItemPlacement(
-                                tween(durationMillis = 250)
-                            ),
-                            playlists = playlists,
-                            insertSongIntoPlaylist = insertSongIntoPlaylist
-                        )
+                Column(modifier = Modifier
+                    .fillMaxSize()) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceEvenly
+                    ) {
+                        Text(text = "Songs ")
+                        Divider(color = MaterialTheme.colors.darkestBlueToWhite)
                     }
+                    LazyColumn(
+                        contentPadding = PaddingValues(bottom = animatedHeight),
+                        state = scrollState
+                    ) {
+                        items(
+                            items = songs,
+                            key = { song ->
+                                song.id
+                            }
+                        ) { song: Song ->
+                            AudioItem(
+                                audio = song,
+                                onItemClick = { onItemClick.invoke(song) },
+                                modifier = Modifier.animateItemPlacement(
+                                    tween(durationMillis = 250)
+                                ),
+                                playlists = playlists,
+                                insertSongIntoPlaylist = insertSongIntoPlaylist
+                            )
+                        }
 
+                    }
                 }
                 OpenKeyboardExample(
                     modifier = Modifier
