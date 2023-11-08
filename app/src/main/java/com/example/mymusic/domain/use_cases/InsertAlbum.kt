@@ -24,10 +24,6 @@ class InsertAlbum @Inject constructor(
         MediaStore.Audio.AlbumColumns.NUMBER_OF_SONGS,
         MediaStore.Audio.AlbumColumns.ARTIST,
     )
-    private var selectionClause: String? =
-        "${MediaStore.Audio.AlbumColumns.NUMBER_OF_SONGS} = ?" + ">0"
-    private var selectionArg = arrayOf("1")
-
     private val sortOrder = "${MediaStore.Audio.AlbumColumns.ALBUM_ID} ASC"
 
     suspend operator fun invoke() {

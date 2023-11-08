@@ -5,6 +5,8 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.darkColors
 import androidx.compose.material.lightColors
 import androidx.compose.runtime.Composable
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.mymusic.presentation.main.MainViewModel
 
 private val DarkColorPalette = darkColors(
     primary = darkestBlue,
@@ -25,11 +27,14 @@ private val LightColorPalette = lightColors(
 )
 
 @Composable
-fun MyMusicTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Composable () -> Unit) {
-    val colors = if (darkTheme) {
-        DarkColorPalette
-    } else {
-        LightColorPalette
+fun MyMusicTheme(
+    theme: String,
+    content: @Composable () -> Unit
+) {
+    val colors = when (theme) {
+        "Dark" -> DarkColorPalette
+        "Light" -> LightColorPalette
+        else -> if (isSystemInDarkTheme()) DarkColorPalette else LightColorPalette
     }
 
     MaterialTheme(

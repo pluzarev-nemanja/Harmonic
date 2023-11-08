@@ -2,6 +2,7 @@ package com.example.mymusic.presentation.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -18,6 +19,7 @@ import com.example.mymusic.presentation.history.HistoryScreen
 import com.example.mymusic.presentation.history.HistoryViewModel
 import com.example.mymusic.presentation.home.AllAlbumsScreen
 import com.example.mymusic.presentation.home.HomeScreen
+import com.example.mymusic.presentation.main.MainViewModel
 import com.example.mymusic.presentation.playlist.PlaylistDetailsScreen
 import com.example.mymusic.presentation.playlist.PlaylistScreen
 import com.example.mymusic.presentation.playlist.PlaylistViewModel
@@ -40,7 +42,8 @@ fun BottomNavGraph(
     playlistViewModel: PlaylistViewModel = hiltViewModel(),
     historyViewModel: HistoryViewModel = hiltViewModel(),
     favoriteViewModel: FavoriteViewModel = hiltViewModel(),
-    artistViewModel: ArtistViewModel = hiltViewModel()
+    artistViewModel: ArtistViewModel = hiltViewModel(),
+    mainViewModel: MainViewModel = viewModel()
 ) {
 
     NavHost(
@@ -274,7 +277,14 @@ fun BottomNavGraph(
         }
 
         composable(Screen.SettingsScreen.route){
-            SettingsScreen()
+            SettingsScreen(
+                navController = navController,
+                userName = "User Name",
+                onThemeChange = {
+                    mainViewModel.onThemeChanged(it)
+                },
+                mainViewModel
+            )
         }
     }
 }

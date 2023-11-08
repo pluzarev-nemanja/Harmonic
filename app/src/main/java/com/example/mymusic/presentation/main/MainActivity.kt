@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.runtime.*
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.ViewCompat
@@ -46,9 +47,13 @@ class MainActivity : ComponentActivity() {
             keepSplashOpened
         }
         setContent {
-            MyMusicTheme {
+            val mainViewModel = viewModel<MainViewModel>()
+            val theme: String by mainViewModel.theme.observeAsState("Auto")
 
-                val mainViewModel = viewModel<MainViewModel>()
+            MyMusicTheme(
+                theme = theme
+            ) {
+
 
                 val dialogQue = mainViewModel.visiblePermissionDialogQue
                 var granted by remember {

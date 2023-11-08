@@ -51,7 +51,7 @@ object AppModule {
             getAllPlaylistsSongCount = GetAllPlaylistsSongCount(repository),
             updatePlaylist = UpdatePlaylist(repository),
             insertAlbum = InsertAlbum(repository,app),
-            deleteAlbum = DeleteAlbum(repository),
+            deleteAlbum = DeleteAlbum(repository,app),
             getAllAlbumsAsc = GetAllAlbumsAsc(repository),
             getAllAlbumsArtist = GetAllAlbumsArtist(repository),
             getAllAlbumsSongCount = GetAllAlbumsSongCount(repository),
