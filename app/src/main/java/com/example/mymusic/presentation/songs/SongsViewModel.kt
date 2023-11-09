@@ -1,9 +1,14 @@
 package com.example.mymusic.presentation.songs
 
+import android.app.Activity
+import android.content.ActivityNotFoundException
+import android.content.Intent
+import android.media.audiofx.AudioEffect
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import android.support.v4.media.session.PlaybackStateCompat.SHUFFLE_MODE_ALL
 import android.support.v4.media.session.PlaybackStateCompat.SHUFFLE_MODE_NONE
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -99,6 +104,18 @@ class SongsViewModel @Inject constructor(
             }
         }
     }
+
+    fun stockEqualizer(activity: Activity) {
+        val sessionId = 1
+            try {
+                val effects = Intent(AudioEffect.ACTION_DISPLAY_AUDIO_EFFECT_CONTROL_PANEL)
+                effects.putExtra(AudioEffect.EXTRA_AUDIO_SESSION, sessionId)
+                effects.putExtra(AudioEffect.EXTRA_CONTENT_TYPE, AudioEffect.CONTENT_TYPE_MUSIC)
+                activity.startActivityForResult(effects, 0)
+            } catch (notFound: ActivityNotFoundException) {
+                Log.d("EQ","No equalizer found")
+            }
+        }
 
     fun suggestions() {
         suggestions.clear()

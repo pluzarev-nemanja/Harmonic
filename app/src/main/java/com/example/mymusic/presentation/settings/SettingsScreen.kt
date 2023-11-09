@@ -12,11 +12,15 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Divider
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.RadioButton
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
@@ -39,8 +43,9 @@ import com.skydoves.landscapist.glide.GlideImage
 fun SettingsScreen(
     navController: NavController,
     userName: String,
-    onThemeChange : (String) -> Unit,
-    mainViewModel: MainViewModel
+    onThemeChange: (String) -> Unit,
+    mainViewModel: MainViewModel,
+    equalizer: () -> Unit
 ) {
 
     val theme: String by mainViewModel.theme.observeAsState("")
@@ -58,7 +63,9 @@ fun SettingsScreen(
                 theme = theme
             )
             Spacer(modifier = Modifier.height(10.dp))
-
+            Equalizer(
+                equalizer = equalizer
+            )
         }
     }
 }
@@ -70,7 +77,8 @@ fun UserInfo(
 ) {
 
     Column(
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier
+            .fillMaxWidth()
             .padding(8.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.SpaceEvenly
@@ -99,15 +107,16 @@ fun UserInfo(
 
 @Composable
 fun ThemeOptions(
-    onThemeChange : (String) -> Unit,
+    onThemeChange: (String) -> Unit,
     theme: String
 ) {
 
     Divider(color = MaterialTheme.colors.darkestBlueToWhite)
 
-    Row(modifier = Modifier
-        .fillMaxWidth()
-        .padding(8.dp)
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(8.dp)
     ) {
         Text(
             text = "Change your theme:",
@@ -151,12 +160,42 @@ fun ThemeOptions(
     }
 
 }
+
+@Composable
+fun Equalizer(
+    equalizer: () -> Unit
+
+) {
+
+    Divider(color = MaterialTheme.colors.darkestBlueToWhite)
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(8.dp)
+    ) {
+        Text(
+            text = "Enable Equalizer:",
+            fontWeight = FontWeight.Bold,
+            style = MaterialTheme.typography.h6,
+            fontSize = 18.sp,
+            color = MaterialTheme.colors.darkestBlueToWhite
+        )
+        IconButton(onClick = {
+            equalizer.invoke()
+        }) {
+            Icon(imageVector = Icons.Filled.ArrowForward, contentDescription = "open")
+        }
+    }
+}
+
 @Composable
 fun LabeledRadioButton(
     selected: Boolean,
     onClick: () -> Unit,
     label: String,
-    name : String
+    name: String
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,

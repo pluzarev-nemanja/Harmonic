@@ -52,7 +52,8 @@ fun MainScreen(
     shuffle: () -> Unit,
     repeat: (Int) -> Unit,
     updateTimer: () -> String,
-    addFavorite : (Song) -> Unit
+    addFavorite : (Song) -> Unit,
+    equalizer : () -> Unit
 ) {
 
     val navController = rememberNavController()
@@ -162,6 +163,7 @@ fun MainScreen(
                     songs = songs,
                     searchText = searchText,
                     currentPlayingAudio = currentPlayingAudio,
+                    equalizer = equalizer
                 )
             }
         }

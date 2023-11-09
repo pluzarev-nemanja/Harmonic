@@ -43,7 +43,8 @@ fun BottomNavGraph(
     historyViewModel: HistoryViewModel = hiltViewModel(),
     favoriteViewModel: FavoriteViewModel = hiltViewModel(),
     artistViewModel: ArtistViewModel = hiltViewModel(),
-    mainViewModel: MainViewModel = viewModel()
+    mainViewModel: MainViewModel = viewModel(),
+    equalizer : () -> Unit
 ) {
 
     NavHost(
@@ -283,7 +284,8 @@ fun BottomNavGraph(
                 onThemeChange = {
                     mainViewModel.onThemeChanged(it)
                 },
-                mainViewModel
+                mainViewModel,
+                equalizer = equalizer
             )
         }
     }
