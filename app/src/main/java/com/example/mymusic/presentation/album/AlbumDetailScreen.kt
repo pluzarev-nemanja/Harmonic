@@ -56,7 +56,8 @@ fun AlbumDetailScreen(
     currentPlayingAudio: Song?,
     shuffle: (Album) -> Unit,
     onStart: (Song, List<Song>) -> Unit,
-    ) {
+    shareSong : (Song) -> Unit
+) {
 
     Scaffold(
         topBar = {
@@ -80,7 +81,8 @@ fun AlbumDetailScreen(
                 audioList = album.songs,
                 allPlaylists = allPlaylists,
                 insertSongIntoPlaylist = insertSongIntoPlaylist,
-                onItemClick = onItemClick
+                onItemClick = onItemClick,
+                shareSong = shareSong
             )
         }
     }

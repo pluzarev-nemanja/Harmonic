@@ -3,7 +3,6 @@ package com.example.mymusic.presentation.main
 import android.Manifest
 import android.app.Activity
 import android.content.Intent
-import android.media.audiofx.AudioEffect
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -19,12 +18,11 @@ import androidx.compose.material.Surface
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
+import androidx.core.content.FileProvider
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowCompat
-import androidx.core.view.WindowInsetsCompat
-import androidx.core.view.updatePadding
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.mymusic.BuildConfig
+import com.example.mymusic.domain.model.Song
 import com.example.mymusic.presentation.favorite.FavoriteViewModel
 import com.example.mymusic.presentation.permission.PermissionDialog
 import com.example.mymusic.presentation.permission.ReadStoragePermissionTextProvider
@@ -32,6 +30,7 @@ import com.example.mymusic.presentation.search.SearchViewModel
 import com.example.mymusic.presentation.songs.SongsViewModel
 import com.example.mymusic.ui.theme.MyMusicTheme
 import dagger.hilt.android.AndroidEntryPoint
+import java.io.File
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -104,6 +103,7 @@ class MainActivity : ComponentActivity() {
                                     Manifest.permission.READ_EXTERNAL_STORAGE -> {
                                         ReadStoragePermissionTextProvider()
                                     }
+
                                     else -> return@forEach
                                 },
                                 isPermanentlyDeclined = !shouldShowRequestPermissionRationale(
@@ -158,7 +158,7 @@ class MainActivity : ComponentActivity() {
                             shuffle = {
                                 songsViewModel.shuffle()
                             },
-                            repeat ={
+                            repeat = {
                                 songsViewModel.repeat(it)
                             },
                             updateTimer = {
@@ -169,6 +169,9 @@ class MainActivity : ComponentActivity() {
                             },
                             equalizer = {
                                 songsViewModel.stockEqualizer(this)
+                            },
+                            shareSong = {
+                                shareAudioFile(it)
                             }
                         )
                     }
@@ -178,7 +181,27 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+
+    private fun shareAudioFile(song: Song) {
+        try {
+            val file = File(song.data)
+            if (file.exists()) {
+                val uri =
+                    FileProvider.getUriForFile(this, BuildConfig.APPLICATION_ID + ".provider", file)
+                val intent = Intent(Intent.ACTION_SEND)
+                intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                intent.setType("audio/*")
+                intent.putExtra(Intent.EXTRA_STREAM, uri)
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent)
+            }
+        } catch (e: java.lang.Exception) {
+            e.printStackTrace()
+        }
+    }
+
 }
+
 fun Activity.openAppSettings() {
     Intent(
         Settings.ACTION_APPLICATION_DETAILS_SETTINGS,

@@ -52,8 +52,9 @@ fun MainScreen(
     shuffle: () -> Unit,
     repeat: (Int) -> Unit,
     updateTimer: () -> String,
-    addFavorite : (Song) -> Unit,
-    equalizer : () -> Unit
+    addFavorite: (Song) -> Unit,
+    equalizer: () -> Unit,
+    shareSong: (Song) -> Unit
 ) {
 
     val navController = rememberNavController()
@@ -91,7 +92,7 @@ fun MainScreen(
     val radius = 30.dp
 
 
-    var isSelected by remember{
+    var isSelected by remember {
         mutableStateOf(currentPlayingAudio?.isFavorite)
     }
 
@@ -120,7 +121,7 @@ fun MainScreen(
                                 repeat = repeat,
                                 updateTimer = { updateTimer.invoke() },
                                 addFavorite = {
-                                              addFavorite.invoke(currentPlayingAudio)
+                                    addFavorite.invoke(currentPlayingAudio)
                                     isSelected = !isSelected!!
                                 },
                                 isSelected = isSelected!!
@@ -163,7 +164,8 @@ fun MainScreen(
                     songs = songs,
                     searchText = searchText,
                     currentPlayingAudio = currentPlayingAudio,
-                    equalizer = equalizer
+                    equalizer = equalizer,
+                    shareSong = shareSong
                 )
             }
         }
@@ -236,7 +238,7 @@ fun BottomBarPlayer(
     isAudioPlaying: Boolean,
     onStart: () -> Unit,
     addFavorite: (Song) -> Unit,
-    isSelected : Boolean?
+    isSelected: Boolean?
 ) {
     Row(
         modifier = Modifier

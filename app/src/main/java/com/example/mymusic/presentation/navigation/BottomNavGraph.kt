@@ -44,7 +44,8 @@ fun BottomNavGraph(
     favoriteViewModel: FavoriteViewModel = hiltViewModel(),
     artistViewModel: ArtistViewModel = hiltViewModel(),
     mainViewModel: MainViewModel = viewModel(),
-    equalizer : () -> Unit
+    equalizer: () -> Unit,
+    shareSong: (Song) -> Unit
 ) {
 
     NavHost(
@@ -81,7 +82,6 @@ fun BottomNavGraph(
         }
         composable(BottomBarScreen.Songs.route) {
             SongsScreen(
-                isAudioPlaying = songsViewModel.isAudioPlaying,
                 audioList = songList,
                 currentPlayingAudio = songsViewModel
                     .currentPlayingAudio.value,
@@ -96,7 +96,8 @@ fun BottomNavGraph(
                 playlists = playlistViewModel.playlists,
                 insertSongIntoPlaylist = { song, playlistName ->
                     playlistViewModel.insertSongIntoPlaylist(song, playlistName)
-                }
+                },
+                shareSong = shareSong
             )
         }
         composable(BottomBarScreen.Playlists.route) {
@@ -140,7 +141,7 @@ fun BottomNavGraph(
                 searchText,
                 songs,
                 currentPlayingAudio,
-                onItemClick={
+                onItemClick = {
                     songsViewModel.playAudio(it)
                     historyViewModel.updateHistory(it)
                 },
@@ -150,7 +151,8 @@ fun BottomNavGraph(
                 },
                 onSearchTextChange = {
                     searchViewModel.onSearchTextChange(it)
-                }
+                },
+                shareSong = shareSong
             )
         }
         composable(Screen.PlaylistDetailsScreen.route) {
@@ -173,6 +175,7 @@ fun BottomNavGraph(
                 onStart = { currentPlayingAudio, songs ->
                     songsViewModel.playPlaylist(currentPlayingAudio, songs)
                 },
+                shareSong = shareSong
             )
         }
 
@@ -195,11 +198,11 @@ fun BottomNavGraph(
                 onStart = { currentPlayingAudio, songs ->
                     songsViewModel.playPlaylist(currentPlayingAudio, songs)
                 },
-
-                )
+                shareSong
+            )
         }
 
-        composable(Screen.HistoryScreen.route){
+        composable(Screen.HistoryScreen.route) {
             HistoryScreen(
                 history = historyViewModel.history,
                 navController = navController,
@@ -210,11 +213,12 @@ fun BottomNavGraph(
                 playlists = playlistViewModel.playlists,
                 insertSongIntoPlaylist = { song, playlistName ->
                     playlistViewModel.insertSongIntoPlaylist(song, playlistName)
-                }
+                },
+                shareSong = shareSong
             )
         }
 
-        composable(Screen.FavoriteScreen.route){
+        composable(Screen.FavoriteScreen.route) {
             FavoriteScreen(
                 navController = navController,
                 favorite = favoriteViewModel.songList,
@@ -226,11 +230,12 @@ fun BottomNavGraph(
                 playlists = playlistViewModel.playlists,
                 insertSongIntoPlaylist = { song, playlistName ->
                     playlistViewModel.insertSongIntoPlaylist(song, playlistName)
-                }
+                },
+                shareSong
             )
         }
 
-        composable(Screen.AllAlbumsScreen.route){
+        composable(Screen.AllAlbumsScreen.route) {
             AllAlbumsScreen(
                 albums = albumsViewModel.albums,
                 currentPlayingAudio = songsViewModel.currentPlayingAudio.value,
@@ -244,7 +249,7 @@ fun BottomNavGraph(
             )
         }
 
-        composable(Screen.AllArtistsScreen.route){
+        composable(Screen.AllArtistsScreen.route) {
             AllArtistsScreen(
                 navController = navController,
                 currentPlayingAudio = songsViewModel.currentPlayingAudio.value,
@@ -255,7 +260,7 @@ fun BottomNavGraph(
             )
         }
 
-        composable(Screen.ArtistDetailScreen.route){
+        composable(Screen.ArtistDetailScreen.route) {
             ArtistsDetailScreen(
                 navController = navController,
                 artist = artistViewModel.artistNavigated.value,
@@ -274,10 +279,11 @@ fun BottomNavGraph(
                 onStart = { currentPlayingAudio, songs ->
                     songsViewModel.playPlaylist(currentPlayingAudio, songs)
                 },
+                shareSong = shareSong
             )
         }
 
-        composable(Screen.SettingsScreen.route){
+        composable(Screen.SettingsScreen.route) {
             SettingsScreen(
                 navController = navController,
                 userName = "User Name",

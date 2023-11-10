@@ -48,7 +48,7 @@ import com.skydoves.landscapist.glide.GlideImage
 
 @Composable
 fun ArtistsDetailScreen(
-    navController : NavController,
+    navController: NavController,
     artist: Artist?,
     shuffle: (Artist) -> Unit,
     onStart: (Song, List<Song>) -> Unit,
@@ -56,6 +56,7 @@ fun ArtistsDetailScreen(
     insertSongIntoPlaylist: (Song, String) -> Unit,
     onItemClick: (Song) -> Unit,
     currentPlayingAudio: Song?,
+    shareSong: (Song) -> Unit
 ) {
 
     Scaffold(
@@ -71,7 +72,7 @@ fun ArtistsDetailScreen(
                 artist = artist!!,
                 shuffle = { shuffle.invoke(artist) },
                 onStart = {
-                    if(artist.songs.isNotEmpty())
+                    if (artist.songs.isNotEmpty())
                         onStart.invoke(artist.songs[0], artist.songs)
                 }
             )
@@ -80,7 +81,8 @@ fun ArtistsDetailScreen(
                 audioList = artist.songs,
                 allPlaylists = allPlaylists,
                 insertSongIntoPlaylist = insertSongIntoPlaylist,
-                onItemClick = onItemClick
+                onItemClick = onItemClick,
+                shareSong = shareSong
             )
         }
     }
@@ -93,13 +95,13 @@ fun ArtistInfo(
     onStart: () -> Unit,
 ) {
 
-    val songsText by remember{
-        if(artist.numberSongs > 1)
+    val songsText by remember {
+        if (artist.numberSongs > 1)
             mutableStateOf("songs")
         else mutableStateOf("song")
     }
-    val albumText by remember{
-        if(artist.numberAlbums > 1)
+    val albumText by remember {
+        if (artist.numberAlbums > 1)
             mutableStateOf("albums")
         else mutableStateOf("album")
     }
@@ -123,11 +125,15 @@ fun ArtistInfo(
                 .background(Color.DarkGray)
         )
         Spacer(modifier = Modifier.width(8.dp))
-        Text(text = artist.artist,
+        Text(
+            text = artist.artist,
             fontSize = 24.sp,
-            fontWeight = FontWeight.Bold)
-        Row (Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.Center){
+            fontWeight = FontWeight.Bold
+        )
+        Row(
+            Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.Center
+        ) {
             Text(text = "${artist.numberAlbums} $albumText")
             Text(text = " · ${artist.numberSongs} $songsText")
         }
@@ -149,8 +155,10 @@ fun ArtistInfo(
                     contentDescription = "Play songs",
                     tint = MaterialTheme.colors.whiteToDarkGrey
                 )
-                Text(text = " Play",
-                    color = MaterialTheme.colors.whiteToDarkGrey)
+                Text(
+                    text = " Play",
+                    color = MaterialTheme.colors.whiteToDarkGrey
+                )
             }
             Spacer(modifier = Modifier.width(4.dp))
             Button(

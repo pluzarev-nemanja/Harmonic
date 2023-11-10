@@ -42,8 +42,8 @@ import com.example.mymusic.domain.util.SortOrder
 import com.example.mymusic.presentation.navigation.Screen
 import com.example.mymusic.presentation.util.Marquee
 import com.example.mymusic.presentation.util.defaultMarqueeParams
-import com.example.mymusic.ui.theme.whiteToDarkGrey
 import com.example.mymusic.ui.theme.lightBlueToWhite
+import com.example.mymusic.ui.theme.whiteToDarkGrey
 import com.example.mymusic.ui.theme.whiteToDarkestBlue
 import com.skydoves.landscapist.ImageOptions
 import com.skydoves.landscapist.glide.GlideImage
@@ -52,14 +52,14 @@ import kotlin.math.floor
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun SongsScreen(
-    isAudioPlaying: Boolean,
     audioList: List<Song>,
     currentPlayingAudio: Song?,
     onItemClick: (Song) -> Unit,
     sortOrderChange: (SortOrder) -> Unit,
     navController: NavController,
     playlists: List<Playlist>,
-    insertSongIntoPlaylist: (Song, String) -> Unit
+    insertSongIntoPlaylist: (Song, String) -> Unit,
+    shareSong: (Song) -> Unit
 ) {
 
     val sortOrder by remember {
@@ -76,11 +76,6 @@ fun SongsScreen(
     val paddingLazyList by animateDpAsState(
         targetValue = if (scrollState.isScrolled) 0.dp else TOP_BAR_HEIGHT,
         animationSpec = tween(durationMillis = 300), label = "paddingLazyList"
-    )
-
-    val scrollKnobPadding by animateDpAsState(
-        targetValue = if (scrollState.isScrolled || isAudioPlaying) 80.dp else TOP_BAR_HEIGHT,
-        animationSpec = tween(durationMillis = 300), label = "scrollKnobPadding"
     )
 
 
@@ -106,7 +101,8 @@ fun SongsScreen(
                                 tween(durationMillis = 450)
                             ),
                             playlists = playlists,
-                            insertSongIntoPlaylist = insertSongIntoPlaylist
+                            insertSongIntoPlaylist = insertSongIntoPlaylist,
+                            shareSong = shareSong
                         )
                     }
 
@@ -318,7 +314,8 @@ fun AudioItem(
     onItemClick: (id: Long) -> Unit,
     modifier: Modifier = Modifier,
     playlists: List<Playlist> = emptyList(),
-    insertSongIntoPlaylist: (Song, String) -> Unit
+    insertSongIntoPlaylist: (Song, String) -> Unit,
+    shareSong: (Song) -> Unit
 ) {
 
     var showMenu by remember { mutableStateOf(false) }
@@ -416,6 +413,14 @@ fun AudioItem(
 
                                 )
                         }
+                        DropdownMenuItem(onClick = {
+                            shareSong.invoke(audio)
+                            showMenu = false
+                        }) {
+                            Text(
+                                text = "Share song",
+                            )
+                        }
                     }
                 }
                 if (openDialog) {
@@ -462,10 +467,11 @@ fun AudioItem(
                                 onClick = {
                                     insertSongIntoPlaylist.invoke(audio, selectedIndex)
                                     openDialog = false
-                                } ,
+                                },
                                 colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.lightBlueToWhite)
                             ) {
-                                Text("Add",
+                                Text(
+                                    "Add",
                                     color = MaterialTheme.colors.whiteToDarkGrey
                                 )
                             }

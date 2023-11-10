@@ -107,26 +107,25 @@ class SongsViewModel @Inject constructor(
 
     fun stockEqualizer(activity: Activity) {
         val sessionId = 1
-            try {
-                val effects = Intent(AudioEffect.ACTION_DISPLAY_AUDIO_EFFECT_CONTROL_PANEL)
-                effects.putExtra(AudioEffect.EXTRA_AUDIO_SESSION, sessionId)
-                effects.putExtra(AudioEffect.EXTRA_CONTENT_TYPE, AudioEffect.CONTENT_TYPE_MUSIC)
-                activity.startActivityForResult(effects, 0)
-            } catch (notFound: ActivityNotFoundException) {
-                Log.d("EQ","No equalizer found")
-            }
+        try {
+            val effects = Intent(AudioEffect.ACTION_DISPLAY_AUDIO_EFFECT_CONTROL_PANEL)
+            effects.putExtra(AudioEffect.EXTRA_AUDIO_SESSION, sessionId)
+            effects.putExtra(AudioEffect.EXTRA_CONTENT_TYPE, AudioEffect.CONTENT_TYPE_MUSIC)
+            activity.startActivityForResult(effects, 0)
+        } catch (notFound: ActivityNotFoundException) {
+            Log.d("EQ", "No equalizer found")
         }
+    }
 
     fun suggestions() {
         suggestions.clear()
-        if(songList.size != 0 ){
+        if (songList.size != 0) {
             if (songList.size >= 5) {
                 for (i in 0..5) {
                     val number = Random.nextInt(from = 0, until = songList.size)
                     suggestions.add(i, songList[number])
                 }
-            }
-            else{
+            } else {
                 for (i in 0 until songList.size) {
                     val number = Random.nextInt(from = 0, until = songList.size)
                     suggestions.add(i, songList[number])
@@ -134,6 +133,7 @@ class SongsViewModel @Inject constructor(
             }
         }
     }
+
     fun changeSortOrderSongs(sortOrder: SortOrder) {
         when (sortOrder) {
             SortOrder.ASCENDING -> {
@@ -267,23 +267,26 @@ class SongsViewModel @Inject constructor(
             )
     }
 
-    fun shuffleAlbum(album: Album){
+    fun shuffleAlbum(album: Album) {
         val number = Random.nextInt(from = 0, until = album.songCount)
-        playPlaylist(currentAudio = album.songs[number],songs = album.songs)
+        playPlaylist(currentAudio = album.songs[number], songs = album.songs)
     }
-    fun shuffleArtist(artist: Artist){
+
+    fun shuffleArtist(artist: Artist) {
         val number = Random.nextInt(from = 0, until = artist.numberSongs)
-        playPlaylist(currentAudio = artist.songs[number],songs = artist.songs)
+        playPlaylist(currentAudio = artist.songs[number], songs = artist.songs)
     }
-    fun shuffleSongs(){
-        if(songList.size != 0){
+
+    fun shuffleSongs() {
+        if (songList.size != 0) {
             val number = Random.nextInt(from = 0, until = songList.size)
-            playPlaylist(currentAudio = songList[number],songList)
+            playPlaylist(currentAudio = songList[number], songList)
         }
     }
-    fun shufflePlaylist(playlist: Playlist){
+
+    fun shufflePlaylist(playlist: Playlist) {
         val number = Random.nextInt(from = 0, until = playlist.songCount)
-        playPlaylist(currentAudio = playlist.songs[number],songs = playlist.songs)
+        playPlaylist(currentAudio = playlist.songs[number], songs = playlist.songs)
     }
 
     fun stopPlayBack() {

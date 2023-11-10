@@ -19,7 +19,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
@@ -37,7 +36,8 @@ fun SearchScreen(
     onItemClick: (Song) -> Unit,
     playlists: List<Playlist>,
     insertSongIntoPlaylist: (Song, String) -> Unit,
-    onSearchTextChange: (String) -> Unit
+    onSearchTextChange: (String) -> Unit,
+    shareSong: (Song) -> Unit
 ) {
 
     val animatedHeight by animateDpAsState(
@@ -53,8 +53,10 @@ fun SearchScreen(
             .fillMaxSize()
             .padding(16.dp)
     ) {
-        SearchAppBar(searchText,
-            onSearchTextChange = onSearchTextChange)
+        SearchAppBar(
+            searchText,
+            onSearchTextChange = onSearchTextChange
+        )
         Spacer(modifier = Modifier.height(16.dp))
         if (searchText.isEmpty()) {
             Box(
@@ -74,8 +76,10 @@ fun SearchScreen(
                 modifier = Modifier
                     .fillMaxSize()
             ) {
-                Column(modifier = Modifier
-                    .fillMaxSize()) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                ) {
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         verticalAlignment = Alignment.CenterVertically,
@@ -101,7 +105,8 @@ fun SearchScreen(
                                     tween(durationMillis = 250)
                                 ),
                                 playlists = playlists,
-                                insertSongIntoPlaylist = insertSongIntoPlaylist
+                                insertSongIntoPlaylist = insertSongIntoPlaylist,
+                                shareSong = shareSong
                             )
                         }
 
@@ -120,7 +125,7 @@ fun SearchScreen(
 @Composable
 fun SearchAppBar(
     searchText: String,
-    onSearchTextChange : (String) -> Unit
+    onSearchTextChange: (String) -> Unit
 ) {
     OutlinedTextField(
         modifier = Modifier.fillMaxWidth(),
@@ -153,7 +158,7 @@ fun SearchAppBar(
         colors = TextFieldDefaults.outlinedTextFieldColors(
             unfocusedBorderColor = MaterialTheme.colors.darkestBlueToWhite,
             focusedBorderColor = MaterialTheme.colors.darkestBlueToWhite,
-            cursorColor =MaterialTheme.colors.darkestBlueToWhite
+            cursorColor = MaterialTheme.colors.darkestBlueToWhite
         )
     )
 }

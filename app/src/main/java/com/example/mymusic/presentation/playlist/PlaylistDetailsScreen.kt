@@ -29,7 +29,6 @@ import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.MoreHoriz
-import androidx.compose.material.icons.filled.MusicNote
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Shuffle
 import androidx.compose.runtime.Composable
@@ -62,6 +61,7 @@ fun PlaylistDetailsScreen(
     onItemClick: (Song) -> Unit,
     shuffle: (Playlist) -> Unit,
     onStart: (Song, List<Song>) -> Unit,
+    shareSong: (Song) -> Unit
 ) {
 
     Scaffold(
@@ -79,8 +79,8 @@ fun PlaylistDetailsScreen(
                 playlist = playlist!!,
                 shuffle = { shuffle.invoke(playlist) },
                 onStart = {
-                    if(playlist.songs.isNotEmpty())
-                    onStart.invoke(playlist.songs[0], playlist.songs)
+                    if (playlist.songs.isNotEmpty())
+                        onStart.invoke(playlist.songs[0], playlist.songs)
                 },
             )
             SongsList(
@@ -88,7 +88,8 @@ fun PlaylistDetailsScreen(
                 audioList = playlist.songs,
                 allPlaylists = allPlaylists,
                 insertSongIntoPlaylist = insertSongIntoPlaylist,
-                onItemClick = onItemClick
+                onItemClick = onItemClick,
+                shareSong = shareSong
             )
         }
     }
@@ -174,6 +175,7 @@ fun SongsList(
     allPlaylists: List<Playlist>,
     insertSongIntoPlaylist: (Song, String) -> Unit,
     onItemClick: (Song) -> Unit,
+    shareSong: (Song) -> Unit
 ) {
 
     val animatedHeight by animateDpAsState(
@@ -193,7 +195,8 @@ fun SongsList(
                     tween(durationMillis = 450)
                 ),
                 playlists = allPlaylists,
-                insertSongIntoPlaylist = insertSongIntoPlaylist
+                insertSongIntoPlaylist = insertSongIntoPlaylist,
+                shareSong = shareSong
             )
         }
     }
@@ -211,7 +214,8 @@ fun TopBarPlaylist(
             .background(color = MaterialTheme.colors.primary)
     ) {
         Row(
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier
+                .fillMaxSize()
                 .padding(end = 8.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween,

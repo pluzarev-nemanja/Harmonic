@@ -28,7 +28,9 @@ fun FavoriteScreen(
     currentPlayingAudio: Song?,
     onItemClick: (Song) -> Unit,
     playlists: List<Playlist>,
-    insertSongIntoPlaylist: (Song, String) -> Unit
+    insertSongIntoPlaylist: (Song, String) -> Unit,
+    shareSong: (Song) -> Unit
+
 ) {
 
     val animatedHeight by animateDpAsState(
@@ -60,7 +62,8 @@ fun FavoriteScreen(
                             tween(durationMillis = 450)
                         ),
                         playlists = playlists,
-                        insertSongIntoPlaylist = insertSongIntoPlaylist
+                        insertSongIntoPlaylist = insertSongIntoPlaylist,
+                        shareSong = shareSong
                     )
                 }
 
