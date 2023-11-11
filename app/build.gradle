@@ -107,9 +107,15 @@ dependencies {
     //splash screen
     implementation "androidx.core:core-splashscreen:1.0.0"
 
+    //gson library
     implementation 'com.google.code.gson:gson:2.10.1'
 
+    //live data
     implementation "androidx.compose.runtime:runtime-livedata:$compose_ui_version"
+
+    //for changing status bar color
+    implementation "com.google.accompanist:accompanist-systemuicontroller:0.27.0"
+
 
 
 

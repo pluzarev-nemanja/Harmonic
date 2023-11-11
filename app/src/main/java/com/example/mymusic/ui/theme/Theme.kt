@@ -5,8 +5,8 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.darkColors
 import androidx.compose.material.lightColors
 import androidx.compose.runtime.Composable
-import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.mymusic.presentation.main.MainViewModel
+import androidx.compose.ui.graphics.Color
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 private val DarkColorPalette = darkColors(
     primary = darkestBlue,
@@ -35,6 +35,21 @@ fun MyMusicTheme(
         "Dark" -> DarkColorPalette
         "Light" -> LightColorPalette
         else -> if (isSystemInDarkTheme()) DarkColorPalette else LightColorPalette
+    }
+    val systemUiController = rememberSystemUiController()
+    when (theme) {
+        "Dark" -> systemUiController.setSystemBarsColor(
+            color = Color(0xFF2D313A)
+        )
+
+        "Light" -> systemUiController.setSystemBarsColor(
+            color = Color(0xFF9DB2BF)
+        )
+
+        else -> if (isSystemInDarkTheme())
+            systemUiController.setSystemBarsColor(color = Color(0xFF2D313A)) else systemUiController.setSystemBarsColor(
+            color = Color(0xFF9DB2BF)
+        )
     }
 
     MaterialTheme(
