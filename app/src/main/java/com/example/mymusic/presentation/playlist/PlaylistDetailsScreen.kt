@@ -20,9 +20,11 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
+import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.OutlinedButton
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
@@ -47,6 +49,8 @@ import com.example.mymusic.domain.model.Playlist
 import com.example.mymusic.domain.model.Song
 import com.example.mymusic.presentation.songs.AudioItem
 import com.example.mymusic.presentation.songs.timeStampToDuration
+import com.example.mymusic.ui.theme.lightBlueToWhite
+import com.example.mymusic.ui.theme.whiteToDarkGrey
 import com.skydoves.landscapist.ImageOptions
 import com.skydoves.landscapist.glide.GlideImage
 
@@ -109,7 +113,7 @@ fun PlaylistInfo(
             .padding(15.dp)
     ) {
         GlideImage(
-            imageModel = { R.mipmap.ic_launcher },
+            imageModel = { R.drawable.playlist },
             imageOptions = ImageOptions(
                 contentScale = ContentScale.Crop,
                 alignment = Alignment.Center
@@ -138,17 +142,21 @@ fun PlaylistInfo(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceEvenly
             ) {
-                Button(
+                OutlinedButton(
                     onClick = {
                         onStart.invoke()
                     },
                     shape = RoundedCornerShape(35.dp),
-                    modifier = Modifier.width(120.dp)
+                    modifier = Modifier.weight(1f),
+                    colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.lightBlueToWhite)
                 ) {
                     Icon(
                         imageVector = Icons.Default.PlayArrow,
-                        contentDescription = "Play playlist"
+                        contentDescription = "Play playlist",
+                        tint = MaterialTheme.colors.whiteToDarkGrey
                     )
+                    Text(text = " Play",
+                        color = MaterialTheme.colors.whiteToDarkGrey)
                 }
                 Spacer(modifier = Modifier.width(4.dp))
                 Button(
