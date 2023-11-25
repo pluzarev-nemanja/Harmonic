@@ -21,9 +21,13 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowForward
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -36,6 +40,7 @@ import com.example.mymusic.R
 import com.example.mymusic.presentation.history.SimpleTopBar
 import com.example.mymusic.presentation.main.MainViewModel
 import com.example.mymusic.ui.theme.darkestBlueToWhite
+import com.example.mymusic.ui.theme.whiteToDarkGrey
 import com.skydoves.landscapist.ImageOptions
 import com.skydoves.landscapist.glide.GlideImage
 
@@ -44,11 +49,12 @@ fun SettingsScreen(
     navController: NavController,
     userName: String,
     onThemeChange: (String) -> Unit,
-    mainViewModel: MainViewModel,
-    equalizer: () -> Unit
+    settingsViewModel: SettingsViewModel,
+    equalizer: () -> Unit,
+    changeUserName: (String) -> Unit
 ) {
 
-    val theme: String by mainViewModel.theme.observeAsState("")
+    val theme: String by settingsViewModel.theme.observeAsState("")
 
     Scaffold(
         topBar = {
@@ -56,7 +62,7 @@ fun SettingsScreen(
         }
     ) { padding ->
         Column(modifier = Modifier.fillMaxSize()) {
-            UserInfo(userName = userName)
+            UserInfo(userName = userName,changeUserName)
             Spacer(modifier = Modifier.height(10.dp))
             ThemeOptions(
                 onThemeChange = onThemeChange,
@@ -73,9 +79,13 @@ fun SettingsScreen(
 
 @Composable
 fun UserInfo(
-    userName: String
+   userName: String,
+    changeUserName: (String) -> Unit
 ) {
 
+    var filledText by remember {
+        mutableStateOf(userName)
+    }
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -98,10 +108,22 @@ fun UserInfo(
             ),
         )
         Spacer(modifier = Modifier.height(8.dp))
-        OutlinedTextField(value = userName, onValueChange = {
-
+        Row(modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceEvenly) {
+            OutlinedTextField(
+                value = filledText,
+                onValueChange = {
+                    filledText = it
+                    changeUserName.invoke(filledText)
+                },
+                singleLine = true,
+            )
+            Icon(
+                imageVector = Icons.Filled.Edit, contentDescription = "edit profile",
+                tint = MaterialTheme.colors.darkestBlueToWhite
+            )
         }
-        )
     }
 }
 

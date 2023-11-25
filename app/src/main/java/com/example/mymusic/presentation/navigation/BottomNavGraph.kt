@@ -26,6 +26,7 @@ import com.example.mymusic.presentation.playlist.PlaylistViewModel
 import com.example.mymusic.presentation.search.SearchScreen
 import com.example.mymusic.presentation.search.SearchViewModel
 import com.example.mymusic.presentation.settings.SettingsScreen
+import com.example.mymusic.presentation.settings.SettingsViewModel
 import com.example.mymusic.presentation.songs.SongsScreen
 import com.example.mymusic.presentation.songs.SongsViewModel
 
@@ -43,9 +44,9 @@ fun BottomNavGraph(
     historyViewModel: HistoryViewModel = hiltViewModel(),
     favoriteViewModel: FavoriteViewModel = hiltViewModel(),
     artistViewModel: ArtistViewModel = hiltViewModel(),
-    mainViewModel: MainViewModel = viewModel(),
     equalizer: () -> Unit,
-    shareSong: (Song) -> Unit
+    shareSong: (Song) -> Unit,
+    settingsViewModel: SettingsViewModel = hiltViewModel()
 ) {
 
     NavHost(
@@ -77,7 +78,8 @@ fun BottomNavGraph(
                 artists = artistViewModel.artists,
                 addArtist = {
                     artistViewModel.addArtist(it)
-                }
+                },
+                name = settingsViewModel.user.userName
             )
         }
         composable(BottomBarScreen.Songs.route) {
@@ -284,14 +286,19 @@ fun BottomNavGraph(
         }
 
         composable(Screen.SettingsScreen.route) {
+
             SettingsScreen(
                 navController = navController,
-                userName = "User Name",
+                userName = settingsViewModel.user.userName,
                 onThemeChange = {
-                    mainViewModel.onThemeChanged(it)
+                    settingsViewModel.changeTheme(it)
+                    settingsViewModel.onThemeChanged(it)
                 },
-                mainViewModel,
-                equalizer = equalizer
+                settingsViewModel,
+                equalizer = equalizer,
+                changeUserName = {
+                    settingsViewModel.changeUserName(it)
+                }
             )
         }
     }

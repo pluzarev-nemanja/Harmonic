@@ -9,6 +9,7 @@ import com.example.mymusic.domain.model.Favorite
 import com.example.mymusic.domain.model.History
 import com.example.mymusic.domain.model.Playlist
 import com.example.mymusic.domain.model.Song
+import com.example.mymusic.domain.model.User
 import com.example.mymusic.domain.repository.MusicRepository
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
@@ -129,5 +130,13 @@ class MusicRepositoryImpl @Inject constructor(
 
     override fun getArtistWithSongs(artistName: String): Flow<List<ArtistWithSongs>> {
         return dao.getArtistWithSongs(artistName)
+    }
+
+    override suspend fun insertUser(user: User) {
+        dao.insertUser(user)
+    }
+
+    override fun getUser(id: Int): Flow<List<User>> {
+        return dao.getUser(id)
     }
 }

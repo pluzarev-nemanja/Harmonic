@@ -75,7 +75,8 @@ fun HomeScreen(
     onItemClick: (Song) -> Unit,
     addAlbum: (Album) -> Unit,
     artists : List<Artist>,
-    addArtist: (Artist) -> Unit
+    addArtist: (Artist) -> Unit,
+    name: String
 ) {
 
     val lazyState = rememberLazyListState()
@@ -96,7 +97,7 @@ fun HomeScreen(
                 .padding(top = paddingLazyList)
                 .verticalScroll(rememberScrollState())
         ) {
-            UserInfo()
+            UserInfo(name)
             Spacer(modifier = Modifier.height(8.dp))
             Buttons(navController, shuffle)
             Suggestions(
@@ -129,7 +130,9 @@ fun HomeScreen(
 
 
 @Composable
-fun UserInfo() {
+fun UserInfo(
+    name: String
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -156,7 +159,7 @@ fun UserInfo() {
                 fontWeight = FontWeight.Bold
             )
             Text(
-                text = "User Name",
+                text = name,
                 fontWeight = FontWeight.Light
             )
         }

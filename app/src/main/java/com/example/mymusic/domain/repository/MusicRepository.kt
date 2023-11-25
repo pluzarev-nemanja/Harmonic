@@ -8,6 +8,7 @@ import com.example.mymusic.domain.model.Favorite
 import com.example.mymusic.domain.model.History
 import com.example.mymusic.domain.model.Playlist
 import com.example.mymusic.domain.model.Song
+import com.example.mymusic.domain.model.User
 import kotlinx.coroutines.flow.Flow
 
 interface MusicRepository {
@@ -66,5 +67,8 @@ interface MusicRepository {
     fun getArtists(): Flow<List<Artist>>
 
     fun getArtistWithSongs(artistName : String) : Flow<List<ArtistWithSongs>>
+
+    suspend fun insertUser(user: User)
+    fun getUser(id: Int): Flow<List<User>>
 
 }

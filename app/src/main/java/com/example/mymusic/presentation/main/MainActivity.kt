@@ -20,6 +20,7 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.core.content.FileProvider
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.mymusic.BuildConfig
 import com.example.mymusic.domain.model.Song
@@ -27,6 +28,7 @@ import com.example.mymusic.presentation.favorite.FavoriteViewModel
 import com.example.mymusic.presentation.permission.PermissionDialog
 import com.example.mymusic.presentation.permission.ReadStoragePermissionTextProvider
 import com.example.mymusic.presentation.search.SearchViewModel
+import com.example.mymusic.presentation.settings.SettingsViewModel
 import com.example.mymusic.presentation.songs.SongsViewModel
 import com.example.mymusic.ui.theme.MyMusicTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -48,7 +50,8 @@ class MainActivity : ComponentActivity() {
         }
         setContent {
             val mainViewModel = viewModel<MainViewModel>()
-            val theme: String by mainViewModel.theme.observeAsState("Auto")
+            val settingsViewModel = hiltViewModel<SettingsViewModel>()
+            val theme: String by settingsViewModel.theme.observeAsState("Auto")
 
             MyMusicTheme(
                 theme = theme

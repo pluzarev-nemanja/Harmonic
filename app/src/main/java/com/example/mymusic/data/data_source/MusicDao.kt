@@ -16,6 +16,7 @@ import com.example.mymusic.domain.model.Favorite
 import com.example.mymusic.domain.model.History
 import com.example.mymusic.domain.model.Playlist
 import com.example.mymusic.domain.model.Song
+import com.example.mymusic.domain.model.User
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -102,5 +103,11 @@ interface MusicDao {
 
      @Query("SELECT * FROM artist ORDER BY artist ASC")
      fun getArtists(): Flow<List<Artist>>
+
+     @Upsert
+     suspend fun insertUser(user: User)
+
+    @Query("SELECT * FROM user WHERE id = :id ORDER BY id DESC")
+    fun getUser(id: Int): Flow<List<User>>
 
 }

@@ -28,5 +28,7 @@ data class MusicUseCases(
     val updateSong: UpdateSong,
     val getArtists: GetArtists,
     val insertArtists: InsertArtists,
-    val getArtistWithSongs: GetArtistWithSongs
+    val getArtistWithSongs: GetArtistWithSongs,
+    val insertUser: InsertUser,
+    val getUser: GetUser
 )

@@ -10,18 +10,6 @@ import androidx.lifecycle.ViewModel
 
 class MainViewModel: ViewModel() {
 
-
-    private val _theme = MutableLiveData("Auto")
-    val theme: LiveData<String> = _theme
-
-    fun onThemeChanged(newTheme: String) {
-        when (newTheme) {
-            "Auto" -> _theme.value = "Auto"
-            "Light" -> _theme.value = "Light"
-            "Dark" -> _theme.value = "Dark"
-        }
-    }
-
     val visiblePermissionDialogQue = mutableStateListOf<String>()
 
     fun dismissDialog(){
