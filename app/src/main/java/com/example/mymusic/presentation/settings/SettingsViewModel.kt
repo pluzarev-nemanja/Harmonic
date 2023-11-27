@@ -19,7 +19,7 @@ class SettingsViewModel @Inject constructor(
     private val musicUseCases: MusicUseCases
 ) : ViewModel() {
 
-    var user by mutableStateOf(User(1,"","Auto"))
+    var user by mutableStateOf(User(1,"User Name","Auto", userImage = "",isSnowing = false))
 
     private val _theme = MutableLiveData("Auto")
     val theme: LiveData<String> = _theme
@@ -48,6 +48,25 @@ class SettingsViewModel @Inject constructor(
         }
     }
 
+    fun changeSnowing(isSnowing: Boolean){
+        viewModelScope.launch(Dispatchers.IO) {
+            musicUseCases.insertUser(
+                user.copy(
+                    isSnowing = isSnowing
+                )
+            )
+        }
+    }
+
+    fun changeUserImage(userImage : String){
+        viewModelScope.launch(Dispatchers.IO) {
+            musicUseCases.insertUser(
+                user.copy(
+                    userImage = userImage
+                )
+            )
+        }
+    }
      fun changeTheme(theme:String){
         viewModelScope.launch(Dispatchers.IO) {
             musicUseCases.insertUser(

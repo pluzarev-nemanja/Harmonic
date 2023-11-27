@@ -79,7 +79,8 @@ fun BottomNavGraph(
                 addArtist = {
                     artistViewModel.addArtist(it)
                 },
-                name = settingsViewModel.user.userName
+                name = settingsViewModel.user.userName,
+                userImage = settingsViewModel.user.userImage
             )
         }
         composable(BottomBarScreen.Songs.route) {
@@ -298,7 +299,15 @@ fun BottomNavGraph(
                 equalizer = equalizer,
                 changeUserName = {
                     settingsViewModel.changeUserName(it)
-                }
+                },
+                changeSnowing = {
+                    settingsViewModel.changeSnowing(it)
+                },
+                changeUserImage = {
+                    settingsViewModel.changeUserImage(it)
+                },
+                userImage = settingsViewModel.user.userImage,
+                isSnowEnable = settingsViewModel.user.isSnowing
             )
         }
     }

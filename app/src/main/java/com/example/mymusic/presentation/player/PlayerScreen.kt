@@ -21,14 +21,11 @@ import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ExpandMore
 import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.GraphicEq
 import androidx.compose.material.icons.filled.MoreHoriz
 import androidx.compose.material.icons.filled.Pause
 import androidx.compose.material.icons.filled.PlayArrow
-import androidx.compose.material.icons.filled.PlaylistAdd
 import androidx.compose.material.icons.filled.Repeat
 import androidx.compose.material.icons.filled.RepeatOne
-import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.filled.Shuffle
 import androidx.compose.material.icons.filled.SkipNext
 import androidx.compose.material.icons.filled.SkipPrevious
@@ -53,6 +50,7 @@ import com.example.mymusic.presentation.songs.timeStampToDuration
 import com.example.mymusic.presentation.util.Marquee
 import com.example.mymusic.presentation.util.defaultMarqueeParams
 import com.example.mymusic.presentation.util.shadow
+import com.example.mymusic.presentation.util.snowfall
 import com.example.mymusic.ui.theme.darkGreyToSoftGrey
 import com.example.mymusic.ui.theme.darkestBlueToWhite
 import com.example.mymusic.ui.theme.lightBlueToWhite
@@ -76,10 +74,16 @@ fun PlayerScreen(
     repeat: (Int) -> Unit,
     updateTimer: () -> String,
     addFavorite: (Song) -> Unit,
-    isSelected: Boolean
+    isSelected: Boolean,
+    isSnowing : Boolean
 ) {
 
-    Surface(modifier = Modifier.background(MaterialTheme.colors.background)) {
+    Surface(modifier = if(isSnowing)Modifier
+        .background(MaterialTheme.colors.background)
+        .snowfall()
+    else Modifier
+        .background(MaterialTheme.colors.background)
+    ) {
         Column(
             modifier = Modifier
                 .fillMaxSize(),
@@ -178,8 +182,10 @@ fun SongInfo(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier.padding(horizontal = 10.dp)
     ) {
-        Row(modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = CenterVertically) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = CenterVertically
+        ) {
             IconButton(onClick = {
                 addFavorite.invoke(song)
             }) {
@@ -215,15 +221,27 @@ fun ProgressBar(
     audio: Song,
     updateTimer: () -> String
 ) {
+
+    var currentPos = progress //original variable
+    val currentPosTemp = remember { mutableStateOf(0f) } //temporary variable
     Slider(
-        value = progress,
-        onValueChange = { onProgressChange.invoke(it) },
+        value = if (currentPosTemp.value == 0f) currentPos else currentPosTemp.value,
+        onValueChange = {
+            currentPosTemp.value = it
+            onProgressChange.invoke(it)
+        },
+        onValueChangeFinished = {
+            currentPos = currentPosTemp.value
+            currentPosTemp.value = 0f
+            //send the currentPos value for updating the Slider progress
+        },
         valueRange = 0f..100f,
         colors = SliderDefaults.colors(
             thumbColor = MaterialTheme.colors.darkestBlueToWhite,
             activeTrackColor = MaterialTheme.colors.darkGreyToSoftGrey,
             inactiveTrackColor = MaterialTheme.colors.lightBlueToWhite,
-        )
+        ),
+        steps = 0,
     )
     Row(
         modifier = Modifier
@@ -278,7 +296,7 @@ fun PlayerControls(
                 } else {
                     MaterialTheme.colors.onSurface
                 },
-                )
+            )
         }
         IconButton(onClick = {
             skipPrevious.invoke()

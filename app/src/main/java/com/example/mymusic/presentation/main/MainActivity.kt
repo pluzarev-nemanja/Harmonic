@@ -175,7 +175,8 @@ class MainActivity : ComponentActivity() {
                             },
                             shareSong = {
                                 shareAudioFile(it)
-                            }
+                            },
+                            isSnowing = settingsViewModel.user.isSnowing
                         )
                     }
 

@@ -76,7 +76,8 @@ fun HomeScreen(
     addAlbum: (Album) -> Unit,
     artists : List<Artist>,
     addArtist: (Artist) -> Unit,
-    name: String
+    name: String,
+    userImage : String
 ) {
 
     val lazyState = rememberLazyListState()
@@ -97,7 +98,7 @@ fun HomeScreen(
                 .padding(top = paddingLazyList)
                 .verticalScroll(rememberScrollState())
         ) {
-            UserInfo(name)
+            UserInfo(name,userImage = userImage)
             Spacer(modifier = Modifier.height(8.dp))
             Buttons(navController, shuffle)
             Suggestions(
@@ -131,8 +132,11 @@ fun HomeScreen(
 
 @Composable
 fun UserInfo(
-    name: String
+    name: String,
+    userImage: String
 ) {
+
+
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -145,7 +149,8 @@ fun UserInfo(
                 .padding(5.dp)
                 .size(70.dp)
                 .clip(CircleShape),
-            imageModel = { R.drawable.artist },
+            imageModel = { if (userImage != "") userImage
+            else R.drawable.artist },
             imageOptions = ImageOptions(
                 contentScale = ContentScale.Crop,
                 alignment = Alignment.Center

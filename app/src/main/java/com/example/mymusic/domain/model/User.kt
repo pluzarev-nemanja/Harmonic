@@ -8,4 +8,6 @@ data class User(
     @PrimaryKey val id : Int,
     val userName : String,
     val themeMode : String,
+    val userImage : String,
+    val isSnowing : Boolean
 )

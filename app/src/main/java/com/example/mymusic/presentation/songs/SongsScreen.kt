@@ -189,6 +189,7 @@ fun TopBar(
 
                         DropdownMenuItem(onClick = {
                             //Navigation to Settings Screen
+                            navController.navigate(Screen.SettingsScreen.route)
                             showMenu = false
                         }) {
                             Text(text = "Settings")

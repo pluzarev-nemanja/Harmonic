@@ -54,7 +54,8 @@ fun MainScreen(
     updateTimer: () -> String,
     addFavorite: (Song) -> Unit,
     equalizer: () -> Unit,
-    shareSong: (Song) -> Unit
+    shareSong: (Song) -> Unit,
+    isSnowing: Boolean
 ) {
 
     val navController = rememberNavController()
@@ -124,7 +125,8 @@ fun MainScreen(
                                     addFavorite.invoke(currentPlayingAudio)
                                     isSelected = !isSelected!!
                                 },
-                                isSelected = isSelected!!
+                                isSelected = isSelected!!,
+                                isSnowing = isSnowing
                             )
                         }
                     }

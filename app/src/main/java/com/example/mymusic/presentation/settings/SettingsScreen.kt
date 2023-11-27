@@ -1,5 +1,9 @@
 package com.example.mymusic.presentation.settings
 
+import android.net.Uri
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -18,6 +22,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.RadioButton
 import androidx.compose.material.Scaffold
+import androidx.compose.material.Switch
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowForward
@@ -38,9 +43,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.mymusic.R
 import com.example.mymusic.presentation.history.SimpleTopBar
-import com.example.mymusic.presentation.main.MainViewModel
 import com.example.mymusic.ui.theme.darkestBlueToWhite
-import com.example.mymusic.ui.theme.whiteToDarkGrey
 import com.skydoves.landscapist.ImageOptions
 import com.skydoves.landscapist.glide.GlideImage
 
@@ -51,7 +54,11 @@ fun SettingsScreen(
     onThemeChange: (String) -> Unit,
     settingsViewModel: SettingsViewModel,
     equalizer: () -> Unit,
-    changeUserName: (String) -> Unit
+    changeUserName: (String) -> Unit,
+    changeUserImage: (String) -> Unit,
+    changeSnowing: (Boolean) -> Unit,
+    userImage: String,
+    isSnowEnable : Boolean
 ) {
 
     val theme: String by settingsViewModel.theme.observeAsState("")
@@ -62,7 +69,12 @@ fun SettingsScreen(
         }
     ) { padding ->
         Column(modifier = Modifier.fillMaxSize()) {
-            UserInfo(userName = userName,changeUserName)
+            UserInfo(
+                userName = userName,
+                changeUserName,
+                changeUserImage = changeUserImage,
+                userImage = userImage
+            )
             Spacer(modifier = Modifier.height(10.dp))
             ThemeOptions(
                 onThemeChange = onThemeChange,
@@ -72,6 +84,8 @@ fun SettingsScreen(
             Equalizer(
                 equalizer = equalizer
             )
+            Spacer(modifier = Modifier.height(10.dp))
+            Snowing(changeSnowing = changeSnowing,isSnowEnable)
         }
     }
 }
@@ -79,13 +93,27 @@ fun SettingsScreen(
 
 @Composable
 fun UserInfo(
-   userName: String,
-    changeUserName: (String) -> Unit
+    userName: String,
+    changeUserName: (String) -> Unit,
+    changeUserImage: (String) -> Unit,
+    userImage: String
 ) {
 
     var filledText by remember {
         mutableStateOf(userName)
     }
+
+    var selectedImageUri by remember {
+        mutableStateOf<Uri?>(null)
+    }
+    val singlePhotoPickerLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.PickVisualMedia(),
+        onResult = { uri ->
+            selectedImageUri = uri
+            //here update that in database user image
+            changeUserImage.invoke(uri.toString())
+        }
+    )
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -99,18 +127,25 @@ fun UserInfo(
                 .size(170.dp)
                 .clip(CircleShape)
                 .clickable {
-
+                    singlePhotoPickerLauncher.launch(
+                        PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
+                    )
                 },
-            imageModel = { R.drawable.artist },
+            imageModel = {
+                if (userImage != "") userImage
+                else R.drawable.artist
+            },
             imageOptions = ImageOptions(
                 contentScale = ContentScale.Crop,
                 alignment = Alignment.Center
             ),
         )
         Spacer(modifier = Modifier.height(8.dp))
-        Row(modifier = Modifier.fillMaxWidth(),
+        Row(
+            modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceEvenly) {
+            horizontalArrangement = Arrangement.SpaceEvenly
+        ) {
             OutlinedTextField(
                 value = filledText,
                 onValueChange = {
@@ -234,6 +269,40 @@ fun LabeledRadioButton(
         RadioButton(
             selected = selected,
             onClick = onClick
+        )
+    }
+}
+
+@Composable
+fun Snowing(
+    changeSnowing: (Boolean) -> Unit,
+    isSnowEnable: Boolean
+) {
+
+    var checked by remember { mutableStateOf(isSnowEnable) }
+
+
+    Divider(color = MaterialTheme.colors.darkestBlueToWhite)
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(8.dp)
+    ) {
+        Text(
+            text = "Enable snow effect:",
+            fontWeight = FontWeight.Bold,
+            style = MaterialTheme.typography.h6,
+            fontSize = 18.sp,
+            color = MaterialTheme.colors.darkestBlueToWhite
+        )
+        Switch(
+            checked = checked,
+            onCheckedChange = {
+                checked = it
+                changeSnowing.invoke(it)
+            }
         )
     }
 }
