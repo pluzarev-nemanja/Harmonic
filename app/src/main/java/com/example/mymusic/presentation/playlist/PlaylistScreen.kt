@@ -1,5 +1,9 @@
 package com.example.mymusic.presentation.playlist
 
+import android.net.Uri
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
@@ -83,7 +87,8 @@ fun PlaylistScreen(
     currentPlayingAudio: Song?,
     deletePlaylist: (Playlist) -> Unit,
     addPlaylist: (Playlist) -> Unit,
-    insertPlaylist : (String) -> Unit
+    insertPlaylist : (String) -> Unit,
+    changePlaylistImage : (Playlist,String) -> Unit
 ) {
 
     var openDialog by remember {
@@ -145,7 +150,8 @@ fun PlaylistScreen(
                         .padding(top = 10.dp),
                     deletePlaylist = deletePlaylist,
                     navController = navController,
-                    addPlaylist = addPlaylist
+                    addPlaylist = addPlaylist,
+                    changePlaylistImage
                 )
             }
         }
@@ -218,7 +224,8 @@ fun PlaylistItem(
     modifier: Modifier = Modifier,
     deletePlaylist: (Playlist) -> Unit,
     navController: NavController,
-    addPlaylist : (Playlist) -> Unit
+    addPlaylist : (Playlist) -> Unit,
+    changePlaylistImage : (Playlist,String) -> Unit
     ) {
 
     var showMenu by remember {
@@ -229,6 +236,17 @@ fun PlaylistItem(
         mutableStateOf(false)
     }
 
+    var selectedImageUri by remember {
+        mutableStateOf<Uri?>(null)
+    }
+    val singlePhotoPickerLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.PickVisualMedia(),
+        onResult = { uri ->
+            selectedImageUri = uri
+            //here update that in database user image
+            changePlaylistImage.invoke(playlist,uri.toString())
+        }
+    )
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -242,7 +260,7 @@ fun PlaylistItem(
             horizontalArrangement = Arrangement.Center
         ) {
             GlideImage(
-                imageModel = { R.drawable.playlist },
+                imageModel = { if(playlist.playlistImage != "") playlist.playlistImage else R.drawable.playlist },
                 imageOptions = ImageOptions(
                     contentScale = ContentScale.Crop,
                     alignment = Alignment.Center
@@ -284,6 +302,14 @@ fun PlaylistItem(
                                 showMenu = false
                             }) {
                                 Text(text = "Delete playlist")
+                            }
+                            DropdownMenuItem(onClick = {
+                                singlePhotoPickerLauncher.launch(
+                                    PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
+                                )
+                                showMenu = false
+                            }) {
+                                Text(text = "Change image")
                             }
                         }
                     }
@@ -415,6 +441,7 @@ fun TopBarPlaylist(
                         }) {
                             Text(text = "Settings")
                         }
+
 
                     }
                     DropdownMenu(

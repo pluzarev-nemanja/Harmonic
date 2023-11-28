@@ -29,9 +29,10 @@ import com.example.mymusic.presentation.songs.isScrolled
 fun AllAlbumsScreen(
     albums: List<Album>,
     currentPlayingAudio: Song?,
-    deleteAlbum: (Album) -> Unit,
     addAlbum: (Album) -> Unit,
-    navController: NavController
+    navController: NavController,
+    changeAlbumImage : (Album,String) -> Unit
+
 ) {
 
     val scrollState = rememberLazyStaggeredGridState()
@@ -65,9 +66,9 @@ fun AllAlbumsScreen(
                     album = album,
                     modifier = Modifier
                         .padding(top = 10.dp),
-                    deleteAlbum = deleteAlbum,
                     navController,
-                    addAlbum = addAlbum
+                    addAlbum = addAlbum,
+                    changeAlbumImage = changeAlbumImage
                 )
             }
         }

@@ -11,4 +11,5 @@ data class Playlist(
     val songCount: Int,
     val playlistDuration: Long,
     val songs: List<Song>,
+    val playlistImage : String
 )

@@ -27,6 +27,7 @@ import com.example.mymusic.presentation.exoplayer.isPlaying
 import com.example.mymusic.presentation.service.MusicPlayerService
 import com.example.mymusic.presentation.util.Constants
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -131,6 +132,16 @@ class SongsViewModel @Inject constructor(
                     suggestions.add(i, songList[number])
                 }
             }
+        }
+    }
+
+    fun changeSongImage(song: Song,songImage : String){
+        viewModelScope.launch(Dispatchers.IO){
+            musicUseCases.updateSong(
+                song.copy(
+                   artUri = songImage
+                )
+            )
         }
     }
 

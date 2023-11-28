@@ -11,6 +11,7 @@ import com.example.mymusic.domain.use_cases.MusicUseCases
 import com.example.mymusic.domain.util.AlbumSortOrder
 import com.example.mymusic.domain.util.PlaylistSortOrder
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -77,6 +78,15 @@ class AlbumViewModel  @Inject constructor(
         }
     }
 
+    fun changeAlbumImage(album: Album,albumImage : String){
+        viewModelScope.launch(Dispatchers.IO){
+            musicUseCases.updateAlbum(
+                album.copy(
+                    albumImage = albumImage
+                )
+            )
+        }
+    }
     fun deleteAlbum(album: Album){
         viewModelScope.launch {
             musicUseCases.deleteAlbum(album)

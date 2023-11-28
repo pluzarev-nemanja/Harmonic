@@ -66,9 +66,13 @@ interface MusicRepository {
 
     fun getArtists(): Flow<List<Artist>>
 
-    fun getArtistWithSongs(artistName : String) : Flow<List<ArtistWithSongs>>
+    fun getArtistWithSongs(artistName: String): Flow<List<ArtistWithSongs>>
 
     suspend fun insertUser(user: User)
     fun getUser(id: Int): Flow<List<User>>
 
+
+    suspend fun updateAlbum(album: Album)
+
+    suspend fun updateArtist(artist: Artist)
 }

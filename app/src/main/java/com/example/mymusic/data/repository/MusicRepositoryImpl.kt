@@ -136,6 +136,14 @@ class MusicRepositoryImpl @Inject constructor(
         dao.insertUser(user)
     }
 
+    override suspend fun updateAlbum(album: Album) {
+        dao.updateAlbum(album)
+    }
+
+    override suspend fun updateArtist(artist: Artist) {
+        dao.updateArtist(artist)
+    }
+
     override fun getUser(id: Int): Flow<List<User>> {
         return dao.getUser(id)
     }

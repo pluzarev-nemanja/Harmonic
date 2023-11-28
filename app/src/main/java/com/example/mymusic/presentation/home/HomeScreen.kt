@@ -66,7 +66,6 @@ import com.skydoves.landscapist.glide.GlideImage
 @Composable
 fun HomeScreen(
     navController: NavController,
-    deleteAlbum: (Album) -> Unit,
     albums: List<Album>,
     currentPlayingAudio: Song?,
     shuffle: () -> Unit,
@@ -77,7 +76,9 @@ fun HomeScreen(
     artists : List<Artist>,
     addArtist: (Artist) -> Unit,
     name: String,
-    userImage : String
+    userImage : String,
+    changeAlbumImage : (Album,String) -> Unit,
+    changeArtistImage : (Artist,String) -> Unit
 ) {
 
     val lazyState = rememberLazyListState()
@@ -109,16 +110,17 @@ fun HomeScreen(
             Spacer(modifier = Modifier.height(8.dp))
             RecentAlbums(
                 albums = albums,
-                deleteAlbum = deleteAlbum,
                 navController,
-                addAlbum
+                addAlbum,
+                changeAlbumImage = changeAlbumImage
             )
             Spacer(modifier = Modifier.height(8.dp))
             TopArtist(
                 artists = artists,
                 navController,
                 modifier = Modifier.padding(bottom = animatedHeight),
-                addArtist = addArtist
+                addArtist = addArtist,
+                changeArtistImage = changeArtistImage
             )
         }
 
@@ -228,7 +230,7 @@ fun SuggestionSongItem(
                 .padding(5.dp)
                 .fillMaxWidth()
                 .clip(CircleShape),
-            imageModel = { R.drawable.note },
+            imageModel = { if(song.artUri != "") song.artUri else R.drawable.note },
             imageOptions = ImageOptions(
                 contentScale = ContentScale.Crop,
                 alignment = Alignment.Center
@@ -247,9 +249,9 @@ fun SuggestionSongItem(
 @Composable
 fun RecentAlbums(
     albums: List<Album>,
-    deleteAlbum: (Album) -> Unit,
     navController: NavController,
-    addAlbum: (Album) -> Unit
+    addAlbum: (Album) -> Unit,
+    changeAlbumImage : (Album,String) -> Unit
 ) {
     Column(
         modifier = Modifier.padding(5.dp)
@@ -277,9 +279,9 @@ fun RecentAlbums(
                     album = album,
                     modifier = Modifier
                         .padding(top = 10.dp),
-                    deleteAlbum = deleteAlbum,
                     navController,
-                    addAlbum = addAlbum
+                    addAlbum = addAlbum,
+                    changeAlbumImage = changeAlbumImage
                 )
             }
         }
@@ -376,7 +378,8 @@ fun TopArtist(
     artists : List<Artist>,
     navController: NavController,
     modifier: Modifier = Modifier,
-    addArtist : (Artist) -> Unit
+    addArtist : (Artist) -> Unit,
+    changeArtistImage : (Artist,String) -> Unit
 ) {
     Column(
         modifier = modifier.padding(5.dp)
@@ -398,7 +401,7 @@ fun TopArtist(
                 .padding(5.dp),
         ) {
             items(artists) { artist ->
-                ArtistItem(navController = navController, artist = artist, addArtist = addArtist)
+                ArtistItem(navController = navController, artist = artist, addArtist = addArtist, changeArtistImage = changeArtistImage)
             }
         }
     }

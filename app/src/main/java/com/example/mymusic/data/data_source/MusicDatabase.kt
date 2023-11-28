@@ -15,7 +15,7 @@ import com.example.mymusic.domain.model.User
     entities = [Song::class,Playlist::class,Album::class,History::class,Favorite::class,Artist::class,User::class],
     version = 1
 )
-@TypeConverters(UriConverters::class,DataConverters::class)
+@TypeConverters(DataConverters::class)
 abstract class MusicDatabase : RoomDatabase(){
 
     abstract val musicDao: MusicDao

@@ -67,7 +67,8 @@ class InsertAlbum @Inject constructor(
                             albumName = albumName,
                             songs = emptyList(),
                             songCount = numberSongs.toInt(),
-                            artist = artistName
+                            artist = artistName,
+                            albumImage = ""
                         )
                     }
                 }

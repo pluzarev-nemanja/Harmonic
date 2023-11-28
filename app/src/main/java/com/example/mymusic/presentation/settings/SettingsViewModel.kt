@@ -19,7 +19,13 @@ class SettingsViewModel @Inject constructor(
     private val musicUseCases: MusicUseCases
 ) : ViewModel() {
 
-    var user by mutableStateOf(User(1,"User Name","Auto", userImage = "",isSnowing = false))
+    var user by mutableStateOf(User(
+        1,
+        "User Name",
+        "Auto",
+        userImage = "",
+        isSnowing = false
+    ))
 
     private val _theme = MutableLiveData("Auto")
     val theme: LiveData<String> = _theme

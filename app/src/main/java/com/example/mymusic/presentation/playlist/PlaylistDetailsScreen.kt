@@ -61,11 +61,13 @@ fun PlaylistDetailsScreen(
     navController: NavController,
     playlist: Playlist?,
     allPlaylists: List<Playlist>,
-    insertSongIntoPlaylist: (Song, String) -> Unit,
+    insertSongIntoPlaylist: (Song, String,String) -> Unit,
     onItemClick: (Song) -> Unit,
     shuffle: (Playlist) -> Unit,
     onStart: (Song, List<Song>) -> Unit,
-    shareSong: (Song) -> Unit
+    shareSong: (Song) -> Unit,
+    changeSongImage : (Song,String) -> Unit
+
 ) {
 
     Scaffold(
@@ -93,7 +95,8 @@ fun PlaylistDetailsScreen(
                 allPlaylists = allPlaylists,
                 insertSongIntoPlaylist = insertSongIntoPlaylist,
                 onItemClick = onItemClick,
-                shareSong = shareSong
+                shareSong = shareSong,
+                changeSongImage
             )
         }
     }
@@ -113,13 +116,14 @@ fun PlaylistInfo(
             .padding(15.dp)
     ) {
         GlideImage(
-            imageModel = { R.drawable.playlist },
+            imageModel = { if(playlist.playlistImage != "") playlist.playlistImage else R.drawable.playlist  },
             imageOptions = ImageOptions(
                 contentScale = ContentScale.Crop,
                 alignment = Alignment.Center
             ),
             modifier = Modifier
                 .fillMaxHeight()
+                .width(180.dp)
                 .clip(RoundedCornerShape(25.dp))
                 .background(Color.DarkGray)
         )
@@ -181,9 +185,11 @@ fun SongsList(
     currentPlayingAudio: Song?,
     audioList: List<Song>,
     allPlaylists: List<Playlist>,
-    insertSongIntoPlaylist: (Song, String) -> Unit,
+    insertSongIntoPlaylist: (Song, String,String) -> Unit,
     onItemClick: (Song) -> Unit,
-    shareSong: (Song) -> Unit
+    shareSong: (Song) -> Unit,
+    changeSongImage : (Song,String) -> Unit
+
 ) {
 
     val animatedHeight by animateDpAsState(
@@ -204,7 +210,8 @@ fun SongsList(
                 ),
                 playlists = allPlaylists,
                 insertSongIntoPlaylist = insertSongIntoPlaylist,
-                shareSong = shareSong
+                shareSong = shareSong,
+                changeSongImage
             )
         }
     }

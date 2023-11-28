@@ -61,7 +61,8 @@ class InsertArtists @Inject constructor(
                             artist = artName,
                             numberSongs = numberSongs,
                             numberAlbums = numAlbm,
-                            songs = emptyList()
+                            songs = emptyList(),
+                            artistImage = ""
                         )
                     }
                 }

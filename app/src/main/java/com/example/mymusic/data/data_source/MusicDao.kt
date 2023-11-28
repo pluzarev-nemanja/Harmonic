@@ -22,7 +22,7 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface MusicDao {
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertSongs(songList: MutableList<Song>)
 
     @Update
@@ -64,7 +64,7 @@ interface MusicDao {
     @Update
     suspend fun updatePlaylist(playlist: Playlist)
 
-    @Upsert
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertAlbums(albums: MutableList<Album>)
 
     @Delete
@@ -98,7 +98,7 @@ interface MusicDao {
     @Query("SELECT * FROM favorite WHERE id = :id ORDER BY id DESC")
      fun getFavorite(id : Int): Flow<List<Favorite>>
 
-     @Upsert
+     @Insert(onConflict = OnConflictStrategy.IGNORE)
      suspend fun insertArtist(artist: MutableList<Artist>)
 
      @Query("SELECT * FROM artist ORDER BY artist ASC")
@@ -109,5 +109,11 @@ interface MusicDao {
 
     @Query("SELECT * FROM user WHERE id = :id ORDER BY id DESC")
     fun getUser(id: Int): Flow<List<User>>
+
+    @Update
+    suspend fun updateAlbum(album: Album)
+
+    @Update
+    suspend fun updateArtist(artist: Artist)
 
 }

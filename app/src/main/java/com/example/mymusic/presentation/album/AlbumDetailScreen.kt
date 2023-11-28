@@ -51,12 +51,14 @@ fun AlbumDetailScreen(
     navController: NavController,
     album: Album?,
     allPlaylists: List<Playlist>,
-    insertSongIntoPlaylist: (Song, String) -> Unit,
+    insertSongIntoPlaylist: (Song, String,String) -> Unit,
     onItemClick: (Song) -> Unit,
     currentPlayingAudio: Song?,
     shuffle: (Album) -> Unit,
     onStart: (Song, List<Song>) -> Unit,
-    shareSong : (Song) -> Unit
+    shareSong: (Song) -> Unit,
+    changeSongImage : (Song,String) -> Unit
+
 ) {
 
     Scaffold(
@@ -72,7 +74,7 @@ fun AlbumDetailScreen(
                 album = album!!,
                 shuffle = { shuffle.invoke(album) },
                 onStart = {
-                    if(album.songs.isNotEmpty())
+                    if (album.songs.isNotEmpty())
                         onStart.invoke(album.songs[0], album.songs)
                 }
             )
@@ -82,7 +84,8 @@ fun AlbumDetailScreen(
                 allPlaylists = allPlaylists,
                 insertSongIntoPlaylist = insertSongIntoPlaylist,
                 onItemClick = onItemClick,
-                shareSong = shareSong
+                shareSong = shareSong,
+                changeSongImage
             )
         }
     }
@@ -95,9 +98,9 @@ fun AlbumInfo(
     onStart: () -> Unit,
 ) {
 
-    val songsText by remember{
-        if(album.songCount > 1)
-        mutableStateOf("songs")
+    val songsText by remember {
+        if (album.songCount > 1)
+            mutableStateOf("songs")
         else mutableStateOf("song")
     }
 
@@ -108,7 +111,10 @@ fun AlbumInfo(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         GlideImage(
-            imageModel = { R.drawable.album },
+            imageModel = {
+                if (album.albumImage != "") album.albumImage
+                else R.drawable.album
+            },
             imageOptions = ImageOptions(
                 contentScale = ContentScale.Crop,
                 alignment = Alignment.Center
@@ -120,11 +126,15 @@ fun AlbumInfo(
                 .background(Color.DarkGray)
         )
         Spacer(modifier = Modifier.width(8.dp))
-        Text(text = album.albumName,
+        Text(
+            text = album.albumName,
             fontSize = 24.sp,
-            fontWeight = FontWeight.Bold)
-        Row (Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.Center){
+            fontWeight = FontWeight.Bold
+        )
+        Row(
+            Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.Center
+        ) {
             Text(text = album.artist)
             Text(text = " · ${album.songCount} $songsText")
         }
@@ -141,13 +151,15 @@ fun AlbumInfo(
                 modifier = Modifier.weight(1f),
                 colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.lightBlueToWhite)
             ) {
-                    Icon(
-                        imageVector = Icons.Default.PlayArrow,
-                        contentDescription = "Play album",
-                        tint = MaterialTheme.colors.whiteToDarkGrey
-                    )
-                    Text(text = " Play",
-                        color = MaterialTheme.colors.whiteToDarkGrey)
+                Icon(
+                    imageVector = Icons.Default.PlayArrow,
+                    contentDescription = "Play album",
+                    tint = MaterialTheme.colors.whiteToDarkGrey
+                )
+                Text(
+                    text = " Play",
+                    color = MaterialTheme.colors.whiteToDarkGrey
+                )
             }
             Spacer(modifier = Modifier.width(4.dp))
             Button(

@@ -9,4 +9,5 @@ data class Artist(
     val numberSongs : Int,
     val numberAlbums: Int,
     var songs : List<Song>,
+    val artistImage : String
     )

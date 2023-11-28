@@ -1,5 +1,9 @@
 package com.example.mymusic.presentation.artist
 
+import android.net.Uri
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -13,6 +17,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.lazy.staggeredgrid.items
@@ -62,8 +67,9 @@ fun AllArtistsScreen(
     navController: NavController,
     currentPlayingAudio: Song?,
     artists : List<Artist>,
-    addArtist: (Artist) -> Unit
-    ){
+    addArtist: (Artist) -> Unit,
+    changeArtistImage : (Artist,String) -> Unit
+){
 
     val scrollState = rememberLazyStaggeredGridState()
 
@@ -91,7 +97,7 @@ fun AllArtistsScreen(
             state = scrollState,
         ) {
             items(artists) { artist ->
-                ArtistItem(navController = navController, artist = artist, addArtist = addArtist)
+                ArtistItem(navController = navController, artist = artist, addArtist = addArtist, changeArtistImage = changeArtistImage)
             }
         }
     }
@@ -103,7 +109,8 @@ fun ArtistItem(
     navController: NavController,
     modifier: Modifier = Modifier,
     artist: Artist,
-    addArtist : (Artist) -> Unit
+    addArtist : (Artist) -> Unit,
+    changeArtistImage : (Artist,String) -> Unit
     ) {
 
     var showMenu by remember {
@@ -112,6 +119,18 @@ fun ArtistItem(
     var openDialog by remember {
         mutableStateOf(false)
     }
+
+    var selectedImageUri by remember {
+        mutableStateOf<Uri?>(null)
+    }
+    val singlePhotoPickerLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.PickVisualMedia(),
+        onResult = { uri ->
+            selectedImageUri = uri
+            //here update that in database user image
+            changeArtistImage.invoke(artist,uri.toString())
+        }
+    )
 
     Column(
         modifier = modifier
@@ -128,9 +147,9 @@ fun ArtistItem(
             GlideImage(
                 modifier = Modifier
                     .padding(5.dp)
-                    .fillMaxWidth()
+                    .size(150.dp)
                     .clip(CircleShape),
-                imageModel = { R.drawable.artist },
+                imageModel = { if(artist.artistImage != "") artist.artistImage else R.drawable.artist },
                 imageOptions = ImageOptions(
                     contentScale = ContentScale.Crop,
                     alignment = Alignment.Center
@@ -163,10 +182,12 @@ fun ArtistItem(
                             },
                         ) {
                             DropdownMenuItem(onClick = {
-                                openDialog = true
+                                singlePhotoPickerLauncher.launch(
+                                    PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
+                                )
                                 showMenu = false
                             }) {
-                                Text(text = "Delete artist")
+                                Text(text = "Change image")
                             }
                         }
                     }

@@ -43,8 +43,9 @@ fun HistoryScreen(
     currentPlayingAudio: Song?,
     onItemClick: (Song) -> Unit,
     playlists: List<Playlist>,
-    insertSongIntoPlaylist: (Song, String) -> Unit,
-    shareSong: (Song) -> Unit
+    insertSongIntoPlaylist: (Song, String,String) -> Unit,
+    shareSong: (Song) -> Unit,
+    changeSongImage : (Song,String) -> Unit
 ) {
 
 
@@ -78,7 +79,8 @@ fun HistoryScreen(
                         ),
                         playlists = playlists,
                         insertSongIntoPlaylist = insertSongIntoPlaylist,
-                        shareSong = shareSong
+                        shareSong = shareSong,
+                        changeSongImage
                     )
                 }
 

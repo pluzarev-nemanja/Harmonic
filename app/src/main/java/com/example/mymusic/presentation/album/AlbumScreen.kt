@@ -1,5 +1,9 @@
 package com.example.mymusic.presentation.album
 
+import android.net.Uri
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
@@ -16,6 +20,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.staggeredgrid.LazyStaggeredGridState
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
@@ -72,8 +77,8 @@ fun AlbumScreen(
     navController: NavController,
     albums: List<Album>,
     sortOrderChange: (AlbumSortOrder) -> Unit,
-    deleteAlbum: (Album) -> Unit,
-    addAlbum: (Album) -> Unit
+    addAlbum: (Album) -> Unit,
+    changeAlbumImage : (Album,String) -> Unit
 ) {
     val sortOrder by remember {
         mutableStateOf(AlbumSortOrder.ALBUM_NAME)
@@ -106,9 +111,9 @@ fun AlbumScreen(
                     album = album,
                     modifier = Modifier
                         .padding(top = 10.dp),
-                    deleteAlbum = deleteAlbum,
                     navController,
-                    addAlbum = addAlbum
+                    addAlbum = addAlbum,
+                    changeAlbumImage = changeAlbumImage
                 )
             }
         }
@@ -128,17 +133,25 @@ fun AlbumScreen(
 fun AlbumItem(
     album: Album,
     modifier: Modifier = Modifier,
-    deleteAlbum: (Album) -> Unit,
     navController: NavController,
-    addAlbum: (Album) -> Unit
+    addAlbum: (Album) -> Unit,
+    changeAlbumImage: (Album, String) -> Unit
 ) {
 
     var showMenu by remember {
         mutableStateOf(false)
     }
-    var openDialog by remember {
-        mutableStateOf(false)
+    var selectedImageUri by remember {
+        mutableStateOf<Uri?>(null)
     }
+    val singlePhotoPickerLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.PickVisualMedia(),
+        onResult = { uri ->
+            selectedImageUri = uri
+            //here update that in database user image
+            changeAlbumImage.invoke(album,uri.toString())
+        }
+    )
 
     Column(
         modifier = modifier
@@ -155,9 +168,10 @@ fun AlbumItem(
             GlideImage(
                 modifier = Modifier
                     .padding(5.dp)
-                    .fillMaxWidth()
+                    .size(150.dp)
                     .clip(CircleShape),
-                imageModel = { R.drawable.album },
+                imageModel = { if (album.albumImage != "") album.albumImage
+                else R.drawable.album },
                 imageOptions = ImageOptions(
                     contentScale = ContentScale.Crop,
                     alignment = Alignment.Center
@@ -190,54 +204,16 @@ fun AlbumItem(
                             },
                         ) {
                             DropdownMenuItem(onClick = {
-                                openDialog = true
+                                singlePhotoPickerLauncher.launch(
+                                    PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
+                                )
                                 showMenu = false
                             }) {
-                                Text(text = "Delete album")
+                                Text(text = "Change image")
                             }
                         }
                     }
                     Icon(imageVector = Icons.Filled.MoreHoriz, contentDescription = "More options")
-                    if (openDialog) {
-
-                        AlertDialog(
-                            shape = RoundedCornerShape(10.dp),
-                            onDismissRequest = {
-                                openDialog = false
-                            },
-                            title = {
-                                Text(
-                                    text = "Delete album",
-                                    modifier = Modifier.padding(top = 12.dp)
-                                )
-                            },
-                            text = {
-                                Text(text = "Do you want to delete ${album.albumName} album?")
-                            },
-                            confirmButton = {
-                                Button(
-                                    onClick = {
-                                        deleteAlbum(album)
-                                        openDialog = false
-                                    },
-                                    colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.lightBlueToWhite)
-                                ) {
-                                    Text("Delete",
-                                        color = MaterialTheme.colors.whiteToDarkGrey
-                                    )
-                                }
-                            },
-                            dismissButton = {
-                                Button(
-                                    onClick = {
-                                        openDialog = false
-                                    }
-                                ) {
-                                    Text("Cancel")
-                                }
-                            }
-                        )
-                    }
                 }
             }
             Column(horizontalAlignment = Alignment.CenterHorizontally) {

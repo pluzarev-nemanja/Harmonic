@@ -1,5 +1,9 @@
 package com.example.mymusic.presentation.songs
 
+import android.net.Uri
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
@@ -58,8 +62,9 @@ fun SongsScreen(
     sortOrderChange: (SortOrder) -> Unit,
     navController: NavController,
     playlists: List<Playlist>,
-    insertSongIntoPlaylist: (Song, String) -> Unit,
-    shareSong: (Song) -> Unit
+    insertSongIntoPlaylist: (Song, String,String) -> Unit,
+    shareSong: (Song) -> Unit,
+    changeSongImage : (Song,String) -> Unit
 ) {
 
     val sortOrder by remember {
@@ -102,7 +107,8 @@ fun SongsScreen(
                             ),
                             playlists = playlists,
                             insertSongIntoPlaylist = insertSongIntoPlaylist,
-                            shareSong = shareSong
+                            shareSong = shareSong,
+                            changeSongImage = changeSongImage
                         )
                     }
 
@@ -315,14 +321,28 @@ fun AudioItem(
     onItemClick: (id: Long) -> Unit,
     modifier: Modifier = Modifier,
     playlists: List<Playlist> = emptyList(),
-    insertSongIntoPlaylist: (Song, String) -> Unit,
-    shareSong: (Song) -> Unit
+    insertSongIntoPlaylist: (Song, String,String) -> Unit,
+    shareSong: (Song) -> Unit,
+    changeSongImage: (Song, String) -> Unit
 ) {
 
     var showMenu by remember { mutableStateOf(false) }
     var openDialog by remember {
         mutableStateOf(false)
     }
+
+    var selectedImageUri by remember {
+        mutableStateOf<Uri?>(null)
+    }
+    val singlePhotoPickerLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.PickVisualMedia(),
+        onResult = { uri ->
+            selectedImageUri = uri
+            //here update that in database user image
+            changeSongImage.invoke(audio,uri.toString())
+        }
+    )
+
     Card(
         modifier = modifier
             .fillMaxWidth()
@@ -336,7 +356,7 @@ fun AudioItem(
         Row(verticalAlignment = Alignment.CenterVertically) {
 
             GlideImage(
-                imageModel = { R.drawable.note },
+                imageModel = {  if(audio.artUri != "") audio.artUri else R.drawable.note },
                 imageOptions = ImageOptions(
                     contentScale = ContentScale.Crop,
                     alignment = Alignment.Center
@@ -422,11 +442,22 @@ fun AudioItem(
                                 text = "Share song",
                             )
                         }
+                        DropdownMenuItem(onClick = {
+                            singlePhotoPickerLauncher.launch(
+                                PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
+                            )
+                            showMenu = false
+                        }) {
+                            Text(text = "Change image")
+                        }
                     }
                 }
                 if (openDialog) {
 
                     var selectedIndex by remember {
+                        mutableStateOf("")
+                    }
+                    var image by remember {
                         mutableStateOf("")
                     }
 
@@ -453,6 +484,7 @@ fun AudioItem(
                                                 onClick = {
                                                     selectedIndex =
                                                         if (selectedIndex == playlist.playlistName) "" else playlist.playlistName
+                                                    image = if (selectedIndex == playlist.playlistName) playlist.playlistImage else ""
                                                 }
                                             )
                                             .background(
@@ -466,7 +498,7 @@ fun AudioItem(
                         confirmButton = {
                             Button(
                                 onClick = {
-                                    insertSongIntoPlaylist.invoke(audio, selectedIndex)
+                                    insertSongIntoPlaylist.invoke(audio, selectedIndex,image)
                                     openDialog = false
                                 },
                                 colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.lightBlueToWhite)

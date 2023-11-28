@@ -35,9 +35,11 @@ fun SearchScreen(
     currentPlayingAudio: Song?,
     onItemClick: (Song) -> Unit,
     playlists: List<Playlist>,
-    insertSongIntoPlaylist: (Song, String) -> Unit,
+    insertSongIntoPlaylist: (Song, String,String) -> Unit,
     onSearchTextChange: (String) -> Unit,
-    shareSong: (Song) -> Unit
+    shareSong: (Song) -> Unit,
+    changeSongImage : (Song,String) -> Unit
+
 ) {
 
     val animatedHeight by animateDpAsState(
@@ -106,7 +108,8 @@ fun SearchScreen(
                                 ),
                                 playlists = playlists,
                                 insertSongIntoPlaylist = insertSongIntoPlaylist,
-                                shareSong = shareSong
+                                shareSong = shareSong,
+                                changeSongImage
                             )
                         }
 

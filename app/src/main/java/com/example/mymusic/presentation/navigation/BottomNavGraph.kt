@@ -56,9 +56,6 @@ fun BottomNavGraph(
         composable(BottomBarScreen.Home.route) {
             HomeScreen(
                 navController = navController,
-                deleteAlbum = {
-                    albumsViewModel.deleteAlbum(it)
-                },
                 currentPlayingAudio = currentPlayingAudio,
                 shuffle = {
                     songsViewModel.shuffleSongs()
@@ -80,7 +77,14 @@ fun BottomNavGraph(
                     artistViewModel.addArtist(it)
                 },
                 name = settingsViewModel.user.userName,
-                userImage = settingsViewModel.user.userImage
+                userImage = settingsViewModel.user.userImage,
+                changeAlbumImage = { album,uri->
+                    albumsViewModel.changeAlbumImage(album,uri)
+                },
+                changeArtistImage = { artist, uri ->
+                    artistViewModel.changeArtistImage(artist,uri)
+
+                }
             )
         }
         composable(BottomBarScreen.Songs.route) {
@@ -97,10 +101,13 @@ fun BottomNavGraph(
                 },
                 navController = navController,
                 playlists = playlistViewModel.playlists,
-                insertSongIntoPlaylist = { song, playlistName ->
-                    playlistViewModel.insertSongIntoPlaylist(song, playlistName)
+                insertSongIntoPlaylist = { song, playlistName,playlistImage->
+                    playlistViewModel.insertSongIntoPlaylist(song, playlistName,playlistImage)
                 },
-                shareSong = shareSong
+                shareSong = shareSong,
+                changeSongImage = { song,uri ->
+                    songsViewModel.changeSongImage(song,uri)
+                }
             )
         }
         composable(BottomBarScreen.Playlists.route) {
@@ -120,6 +127,10 @@ fun BottomNavGraph(
                 },
                 insertPlaylist = {
                     playlistViewModel.insertPlaylist(it)
+                },
+                changePlaylistImage = { playlist, image ->
+                playlistViewModel.changePlaylistImage(playlist,image)
+
                 }
             )
         }
@@ -131,11 +142,11 @@ fun BottomNavGraph(
                 sortOrderChange = {
                     albumsViewModel.changeSortOrder(it)
                 },
-                deleteAlbum = {
-                    albumsViewModel.deleteAlbum(it)
-                },
                 addAlbum = {
                     albumsViewModel.addAlbum(it)
+                },
+                changeAlbumImage = { album,uri->
+                    albumsViewModel.changeAlbumImage(album,uri)
                 }
             )
         }
@@ -149,13 +160,16 @@ fun BottomNavGraph(
                     historyViewModel.updateHistory(it)
                 },
                 playlists = playlistViewModel.playlists,
-                insertSongIntoPlaylist = { song, playlistName ->
-                    playlistViewModel.insertSongIntoPlaylist(song, playlistName)
+                insertSongIntoPlaylist = { song, playlistName,playlistImage->
+                    playlistViewModel.insertSongIntoPlaylist(song, playlistName,playlistImage)
                 },
                 onSearchTextChange = {
                     searchViewModel.onSearchTextChange(it)
                 },
-                shareSong = shareSong
+                shareSong = shareSong,
+                changeSongImage = { song,uri ->
+                    songsViewModel.changeSongImage(song,uri)
+                }
             )
         }
         composable(Screen.PlaylistDetailsScreen.route) {
@@ -165,8 +179,8 @@ fun BottomNavGraph(
                 navController = navController,
                 playlist = playlistViewModel.clickedPlaylist.value,
                 allPlaylists = playlistViewModel.playlists,
-                insertSongIntoPlaylist = { song, playlistName ->
-                    playlistViewModel.insertSongIntoPlaylist(song, playlistName)
+                insertSongIntoPlaylist = { song, playlistName,playlistImage->
+                    playlistViewModel.insertSongIntoPlaylist(song, playlistName,playlistImage)
                 },
                 onItemClick = {
                     songsViewModel.playAudio(it)
@@ -178,7 +192,10 @@ fun BottomNavGraph(
                 onStart = { currentPlayingAudio, songs ->
                     songsViewModel.playPlaylist(currentPlayingAudio, songs)
                 },
-                shareSong = shareSong
+                shareSong = shareSong,
+                changeSongImage = { song,uri ->
+                    songsViewModel.changeSongImage(song,uri)
+                }
             )
         }
 
@@ -187,8 +204,8 @@ fun BottomNavGraph(
                 navController = navController,
                 album = albumsViewModel.albumNavigated.value,
                 allPlaylists = playlistViewModel.playlists,
-                insertSongIntoPlaylist = { song, playlistName ->
-                    playlistViewModel.insertSongIntoPlaylist(song, playlistName)
+                insertSongIntoPlaylist = { song, playlistName,playlistImage->
+                    playlistViewModel.insertSongIntoPlaylist(song, playlistName,playlistImage)
                 },
                 onItemClick = {
                     songsViewModel.playAudio(it)
@@ -201,7 +218,10 @@ fun BottomNavGraph(
                 onStart = { currentPlayingAudio, songs ->
                     songsViewModel.playPlaylist(currentPlayingAudio, songs)
                 },
-                shareSong
+                shareSong,
+                changeSongImage = { song,uri ->
+                    songsViewModel.changeSongImage(song,uri)
+                }
             )
         }
 
@@ -214,10 +234,13 @@ fun BottomNavGraph(
                     songsViewModel.playAudio(it)
                 },
                 playlists = playlistViewModel.playlists,
-                insertSongIntoPlaylist = { song, playlistName ->
-                    playlistViewModel.insertSongIntoPlaylist(song, playlistName)
+                insertSongIntoPlaylist = { song, playlistName,playlistImage->
+                    playlistViewModel.insertSongIntoPlaylist(song, playlistName,playlistImage)
                 },
-                shareSong = shareSong
+                shareSong = shareSong,
+                changeSongImage = { song,uri ->
+                    songsViewModel.changeSongImage(song,uri)
+                }
             )
         }
 
@@ -231,10 +254,13 @@ fun BottomNavGraph(
                     historyViewModel.updateHistory(it)
                 },
                 playlists = playlistViewModel.playlists,
-                insertSongIntoPlaylist = { song, playlistName ->
-                    playlistViewModel.insertSongIntoPlaylist(song, playlistName)
+                insertSongIntoPlaylist = { song, playlistName,playlistImage->
+                    playlistViewModel.insertSongIntoPlaylist(song, playlistName,playlistImage)
                 },
-                shareSong
+                shareSong,
+                changeSongImage = { song,uri ->
+                    songsViewModel.changeSongImage(song,uri)
+                }
             )
         }
 
@@ -242,13 +268,13 @@ fun BottomNavGraph(
             AllAlbumsScreen(
                 albums = albumsViewModel.albums,
                 currentPlayingAudio = songsViewModel.currentPlayingAudio.value,
-                deleteAlbum = {
-                    albumsViewModel.deleteAlbum(it)
-                },
                 addAlbum = {
                     albumsViewModel.addAlbum(it)
                 },
-                navController = navController
+                navController = navController,
+                changeAlbumImage = { album,uri->
+                    albumsViewModel.changeAlbumImage(album,uri)
+                }
             )
         }
 
@@ -259,6 +285,10 @@ fun BottomNavGraph(
                 artists = artistViewModel.artists,
                 addArtist = {
                     artistViewModel.addArtist(it)
+                },
+                changeArtistImage = { artist, uri ->
+                    artistViewModel.changeArtistImage(artist,uri)
+
                 }
             )
         }
@@ -268,8 +298,8 @@ fun BottomNavGraph(
                 navController = navController,
                 artist = artistViewModel.artistNavigated.value,
                 allPlaylists = playlistViewModel.playlists,
-                insertSongIntoPlaylist = { song, playlistName ->
-                    playlistViewModel.insertSongIntoPlaylist(song, playlistName)
+                insertSongIntoPlaylist = { song, playlistName,playlistImage->
+                    playlistViewModel.insertSongIntoPlaylist(song, playlistName,playlistImage)
                 },
                 onItemClick = {
                     songsViewModel.playAudio(it)
@@ -282,7 +312,10 @@ fun BottomNavGraph(
                 onStart = { currentPlayingAudio, songs ->
                     songsViewModel.playPlaylist(currentPlayingAudio, songs)
                 },
-                shareSong = shareSong
+                shareSong = shareSong,
+                changeSongImage = { song,uri ->
+                    songsViewModel.changeSongImage(song,uri)
+                }
             )
         }
 

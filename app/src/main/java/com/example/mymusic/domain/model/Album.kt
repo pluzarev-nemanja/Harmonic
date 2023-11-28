@@ -9,5 +9,6 @@ data class Album(
     @PrimaryKey val albumName : String,
     var songs : List<Song>,
     val songCount: Int,
-    val artist : String
+    val artist : String,
+    val albumImage : String
 )

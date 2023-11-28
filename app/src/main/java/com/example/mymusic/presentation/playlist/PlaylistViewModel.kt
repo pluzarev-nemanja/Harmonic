@@ -9,6 +9,7 @@ import com.example.mymusic.domain.model.Song
 import com.example.mymusic.domain.use_cases.MusicUseCases
 import com.example.mymusic.domain.util.PlaylistSortOrder
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -33,7 +34,7 @@ class PlaylistViewModel @Inject constructor(
     fun addPlaylist(playlist: Playlist){
         clickedPlaylist.value = playlist
     }
-    fun insertSongIntoPlaylist(song: Song,playlistName: String){
+    fun insertSongIntoPlaylist(song: Song,playlistName: String,playlistImage : String){
         playlists.forEach { playlist: Playlist ->
 
             if(playlist.playlistName == playlistName && playlistName!= "" && !playlist.songs.contains(song)){
@@ -46,11 +47,22 @@ class PlaylistViewModel @Inject constructor(
                         playlistName = playlistName,
                         songCount = playlist.songCount + 1,
                         playlistDuration = playlist.playlistDuration + song.duration,
-                        songs = songs
+                        songs = songs,
+                        playlistImage = playlistImage
                     )
                     musicUseCases.updatePlaylist(item)
                 }
             }
+        }
+    }
+
+    fun changePlaylistImage(playlist: Playlist,playlistImage: String){
+        viewModelScope.launch(Dispatchers.IO) {
+            musicUseCases.updatePlaylist(
+                playlist.copy(
+                    playlistImage = playlistImage
+                )
+            )
         }
     }
     fun insertPlaylist(playlistName: String){
@@ -62,7 +74,8 @@ class PlaylistViewModel @Inject constructor(
                     playlistName = playlistName,
                     songCount = 0,
                     playlistDuration = 0L,
-                    songs = emptyList()
+                    songs = emptyList(),
+                    playlistImage = ""
                 )
                 musicUseCases.insertPlaylist(playlistItem)
             }
