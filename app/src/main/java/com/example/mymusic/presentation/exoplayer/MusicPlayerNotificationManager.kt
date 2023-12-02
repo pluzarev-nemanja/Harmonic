@@ -44,7 +44,7 @@ internal class MusicPlayerNotificationManager(
 
         with(notificationManager) {
             setMediaSessionToken(sessionToken)
-            setSmallIcon(com.google.android.exoplayer2.ui.R.drawable.exo_ic_audiotrack)
+            setSmallIcon(com.google.android.exoplayer2.ui.R.drawable.exo_notification_small_icon)
             setUseRewindAction(true)
             setUseFastForwardAction(true)
             setPriority(NotificationCompat.PRIORITY_HIGH)

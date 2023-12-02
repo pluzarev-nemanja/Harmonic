@@ -1,5 +1,7 @@
 package com.example.mymusic.presentation.playlist
 
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -21,6 +23,8 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.DropdownMenu
+import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
@@ -35,6 +39,9 @@ import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Shuffle
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -47,6 +54,7 @@ import androidx.navigation.NavController
 import com.example.mymusic.R
 import com.example.mymusic.domain.model.Playlist
 import com.example.mymusic.domain.model.Song
+import com.example.mymusic.presentation.navigation.Screen
 import com.example.mymusic.presentation.songs.AudioItem
 import com.example.mymusic.presentation.songs.timeStampToDuration
 import com.example.mymusic.ui.theme.lightBlueToWhite
@@ -222,7 +230,9 @@ fun SongsList(
 fun TopBarPlaylist(
     navController: NavController
 ) {
-
+    var showMenu by remember {
+        mutableStateOf(false)
+    }
     TopAppBar(
         modifier = Modifier
             .fillMaxWidth()
@@ -244,8 +254,23 @@ fun TopBarPlaylist(
 
             IconButton(onClick = {
                 //add more options to playlist
-
+                showMenu = true
             }) {
+                MaterialTheme(shapes = MaterialTheme.shapes.copy(medium = RoundedCornerShape(16.dp))) {
+                    DropdownMenu(
+                        expanded = showMenu,
+                        onDismissRequest = {
+                            showMenu = false
+                        },
+                    ) {
+                        DropdownMenuItem(onClick = {
+                            navController.navigate(Screen.SettingsScreen.route)
+                            showMenu = false
+                        }) {
+                            Text(text = "Settings")
+                        }
+                    }
+                }
                 Icon(imageVector = Icons.Filled.MoreHoriz, contentDescription = "More options")
             }
         }

@@ -62,9 +62,9 @@ fun SongsScreen(
     sortOrderChange: (SortOrder) -> Unit,
     navController: NavController,
     playlists: List<Playlist>,
-    insertSongIntoPlaylist: (Song, String,String) -> Unit,
+    insertSongIntoPlaylist: (Song, String, String) -> Unit,
     shareSong: (Song) -> Unit,
-    changeSongImage : (Song,String) -> Unit
+    changeSongImage: (Song, String) -> Unit
 ) {
 
     val sortOrder by remember {
@@ -321,7 +321,7 @@ fun AudioItem(
     onItemClick: (id: Long) -> Unit,
     modifier: Modifier = Modifier,
     playlists: List<Playlist> = emptyList(),
-    insertSongIntoPlaylist: (Song, String,String) -> Unit,
+    insertSongIntoPlaylist: (Song, String, String) -> Unit,
     shareSong: (Song) -> Unit,
     changeSongImage: (Song, String) -> Unit
 ) {
@@ -339,7 +339,7 @@ fun AudioItem(
         onResult = { uri ->
             selectedImageUri = uri
             //here update that in database user image
-            changeSongImage.invoke(audio,uri.toString())
+            changeSongImage.invoke(audio, uri.toString())
         }
     )
 
@@ -356,7 +356,7 @@ fun AudioItem(
         Row(verticalAlignment = Alignment.CenterVertically) {
 
             GlideImage(
-                imageModel = {  if(audio.artUri != "") audio.artUri else R.drawable.note },
+                imageModel = { if (audio.artUri != "") Uri.parse(audio.artUri) else R.drawable.note },
                 imageOptions = ImageOptions(
                     contentScale = ContentScale.Crop,
                     alignment = Alignment.Center
@@ -462,7 +462,8 @@ fun AudioItem(
                     }
 
                     AlertDialog(
-                        modifier = Modifier.fillMaxHeight(0.4f),
+                        modifier = Modifier.fillMaxWidth()
+                            .height(330.dp),
                         shape = RoundedCornerShape(10.dp),
                         onDismissRequest = {
                             openDialog = false
@@ -474,7 +475,10 @@ fun AudioItem(
                             )
                         },
                         text = {
-                            LazyColumn(modifier = Modifier.padding(top = 12.dp)) {
+                            LazyColumn(
+                                modifier = Modifier
+                                    .padding(top = 12.dp)
+                            ) {
                                 items(playlists) { playlist ->
                                     PlaylistChooser(playlist = playlist,
                                         modifier = Modifier
@@ -484,7 +488,8 @@ fun AudioItem(
                                                 onClick = {
                                                     selectedIndex =
                                                         if (selectedIndex == playlist.playlistName) "" else playlist.playlistName
-                                                    image = if (selectedIndex == playlist.playlistName) playlist.playlistImage else ""
+                                                    image =
+                                                        if (selectedIndex == playlist.playlistName) playlist.playlistImage else ""
                                                 }
                                             )
                                             .background(
@@ -498,7 +503,7 @@ fun AudioItem(
                         confirmButton = {
                             Button(
                                 onClick = {
-                                    insertSongIntoPlaylist.invoke(audio, selectedIndex,image)
+                                    insertSongIntoPlaylist.invoke(audio, selectedIndex, image)
                                     openDialog = false
                                 },
                                 colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.lightBlueToWhite)
@@ -612,7 +617,7 @@ fun ArtistInfo(
     ) {
 
         GlideImage(
-            imageModel = { R.drawable.note },
+            imageModel = { if (audio.artUri != "") Uri.parse(audio.artUri) else R.drawable.note },
             imageOptions = ImageOptions(
                 contentScale = ContentScale.Crop,
                 alignment = Alignment.Center

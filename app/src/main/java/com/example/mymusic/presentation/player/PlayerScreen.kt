@@ -1,5 +1,6 @@
 package com.example.mymusic.presentation.player
 
+import android.net.Uri
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -41,6 +42,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.mymusic.R
@@ -92,7 +94,7 @@ fun PlayerScreen(
             Header(close)
             Spacer(modifier = Modifier.height(18.dp))
             GlideImage(
-                imageModel = { R.drawable.note },
+                imageModel = { if(audio.artUri != "") Uri.parse(audio.artUri) else R.drawable.note },
                 imageOptions = ImageOptions(
                     contentScale = ContentScale.Crop,
                     alignment = Alignment.Center
@@ -195,15 +197,13 @@ fun SongInfo(
                     tint = if (isSelected) Color.Red else Color.Gray
                 )
             }
-            Marquee(
-                params = defaultMarqueeParams(),
-            ) {
                 Text(
                     text = songName,
                     fontWeight = FontWeight.Bold,
                     fontSize = 22.sp,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
                 )
-            }
         }
         Spacer(modifier = Modifier.height(4.dp))
         Text(
@@ -276,6 +276,7 @@ fun PlayerControls(
     var number by remember {
         mutableStateOf(1)
     }
+
 
     Row(
         modifier = Modifier
