@@ -67,9 +67,6 @@ interface MusicDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertAlbums(albums: MutableList<Album>)
 
-    @Delete
-    suspend fun deleteAlbum(album: Album)
-
     @Query("SELECT * FROM album ORDER BY albumName ASC")
     fun getAllAlbums(): Flow<List<Album>>
 

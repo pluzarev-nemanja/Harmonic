@@ -135,11 +135,11 @@ class SongsViewModel @Inject constructor(
         }
     }
 
-    fun changeSongImage(song: Song,songImage : String){
-        viewModelScope.launch(Dispatchers.IO){
+    fun changeSongImage(song: Song, songImage: String) {
+        viewModelScope.launch(Dispatchers.IO) {
             musicUseCases.updateSong(
                 song.copy(
-                   artUri = songImage
+                    artUri = songImage
                 )
             )
         }

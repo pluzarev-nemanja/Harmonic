@@ -42,8 +42,6 @@ interface MusicRepository {
     suspend fun updatePlaylist(playlist: Playlist)
     suspend fun insertAlbums(albums: MutableList<Album>)
 
-    suspend fun deleteAlbum(album: Album)
-
     fun getAllAlbums(): Flow<List<Album>>
 
     fun getAllAlbumsArtist(): Flow<List<Album>>

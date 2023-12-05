@@ -28,9 +28,9 @@ fun FavoriteScreen(
     currentPlayingAudio: Song?,
     onItemClick: (Song) -> Unit,
     playlists: List<Playlist>,
-    insertSongIntoPlaylist: (Song, String,String) -> Unit,
+    insertSongIntoPlaylist: (Song, String, String) -> Unit,
     shareSong: (Song) -> Unit,
-    changeSongImage : (Song,String) -> Unit
+    changeSongImage: (Song, String) -> Unit
 
 ) {
 

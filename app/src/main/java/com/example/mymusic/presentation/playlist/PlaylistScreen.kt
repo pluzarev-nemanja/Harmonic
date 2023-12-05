@@ -72,8 +72,8 @@ import com.example.mymusic.presentation.songs.TOP_BAR_HEIGHT
 import com.example.mymusic.presentation.songs.isScrolled
 import com.example.mymusic.presentation.songs.timeStampToDuration
 import com.example.mymusic.presentation.util.shadow
-import com.example.mymusic.ui.theme.whiteToDarkGrey
 import com.example.mymusic.ui.theme.lightBlueToWhite
+import com.example.mymusic.ui.theme.whiteToDarkGrey
 import com.skydoves.landscapist.ImageOptions
 import com.skydoves.landscapist.glide.GlideImage
 
@@ -81,14 +81,14 @@ import com.skydoves.landscapist.glide.GlideImage
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun PlaylistScreen(
-    playlists : List<Playlist>,
+    playlists: List<Playlist>,
     sortOrderChange: (PlaylistSortOrder) -> Unit,
     navController: NavController,
     currentPlayingAudio: Song?,
     deletePlaylist: (Playlist) -> Unit,
     addPlaylist: (Playlist) -> Unit,
-    insertPlaylist : (String) -> Unit,
-    changePlaylistImage : (Playlist,String) -> Unit
+    insertPlaylist: (String) -> Unit,
+    changePlaylistImage: (Playlist, String) -> Unit
 ) {
 
     var openDialog by remember {
@@ -121,7 +121,8 @@ fun PlaylistScreen(
                 },
                 modifier = Modifier.padding(bottom = animatedHeight)
             ) {
-                Icon(imageVector = Icons.Filled.Add,
+                Icon(
+                    imageVector = Icons.Filled.Add,
                     contentDescription = "Add new playlist",
                     tint = MaterialTheme.colors.whiteToDarkGrey
                 )
@@ -195,8 +196,9 @@ fun PlaylistScreen(
                         },
                         colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.lightBlueToWhite)
                     ) {
-                        Text("Create playlist",
-                        color = MaterialTheme.colors.whiteToDarkGrey
+                        Text(
+                            "Create playlist",
+                            color = MaterialTheme.colors.whiteToDarkGrey
                         )
                     }
                 },
@@ -224,9 +226,9 @@ fun PlaylistItem(
     modifier: Modifier = Modifier,
     deletePlaylist: (Playlist) -> Unit,
     navController: NavController,
-    addPlaylist : (Playlist) -> Unit,
-    changePlaylistImage : (Playlist,String) -> Unit
-    ) {
+    addPlaylist: (Playlist) -> Unit,
+    changePlaylistImage: (Playlist, String) -> Unit
+) {
 
     var showMenu by remember {
         mutableStateOf(false)
@@ -244,14 +246,14 @@ fun PlaylistItem(
         onResult = { uri ->
             selectedImageUri = uri
             //here update that in database user image
-            changePlaylistImage.invoke(playlist,uri.toString())
+            changePlaylistImage.invoke(playlist, uri.toString())
         }
     )
     Column(
         modifier = modifier
             .fillMaxSize()
             .clickable {
-               addPlaylist.invoke(playlist)
+                addPlaylist.invoke(playlist)
                 navController.navigate(Screen.PlaylistDetailsScreen.route)
             },
     ) {
@@ -260,7 +262,7 @@ fun PlaylistItem(
             horizontalArrangement = Arrangement.Center
         ) {
             GlideImage(
-                imageModel = { if(playlist.playlistImage != "") playlist.playlistImage else R.drawable.playlist },
+                imageModel = { if (playlist.playlistImage != "") playlist.playlistImage else R.drawable.playlist },
                 imageOptions = ImageOptions(
                     contentScale = ContentScale.Crop,
                     alignment = Alignment.Center
@@ -338,7 +340,8 @@ fun PlaylistItem(
                                     },
                                     colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.lightBlueToWhite)
                                 ) {
-                                    Text("Delete",
+                                    Text(
+                                        "Delete",
                                         color = MaterialTheme.colors.whiteToDarkGrey
                                     )
                                 }

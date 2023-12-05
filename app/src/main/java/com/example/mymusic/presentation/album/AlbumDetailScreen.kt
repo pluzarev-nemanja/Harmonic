@@ -51,13 +51,13 @@ fun AlbumDetailScreen(
     navController: NavController,
     album: Album?,
     allPlaylists: List<Playlist>,
-    insertSongIntoPlaylist: (Song, String,String) -> Unit,
+    insertSongIntoPlaylist: (Song, String, String) -> Unit,
     onItemClick: (Song) -> Unit,
     currentPlayingAudio: Song?,
     shuffle: (Album) -> Unit,
     onStart: (Song, List<Song>) -> Unit,
     shareSong: (Song) -> Unit,
-    changeSongImage : (Song,String) -> Unit
+    changeSongImage: (Song, String) -> Unit
 
 ) {
 

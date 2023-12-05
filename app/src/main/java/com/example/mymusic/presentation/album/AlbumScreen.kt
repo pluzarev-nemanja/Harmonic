@@ -28,9 +28,6 @@ import androidx.compose.foundation.lazy.staggeredgrid.items
 import androidx.compose.foundation.lazy.staggeredgrid.rememberLazyStaggeredGridState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.AlertDialog
-import androidx.compose.material.Button
-import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.DropdownMenu
 import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.Icon
@@ -65,8 +62,6 @@ import com.example.mymusic.presentation.navigation.Screen
 import com.example.mymusic.presentation.songs.SortOrderItem
 import com.example.mymusic.presentation.songs.TOP_BAR_HEIGHT
 import com.example.mymusic.presentation.songs.isScrolled
-import com.example.mymusic.ui.theme.whiteToDarkGrey
-import com.example.mymusic.ui.theme.lightBlueToWhite
 import com.skydoves.landscapist.ImageOptions
 import com.skydoves.landscapist.glide.GlideImage
 
@@ -78,7 +73,7 @@ fun AlbumScreen(
     albums: List<Album>,
     sortOrderChange: (AlbumSortOrder) -> Unit,
     addAlbum: (Album) -> Unit,
-    changeAlbumImage : (Album,String) -> Unit
+    changeAlbumImage: (Album, String) -> Unit
 ) {
     val sortOrder by remember {
         mutableStateOf(AlbumSortOrder.ALBUM_NAME)
@@ -149,7 +144,7 @@ fun AlbumItem(
         onResult = { uri ->
             selectedImageUri = uri
             //here update that in database user image
-            changeAlbumImage.invoke(album,uri.toString())
+            changeAlbumImage.invoke(album, uri.toString())
         }
     )
 
@@ -170,8 +165,10 @@ fun AlbumItem(
                     .padding(5.dp)
                     .size(150.dp)
                     .clip(CircleShape),
-                imageModel = { if (album.albumImage != "") album.albumImage
-                else R.drawable.album },
+                imageModel = {
+                    if (album.albumImage != "") album.albumImage
+                    else R.drawable.album
+                },
                 imageOptions = ImageOptions(
                     contentScale = ContentScale.Crop,
                     alignment = Alignment.Center

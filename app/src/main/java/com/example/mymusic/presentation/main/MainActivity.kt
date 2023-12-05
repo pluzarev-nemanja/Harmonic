@@ -178,7 +178,7 @@ class MainActivity : ComponentActivity() {
                             },
                             isSnowing = settingsViewModel.user.isSnowing,
                             changeSongImage = { song, img ->
-                                songsViewModel.changeSongImage(song,img)
+                                songsViewModel.changeSongImage(song, img)
                             }
                         )
                     }

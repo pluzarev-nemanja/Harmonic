@@ -1,7 +1,5 @@
 package com.example.mymusic.presentation.playlist
 
-import androidx.activity.result.PickVisualMediaRequest
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -69,12 +67,12 @@ fun PlaylistDetailsScreen(
     navController: NavController,
     playlist: Playlist?,
     allPlaylists: List<Playlist>,
-    insertSongIntoPlaylist: (Song, String,String) -> Unit,
+    insertSongIntoPlaylist: (Song, String, String) -> Unit,
     onItemClick: (Song) -> Unit,
     shuffle: (Playlist) -> Unit,
     onStart: (Song, List<Song>) -> Unit,
     shareSong: (Song) -> Unit,
-    changeSongImage : (Song,String) -> Unit
+    changeSongImage: (Song, String) -> Unit
 
 ) {
 
@@ -124,7 +122,7 @@ fun PlaylistInfo(
             .padding(15.dp)
     ) {
         GlideImage(
-            imageModel = { if(playlist.playlistImage != "") playlist.playlistImage else R.drawable.playlist  },
+            imageModel = { if (playlist.playlistImage != "") playlist.playlistImage else R.drawable.playlist },
             imageOptions = ImageOptions(
                 contentScale = ContentScale.Crop,
                 alignment = Alignment.Center
@@ -167,8 +165,10 @@ fun PlaylistInfo(
                         contentDescription = "Play playlist",
                         tint = MaterialTheme.colors.whiteToDarkGrey
                     )
-                    Text(text = " Play",
-                        color = MaterialTheme.colors.whiteToDarkGrey)
+                    Text(
+                        text = " Play",
+                        color = MaterialTheme.colors.whiteToDarkGrey
+                    )
                 }
                 Spacer(modifier = Modifier.width(4.dp))
                 Button(
@@ -193,10 +193,10 @@ fun SongsList(
     currentPlayingAudio: Song?,
     audioList: List<Song>,
     allPlaylists: List<Playlist>,
-    insertSongIntoPlaylist: (Song, String,String) -> Unit,
+    insertSongIntoPlaylist: (Song, String, String) -> Unit,
     onItemClick: (Song) -> Unit,
     shareSong: (Song) -> Unit,
-    changeSongImage : (Song,String) -> Unit
+    changeSongImage: (Song, String) -> Unit
 
 ) {
 

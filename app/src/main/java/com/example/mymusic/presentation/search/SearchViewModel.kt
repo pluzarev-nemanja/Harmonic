@@ -1,20 +1,25 @@
 package com.example.mymusic.presentation.search
 
 import androidx.compose.runtime.mutableStateListOf
-import androidx.core.net.toUri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.mymusic.domain.model.Song
 import com.example.mymusic.domain.use_cases.MusicUseCases
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class SearchViewModel @Inject constructor(
     private val musicUseCases: MusicUseCases
-) : ViewModel(){
+) : ViewModel() {
 
     var searchList = mutableStateListOf<Song>()
 
@@ -29,7 +34,7 @@ class SearchViewModel @Inject constructor(
     val songs = searchText
         .onEach { _isSearching.update { true } }
         .combine(_songs) { text, song ->
-            if(text.isBlank()) {
+            if (text.isBlank()) {
                 song
             } else {
                 song.filter {

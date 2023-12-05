@@ -12,14 +12,13 @@ import android.support.v4.media.MediaDescriptionCompat
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
-import android.util.Log
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import androidx.media.MediaBrowserServiceCompat
 import com.example.mymusic.R
-import com.example.mymusic.presentation.exoplayer.MusicPlayerNotificationManager
 import com.example.mymusic.presentation.exoplayer.MediaSource
+import com.example.mymusic.presentation.exoplayer.MusicPlayerNotificationManager
 import com.example.mymusic.presentation.util.Constants
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.PlaybackException
@@ -33,7 +32,7 @@ import kotlinx.coroutines.*
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class MusicPlayerService: MediaBrowserServiceCompat() {
+class MusicPlayerService : MediaBrowserServiceCompat() {
 
     @Inject
     lateinit var dataSourceFactory: CacheDataSource.Factory
@@ -161,6 +160,7 @@ class MusicPlayerService: MediaBrowserServiceCompat() {
             Constants.START_MEDIA_PLAY_ACTION -> {
                 mediaPlayerNotificationManager.showNotification(exoPlayer)
             }
+
             Constants.REFRESH_MEDIA_PLAY_ACTION -> {
                 mediaSource.refresh()
                 notifyChildrenChanged(Constants.MEDIA_ROOT_ID)
@@ -322,6 +322,7 @@ class MusicPlayerService: MediaBrowserServiceCompat() {
                     mediaPlayerNotificationManager
                         .showNotification(exoPlayer)
                 }
+
                 else -> {
                     mediaPlayerNotificationManager
                         .hideNotification()

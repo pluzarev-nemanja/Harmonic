@@ -59,7 +59,6 @@ import com.example.mymusic.presentation.artist.ArtistItem
 import com.example.mymusic.presentation.navigation.Screen
 import com.example.mymusic.presentation.songs.TOP_BAR_HEIGHT
 import com.example.mymusic.presentation.songs.isScrolled
-import com.example.mymusic.ui.theme.lightBlueToWhite
 import com.skydoves.landscapist.ImageOptions
 import com.skydoves.landscapist.glide.GlideImage
 
@@ -73,12 +72,12 @@ fun HomeScreen(
     suggestions: List<Song>,
     onItemClick: (Song) -> Unit,
     addAlbum: (Album) -> Unit,
-    artists : List<Artist>,
+    artists: List<Artist>,
     addArtist: (Artist) -> Unit,
     name: String,
-    userImage : String,
-    changeAlbumImage : (Album,String) -> Unit,
-    changeArtistImage : (Artist,String) -> Unit
+    userImage: String,
+    changeAlbumImage: (Album, String) -> Unit,
+    changeArtistImage: (Artist, String) -> Unit
 ) {
 
     val lazyState = rememberLazyListState()
@@ -99,7 +98,7 @@ fun HomeScreen(
                 .padding(top = paddingLazyList)
                 .verticalScroll(rememberScrollState())
         ) {
-            UserInfo(name,userImage = userImage)
+            UserInfo(name, userImage = userImage)
             Spacer(modifier = Modifier.height(8.dp))
             Buttons(navController, shuffle)
             Suggestions(
@@ -151,8 +150,10 @@ fun UserInfo(
                 .padding(5.dp)
                 .size(70.dp)
                 .clip(CircleShape),
-            imageModel = { if (userImage != "") userImage
-            else R.drawable.artist },
+            imageModel = {
+                if (userImage != "") userImage
+                else R.drawable.artist
+            },
             imageOptions = ImageOptions(
                 contentScale = ContentScale.Crop,
                 alignment = Alignment.Center
@@ -230,7 +231,7 @@ fun SuggestionSongItem(
                 .padding(5.dp)
                 .fillMaxWidth()
                 .clip(CircleShape),
-            imageModel = { if(song.artUri != "") song.artUri else R.drawable.note },
+            imageModel = { if (song.artUri != "") song.artUri else R.drawable.note },
             imageOptions = ImageOptions(
                 contentScale = ContentScale.Crop,
                 alignment = Alignment.Center
@@ -251,7 +252,7 @@ fun RecentAlbums(
     albums: List<Album>,
     navController: NavController,
     addAlbum: (Album) -> Unit,
-    changeAlbumImage : (Album,String) -> Unit
+    changeAlbumImage: (Album, String) -> Unit
 ) {
     Column(
         modifier = Modifier.padding(5.dp)
@@ -316,13 +317,13 @@ fun HomeTopBar(
                 text = "Harmonic",
                 style = TextStyle(
                     fontSize = MaterialTheme.typography.h6.fontSize,
-                   fontWeight = FontWeight.Bold
+                    fontWeight = FontWeight.Bold
                 )
 
             )
 
             IconButton(onClick = {
-               navController.navigate(Screen.SettingsScreen.route)
+                navController.navigate(Screen.SettingsScreen.route)
             }) {
                 Icon(imageVector = Icons.Filled.Settings, contentDescription = "Settings button")
             }
@@ -375,11 +376,11 @@ fun Buttons(
 
 @Composable
 fun TopArtist(
-    artists : List<Artist>,
+    artists: List<Artist>,
     navController: NavController,
     modifier: Modifier = Modifier,
-    addArtist : (Artist) -> Unit,
-    changeArtistImage : (Artist,String) -> Unit
+    addArtist: (Artist) -> Unit,
+    changeArtistImage: (Artist, String) -> Unit
 ) {
     Column(
         modifier = modifier.padding(5.dp)
@@ -401,7 +402,12 @@ fun TopArtist(
                 .padding(5.dp),
         ) {
             items(artists) { artist ->
-                ArtistItem(navController = navController, artist = artist, addArtist = addArtist, changeArtistImage = changeArtistImage)
+                ArtistItem(
+                    navController = navController,
+                    artist = artist,
+                    addArtist = addArtist,
+                    changeArtistImage = changeArtistImage
+                )
             }
         }
     }

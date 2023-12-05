@@ -1,9 +1,7 @@
 package com.example.mymusic.domain.model
 
-import androidx.annotation.Keep
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.google.gson.annotations.SerializedName
 
 @Entity(tableName = "playlist")
 data class Playlist(
@@ -11,5 +9,5 @@ data class Playlist(
     val songCount: Int,
     val playlistDuration: Long,
     val songs: List<Song>,
-    val playlistImage : String
+    val playlistImage: String
 )

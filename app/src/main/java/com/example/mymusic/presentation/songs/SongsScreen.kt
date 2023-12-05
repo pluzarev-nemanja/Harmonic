@@ -462,7 +462,8 @@ fun AudioItem(
                     }
 
                     AlertDialog(
-                        modifier = Modifier.fillMaxWidth()
+                        modifier = Modifier
+                            .fillMaxWidth()
                             .height(330.dp),
                         shape = RoundedCornerShape(10.dp),
                         onDismissRequest = {

@@ -53,42 +53,42 @@ class MediaPlayerServiceConnection @Inject constructor(
         get() = mediaControllerCompat.transportControls
 
 
-    fun playAudio(audios:List<Song>){
+    fun playAudio(audios: List<Song>) {
         audioList = audios
-        mediaBrowser.sendCustomAction(Constants.START_MEDIA_PLAY_ACTION,null,null)
+        mediaBrowser.sendCustomAction(Constants.START_MEDIA_PLAY_ACTION, null, null)
     }
 
-    fun fastForward(seconds:Int = 10){
+    fun fastForward(seconds: Int = 10) {
         plaBackState.value?.currentPosition?.let {
             transportControl.seekTo(it + seconds * 1000)
         }
     }
 
-    fun rewind(seconds:Int = 10){
+    fun rewind(seconds: Int = 10) {
         plaBackState.value?.currentPosition?.let {
             transportControl.seekTo(it - seconds * 1000)
         }
     }
 
-    fun skipToNext(){
+    fun skipToNext() {
         transportControl.skipToNext()
     }
 
     fun subscribe(
-        parentId:String,
-        callBack:MediaBrowserCompat.SubscriptionCallback
-    ){
-        mediaBrowser.subscribe(parentId,callBack)
+        parentId: String,
+        callBack: MediaBrowserCompat.SubscriptionCallback
+    ) {
+        mediaBrowser.subscribe(parentId, callBack)
     }
 
     fun unSubscribe(
-        parentId:String,
-        callBack:MediaBrowserCompat.SubscriptionCallback
-    ){
-        mediaBrowser.unsubscribe(parentId,callBack)
+        parentId: String,
+        callBack: MediaBrowserCompat.SubscriptionCallback
+    ) {
+        mediaBrowser.unsubscribe(parentId, callBack)
     }
 
-    fun refreshMediaBrowserChildren(){
+    fun refreshMediaBrowserChildren() {
         mediaBrowser.sendCustomAction(
             Constants.REFRESH_MEDIA_PLAY_ACTION,
             null,

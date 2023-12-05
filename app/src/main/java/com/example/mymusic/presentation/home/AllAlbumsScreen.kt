@@ -31,7 +31,7 @@ fun AllAlbumsScreen(
     currentPlayingAudio: Song?,
     addAlbum: (Album) -> Unit,
     navController: NavController,
-    changeAlbumImage : (Album,String) -> Unit
+    changeAlbumImage: (Album, String) -> Unit
 
 ) {
 
@@ -46,11 +46,11 @@ fun AllAlbumsScreen(
         animationSpec = tween(durationMillis = 300), label = "paddingLazyList"
     )
 
-    Scaffold (
+    Scaffold(
         topBar = {
             SimpleTopBar(navController, name = "All albums")
         }
-    ){ padding ->
+    ) { padding ->
         LazyVerticalStaggeredGrid(
             columns = StaggeredGridCells.Fixed(2),
             modifier = Modifier

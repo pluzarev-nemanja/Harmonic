@@ -2,7 +2,6 @@ package com.example.mymusic.presentation.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -19,7 +18,6 @@ import com.example.mymusic.presentation.history.HistoryScreen
 import com.example.mymusic.presentation.history.HistoryViewModel
 import com.example.mymusic.presentation.home.AllAlbumsScreen
 import com.example.mymusic.presentation.home.HomeScreen
-import com.example.mymusic.presentation.main.MainViewModel
 import com.example.mymusic.presentation.playlist.PlaylistDetailsScreen
 import com.example.mymusic.presentation.playlist.PlaylistScreen
 import com.example.mymusic.presentation.playlist.PlaylistViewModel
@@ -78,11 +76,11 @@ fun BottomNavGraph(
                 },
                 name = settingsViewModel.user.userName,
                 userImage = settingsViewModel.user.userImage,
-                changeAlbumImage = { album,uri->
-                    albumsViewModel.changeAlbumImage(album,uri)
+                changeAlbumImage = { album, uri ->
+                    albumsViewModel.changeAlbumImage(album, uri)
                 },
                 changeArtistImage = { artist, uri ->
-                    artistViewModel.changeArtistImage(artist,uri)
+                    artistViewModel.changeArtistImage(artist, uri)
 
                 }
             )
@@ -101,12 +99,12 @@ fun BottomNavGraph(
                 },
                 navController = navController,
                 playlists = playlistViewModel.playlists,
-                insertSongIntoPlaylist = { song, playlistName,playlistImage->
-                    playlistViewModel.insertSongIntoPlaylist(song, playlistName,playlistImage)
+                insertSongIntoPlaylist = { song, playlistName, playlistImage ->
+                    playlistViewModel.insertSongIntoPlaylist(song, playlistName, playlistImage)
                 },
                 shareSong = shareSong,
-                changeSongImage = { song,uri ->
-                    songsViewModel.changeSongImage(song,uri)
+                changeSongImage = { song, uri ->
+                    songsViewModel.changeSongImage(song, uri)
                 }
             )
         }
@@ -129,7 +127,7 @@ fun BottomNavGraph(
                     playlistViewModel.insertPlaylist(it)
                 },
                 changePlaylistImage = { playlist, image ->
-                playlistViewModel.changePlaylistImage(playlist,image)
+                    playlistViewModel.changePlaylistImage(playlist, image)
 
                 }
             )
@@ -145,8 +143,8 @@ fun BottomNavGraph(
                 addAlbum = {
                     albumsViewModel.addAlbum(it)
                 },
-                changeAlbumImage = { album,uri->
-                    albumsViewModel.changeAlbumImage(album,uri)
+                changeAlbumImage = { album, uri ->
+                    albumsViewModel.changeAlbumImage(album, uri)
                 }
             )
         }
@@ -160,15 +158,15 @@ fun BottomNavGraph(
                     historyViewModel.updateHistory(it)
                 },
                 playlists = playlistViewModel.playlists,
-                insertSongIntoPlaylist = { song, playlistName,playlistImage->
-                    playlistViewModel.insertSongIntoPlaylist(song, playlistName,playlistImage)
+                insertSongIntoPlaylist = { song, playlistName, playlistImage ->
+                    playlistViewModel.insertSongIntoPlaylist(song, playlistName, playlistImage)
                 },
                 onSearchTextChange = {
                     searchViewModel.onSearchTextChange(it)
                 },
                 shareSong = shareSong,
-                changeSongImage = { song,uri ->
-                    songsViewModel.changeSongImage(song,uri)
+                changeSongImage = { song, uri ->
+                    songsViewModel.changeSongImage(song, uri)
                 }
             )
         }
@@ -179,8 +177,8 @@ fun BottomNavGraph(
                 navController = navController,
                 playlist = playlistViewModel.clickedPlaylist.value,
                 allPlaylists = playlistViewModel.playlists,
-                insertSongIntoPlaylist = { song, playlistName,playlistImage->
-                    playlistViewModel.insertSongIntoPlaylist(song, playlistName,playlistImage)
+                insertSongIntoPlaylist = { song, playlistName, playlistImage ->
+                    playlistViewModel.insertSongIntoPlaylist(song, playlistName, playlistImage)
                 },
                 onItemClick = {
                     songsViewModel.playAudio(it)
@@ -193,8 +191,8 @@ fun BottomNavGraph(
                     songsViewModel.playPlaylist(currentPlayingAudio, songs)
                 },
                 shareSong = shareSong,
-                changeSongImage = { song,uri ->
-                    songsViewModel.changeSongImage(song,uri)
+                changeSongImage = { song, uri ->
+                    songsViewModel.changeSongImage(song, uri)
                 }
             )
         }
@@ -204,8 +202,8 @@ fun BottomNavGraph(
                 navController = navController,
                 album = albumsViewModel.albumNavigated.value,
                 allPlaylists = playlistViewModel.playlists,
-                insertSongIntoPlaylist = { song, playlistName,playlistImage->
-                    playlistViewModel.insertSongIntoPlaylist(song, playlistName,playlistImage)
+                insertSongIntoPlaylist = { song, playlistName, playlistImage ->
+                    playlistViewModel.insertSongIntoPlaylist(song, playlistName, playlistImage)
                 },
                 onItemClick = {
                     songsViewModel.playAudio(it)
@@ -219,8 +217,8 @@ fun BottomNavGraph(
                     songsViewModel.playPlaylist(currentPlayingAudio, songs)
                 },
                 shareSong,
-                changeSongImage = { song,uri ->
-                    songsViewModel.changeSongImage(song,uri)
+                changeSongImage = { song, uri ->
+                    songsViewModel.changeSongImage(song, uri)
                 }
             )
         }
@@ -234,12 +232,12 @@ fun BottomNavGraph(
                     songsViewModel.playAudio(it)
                 },
                 playlists = playlistViewModel.playlists,
-                insertSongIntoPlaylist = { song, playlistName,playlistImage->
-                    playlistViewModel.insertSongIntoPlaylist(song, playlistName,playlistImage)
+                insertSongIntoPlaylist = { song, playlistName, playlistImage ->
+                    playlistViewModel.insertSongIntoPlaylist(song, playlistName, playlistImage)
                 },
                 shareSong = shareSong,
-                changeSongImage = { song,uri ->
-                    songsViewModel.changeSongImage(song,uri)
+                changeSongImage = { song, uri ->
+                    songsViewModel.changeSongImage(song, uri)
                 }
             )
         }
@@ -254,12 +252,12 @@ fun BottomNavGraph(
                     historyViewModel.updateHistory(it)
                 },
                 playlists = playlistViewModel.playlists,
-                insertSongIntoPlaylist = { song, playlistName,playlistImage->
-                    playlistViewModel.insertSongIntoPlaylist(song, playlistName,playlistImage)
+                insertSongIntoPlaylist = { song, playlistName, playlistImage ->
+                    playlistViewModel.insertSongIntoPlaylist(song, playlistName, playlistImage)
                 },
                 shareSong,
-                changeSongImage = { song,uri ->
-                    songsViewModel.changeSongImage(song,uri)
+                changeSongImage = { song, uri ->
+                    songsViewModel.changeSongImage(song, uri)
                 }
             )
         }
@@ -272,8 +270,8 @@ fun BottomNavGraph(
                     albumsViewModel.addAlbum(it)
                 },
                 navController = navController,
-                changeAlbumImage = { album,uri->
-                    albumsViewModel.changeAlbumImage(album,uri)
+                changeAlbumImage = { album, uri ->
+                    albumsViewModel.changeAlbumImage(album, uri)
                 }
             )
         }
@@ -287,7 +285,7 @@ fun BottomNavGraph(
                     artistViewModel.addArtist(it)
                 },
                 changeArtistImage = { artist, uri ->
-                    artistViewModel.changeArtistImage(artist,uri)
+                    artistViewModel.changeArtistImage(artist, uri)
 
                 }
             )
@@ -298,8 +296,8 @@ fun BottomNavGraph(
                 navController = navController,
                 artist = artistViewModel.artistNavigated.value,
                 allPlaylists = playlistViewModel.playlists,
-                insertSongIntoPlaylist = { song, playlistName,playlistImage->
-                    playlistViewModel.insertSongIntoPlaylist(song, playlistName,playlistImage)
+                insertSongIntoPlaylist = { song, playlistName, playlistImage ->
+                    playlistViewModel.insertSongIntoPlaylist(song, playlistName, playlistImage)
                 },
                 onItemClick = {
                     songsViewModel.playAudio(it)
@@ -313,8 +311,8 @@ fun BottomNavGraph(
                     songsViewModel.playPlaylist(currentPlayingAudio, songs)
                 },
                 shareSong = shareSong,
-                changeSongImage = { song,uri ->
-                    songsViewModel.changeSongImage(song,uri)
+                changeSongImage = { song, uri ->
+                    songsViewModel.changeSongImage(song, uri)
                 }
             )
         }

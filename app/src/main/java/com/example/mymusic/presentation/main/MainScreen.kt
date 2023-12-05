@@ -22,7 +22,6 @@ import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.example.mymusic.domain.model.Playlist
 import com.example.mymusic.domain.model.Song
 import com.example.mymusic.presentation.navigation.BottomBarScreen
 import com.example.mymusic.presentation.navigation.BottomNavGraph
@@ -133,8 +132,8 @@ fun MainScreen(
                                 isSelected = isSelected!!,
                                 isSnowing = isSnowing,
                                 playlists = playlistViewModel.playlists,
-                                insertSongIntoPlaylist = { song,name,img ->
-                                    playlistViewModel.insertSongIntoPlaylist(song,name,img)
+                                insertSongIntoPlaylist = { song, name, img ->
+                                    playlistViewModel.insertSongIntoPlaylist(song, name, img)
                                 },
                                 shareSong = shareSong,
                                 changeSongImage = changeSongImage,

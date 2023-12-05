@@ -149,7 +149,7 @@ fun ArtistItem(
                     .padding(5.dp)
                     .size(150.dp)
                     .clip(CircleShape),
-                imageModel = { if(artist.artistImage != "") artist.artistImage else R.drawable.artist },
+                imageModel = { if (artist.artistImage != "") artist.artistImage else R.drawable.artist },
                 imageOptions = ImageOptions(
                     contentScale = ContentScale.Crop,
                     alignment = Alignment.Center

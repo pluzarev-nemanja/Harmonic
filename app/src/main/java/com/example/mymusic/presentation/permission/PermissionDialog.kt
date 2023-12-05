@@ -1,6 +1,5 @@
 package com.example.mymusic.presentation.permission
 
-import android.Manifest
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -17,11 +16,11 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun PermissionDialog(
     permissionTextProvider: PermissionTextProvider,
-    isPermanentlyDeclined : Boolean,
+    isPermanentlyDeclined: Boolean,
     onDismiss: () -> Unit,
     onOkClick: () -> Unit,
-    onGoToAppSettingsClick : () -> Unit,
-    modifier : Modifier = Modifier
+    onGoToAppSettingsClick: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     AlertDialog(
         onDismissRequest = onDismiss,
@@ -29,9 +28,9 @@ fun PermissionDialog(
             Column(modifier = Modifier.fillMaxWidth()) {
                 Divider()
                 Text(
-                    text = if(isPermanentlyDeclined){
+                    text = if (isPermanentlyDeclined) {
                         "Grant Permission"
-                    }else{
+                    } else {
                         "OK"
                     },
                     fontWeight = FontWeight.Bold,
@@ -64,16 +63,16 @@ fun PermissionDialog(
     )
 }
 
-interface PermissionTextProvider{
+interface PermissionTextProvider {
     fun getDescription(isPermanentlyDeclined: Boolean): String
 }
 
-class ReadStoragePermissionTextProvider : PermissionTextProvider{
+class ReadStoragePermissionTextProvider : PermissionTextProvider {
     override fun getDescription(isPermanentlyDeclined: Boolean): String {
-        return if(isPermanentlyDeclined){
+        return if (isPermanentlyDeclined) {
             "It seems you permanently declined read storage permission" +
                     "you can go to the app settings to grant it."
-        } else{
+        } else {
             "This app needs read storage permission in order to load" +
                     "all your songs from device."
         }

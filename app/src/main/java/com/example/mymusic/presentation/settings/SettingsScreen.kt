@@ -58,7 +58,7 @@ fun SettingsScreen(
     changeUserImage: (String) -> Unit,
     changeSnowing: (Boolean) -> Unit,
     userImage: String,
-    isSnowEnable : Boolean
+    isSnowEnable: Boolean
 ) {
 
     val theme: String by settingsViewModel.theme.observeAsState("")
@@ -85,7 +85,7 @@ fun SettingsScreen(
                 equalizer = equalizer
             )
             Spacer(modifier = Modifier.height(10.dp))
-            Snowing(changeSnowing = changeSnowing,isSnowEnable)
+            Snowing(changeSnowing = changeSnowing, isSnowEnable)
             Spacer(modifier = Modifier.height(10.dp))
             About()
         }
@@ -119,6 +119,7 @@ fun About() {
 
     }
 }
+
 @Composable
 fun UserInfo(
     userName: String,

@@ -80,10 +80,6 @@ class MusicRepositoryImpl @Inject constructor(
         dao.insertAlbums(albums)
     }
 
-    override suspend fun deleteAlbum(album: Album) {
-        dao.deleteAlbum(album)
-    }
-
     override fun getAllAlbums(): Flow<List<Album>> {
         return dao.getAllAlbums()
     }
@@ -96,7 +92,7 @@ class MusicRepositoryImpl @Inject constructor(
         return dao.getAllAlbumsSongCount()
     }
 
-    override  fun getAlbumWithSongs(albumName: String): Flow<List<AlbumWithSongs>> {
+    override fun getAlbumWithSongs(albumName: String): Flow<List<AlbumWithSongs>> {
         return dao.getAlbumWithSongs(albumName)
     }
 

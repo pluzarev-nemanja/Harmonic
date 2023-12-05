@@ -53,11 +53,11 @@ fun ArtistsDetailScreen(
     shuffle: (Artist) -> Unit,
     onStart: (Song, List<Song>) -> Unit,
     allPlaylists: List<Playlist>,
-    insertSongIntoPlaylist: (Song, String,String) -> Unit,
+    insertSongIntoPlaylist: (Song, String, String) -> Unit,
     onItemClick: (Song) -> Unit,
     currentPlayingAudio: Song?,
     shareSong: (Song) -> Unit,
-    changeSongImage : (Song,String) -> Unit
+    changeSongImage: (Song, String) -> Unit
 ) {
 
     Scaffold(
@@ -115,7 +115,7 @@ fun ArtistInfo(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         GlideImage(
-            imageModel = { if(artist.artistImage != "") artist.artistImage else R.drawable.artist },
+            imageModel = { if (artist.artistImage != "") artist.artistImage else R.drawable.artist },
             imageOptions = ImageOptions(
                 contentScale = ContentScale.Crop,
                 alignment = Alignment.Center
