@@ -338,7 +338,9 @@ fun BottomNavGraph(
                     settingsViewModel.changeUserImage(it)
                 },
                 userImage = settingsViewModel.user.userImage,
-                isSnowEnable = settingsViewModel.user.isSnowing
+                isSnowEnable = settingsViewModel.user.isSnowing,
+                currentPlayingAudio = songsViewModel
+                    .currentPlayingAudio.value,
             )
         }
     }

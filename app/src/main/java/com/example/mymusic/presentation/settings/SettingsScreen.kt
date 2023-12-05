@@ -4,6 +4,7 @@ import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -14,7 +15,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Divider
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
@@ -42,6 +45,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.mymusic.R
+import com.example.mymusic.domain.model.Song
 import com.example.mymusic.presentation.history.SimpleTopBar
 import com.example.mymusic.ui.theme.darkestBlueToWhite
 import com.skydoves.landscapist.ImageOptions
@@ -58,17 +62,27 @@ fun SettingsScreen(
     changeUserImage: (String) -> Unit,
     changeSnowing: (Boolean) -> Unit,
     userImage: String,
-    isSnowEnable: Boolean
+    isSnowEnable: Boolean,
+    currentPlayingAudio: Song?
 ) {
 
     val theme: String by settingsViewModel.theme.observeAsState("")
+    val animatedHeight by animateDpAsState(
+        targetValue = if (currentPlayingAudio == null) 0.dp
+        else 80.dp, label = "animatedHeight"
+    )
 
     Scaffold(
         topBar = {
             SimpleTopBar(navController, name = "Settings")
         }
     ) { padding ->
-        Column(modifier = Modifier.fillMaxSize()) {
+        Column(
+            modifier = Modifier
+                .verticalScroll(rememberScrollState())
+                .fillMaxSize()
+                .padding(bottom = animatedHeight)
+        ) {
             UserInfo(
                 userName = userName,
                 changeUserName,

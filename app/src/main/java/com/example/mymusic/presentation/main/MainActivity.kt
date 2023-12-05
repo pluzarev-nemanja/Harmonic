@@ -130,13 +130,11 @@ class MainActivity : ComponentActivity() {
                         val searchViewModel = viewModel<SearchViewModel>()
                         val favoriteViewModel = viewModel<FavoriteViewModel>()
 
-                        val songList = songsViewModel.songList
-
                         val searchText by searchViewModel.searchText.collectAsState()
                         val songs by searchViewModel.songs.collectAsState()
 
                         MainScreen(
-                            audioList = songList,
+                            audioList = songsViewModel.songList,
                             onStart = {
                                 songsViewModel.playAudio(it)
                             },
