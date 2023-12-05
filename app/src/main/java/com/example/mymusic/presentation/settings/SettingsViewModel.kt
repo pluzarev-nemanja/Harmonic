@@ -21,7 +21,7 @@ class SettingsViewModel @Inject constructor(
 
     var user by mutableStateOf(User(
         1,
-        "User Name",
+        "User",
         "Auto",
         userImage = "",
         isSnowing = false

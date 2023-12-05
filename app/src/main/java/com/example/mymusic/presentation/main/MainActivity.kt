@@ -176,7 +176,10 @@ class MainActivity : ComponentActivity() {
                             shareSong = {
                                 shareAudioFile(it)
                             },
-                            isSnowing = settingsViewModel.user.isSnowing
+                            isSnowing = settingsViewModel.user.isSnowing,
+                            changeSongImage = { song, img ->
+                                songsViewModel.changeSongImage(song,img)
+                            }
                         )
                     }
 

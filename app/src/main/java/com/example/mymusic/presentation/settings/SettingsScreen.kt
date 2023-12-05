@@ -86,11 +86,39 @@ fun SettingsScreen(
             )
             Spacer(modifier = Modifier.height(10.dp))
             Snowing(changeSnowing = changeSnowing,isSnowEnable)
+            Spacer(modifier = Modifier.height(10.dp))
+            About()
         }
     }
 }
 
+@Composable
+fun About() {
+    Divider(color = MaterialTheme.colors.darkestBlueToWhite)
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(8.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        Text(
+            text = "Application version:",
+            fontWeight = FontWeight.Bold,
+            style = MaterialTheme.typography.h6,
+            fontSize = 18.sp,
+            color = MaterialTheme.colors.darkestBlueToWhite
+        )
+        Text(
+            text = "1.0",
+            fontWeight = FontWeight.Bold,
+            style = MaterialTheme.typography.h6,
+            fontSize = 18.sp,
+            color = MaterialTheme.colors.darkestBlueToWhite
+        )
 
+    }
+}
 @Composable
 fun UserInfo(
     userName: String,

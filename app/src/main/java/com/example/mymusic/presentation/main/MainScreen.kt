@@ -15,12 +15,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.example.mymusic.domain.model.Playlist
 import com.example.mymusic.domain.model.Song
 import com.example.mymusic.presentation.navigation.BottomBarScreen
 import com.example.mymusic.presentation.navigation.BottomNavGraph
@@ -28,6 +30,7 @@ import com.example.mymusic.presentation.player.PlayerScreen
 import com.example.mymusic.presentation.player.SheetCollapsed
 import com.example.mymusic.presentation.player.SheetContent
 import com.example.mymusic.presentation.player.SheetExpanded
+import com.example.mymusic.presentation.playlist.PlaylistViewModel
 import com.example.mymusic.presentation.songs.ArtistInfo
 import com.example.mymusic.presentation.songs.MediaPlayerController
 import com.example.mymusic.presentation.util.currentFraction
@@ -55,7 +58,9 @@ fun MainScreen(
     addFavorite: (Song) -> Unit,
     equalizer: () -> Unit,
     shareSong: (Song) -> Unit,
-    isSnowing: Boolean
+    isSnowing: Boolean,
+    playlistViewModel: PlaylistViewModel = hiltViewModel(),
+    changeSongImage: (Song, String) -> Unit
 ) {
 
     val navController = rememberNavController()
@@ -126,7 +131,13 @@ fun MainScreen(
                                     isSelected = !isSelected!!
                                 },
                                 isSelected = isSelected!!,
-                                isSnowing = isSnowing
+                                isSnowing = isSnowing,
+                                playlists = playlistViewModel.playlists,
+                                insertSongIntoPlaylist = { song,name,img ->
+                                    playlistViewModel.insertSongIntoPlaylist(song,name,img)
+                                },
+                                shareSong = shareSong,
+                                changeSongImage = changeSongImage,
                             )
                         }
                     }

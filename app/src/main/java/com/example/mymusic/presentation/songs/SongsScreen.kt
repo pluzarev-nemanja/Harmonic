@@ -493,7 +493,7 @@ fun AudioItem(
                                                 }
                                             )
                                             .background(
-                                                if (selectedIndex == playlist.playlistName) Color.Gray
+                                                if (selectedIndex == playlist.playlistName) MaterialTheme.colors.primary
                                                 else Color.Transparent
                                             )
                                     )

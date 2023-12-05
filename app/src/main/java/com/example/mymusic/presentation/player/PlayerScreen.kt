@@ -1,6 +1,9 @@
 package com.example.mymusic.presentation.player
 
 import android.net.Uri
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -11,7 +14,15 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.AlertDialog
+import androidx.compose.material.Button
+import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.DropdownMenu
+import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
@@ -46,16 +57,17 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.mymusic.R
+import com.example.mymusic.domain.model.Playlist
 import com.example.mymusic.domain.model.Song
 import com.example.mymusic.presentation.songs.PlayerIconItem
+import com.example.mymusic.presentation.songs.PlaylistChooser
 import com.example.mymusic.presentation.songs.timeStampToDuration
-import com.example.mymusic.presentation.util.Marquee
-import com.example.mymusic.presentation.util.defaultMarqueeParams
 import com.example.mymusic.presentation.util.shadow
 import com.example.mymusic.presentation.util.snowfall
 import com.example.mymusic.ui.theme.darkGreyToSoftGrey
 import com.example.mymusic.ui.theme.darkestBlueToWhite
 import com.example.mymusic.ui.theme.lightBlueToWhite
+import com.example.mymusic.ui.theme.whiteToDarkGrey
 import com.example.mymusic.ui.theme.whiteToDarkestBlue
 import com.skydoves.landscapist.ImageOptions
 import com.skydoves.landscapist.glide.GlideImage
@@ -77,24 +89,36 @@ fun PlayerScreen(
     updateTimer: () -> String,
     addFavorite: (Song) -> Unit,
     isSelected: Boolean,
-    isSnowing : Boolean
+    isSnowing: Boolean,
+    playlists: List<Playlist> = emptyList(),
+    insertSongIntoPlaylist: (Song, String, String) -> Unit,
+    shareSong: (Song) -> Unit,
+    changeSongImage: (Song, String) -> Unit,
 ) {
 
-    Surface(modifier = if(isSnowing)Modifier
-        .background(MaterialTheme.colors.background)
-        .snowfall()
-    else Modifier
-        .background(MaterialTheme.colors.background)
+    Surface(
+        modifier = if (isSnowing) Modifier
+            .background(MaterialTheme.colors.background)
+            .snowfall()
+        else Modifier
+            .background(MaterialTheme.colors.background)
     ) {
         Column(
             modifier = Modifier
                 .fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Header(close)
+            Header(
+                close,
+                audio = audio,
+                playlists = playlists,
+                insertSongIntoPlaylist = insertSongIntoPlaylist,
+                shareSong = shareSong,
+                changeSongImage = changeSongImage
+            )
             Spacer(modifier = Modifier.height(18.dp))
             GlideImage(
-                imageModel = { if(audio.artUri != "") Uri.parse(audio.artUri) else R.drawable.note },
+                imageModel = { if (audio.artUri != "") Uri.parse(audio.artUri) else R.drawable.note },
                 imageOptions = ImageOptions(
                     contentScale = ContentScale.Crop,
                     alignment = Alignment.Center
@@ -138,8 +162,31 @@ fun PlayerScreen(
 
 @Composable
 fun Header(
-    close: () -> Unit
-) {
+    close: () -> Unit,
+    playlists: List<Playlist> = emptyList(),
+    insertSongIntoPlaylist: (Song, String, String) -> Unit,
+    shareSong: (Song) -> Unit,
+    changeSongImage: (Song, String) -> Unit,
+    audio: Song
+    ) {
+
+    var showMenu by remember { mutableStateOf(false) }
+    var openDialog by remember {
+        mutableStateOf(false)
+    }
+
+    var selectedImageUri by remember {
+        mutableStateOf<Uri?>(null)
+    }
+    val singlePhotoPickerLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.PickVisualMedia(),
+        onResult = { uri ->
+            selectedImageUri = uri
+            //here update that in database user image
+            changeSongImage.invoke(audio, uri.toString())
+        }
+    )
+
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -162,12 +209,126 @@ fun Header(
             fontWeight = FontWeight.Bold,
             fontSize = 18.sp
         )
-        IconButton(onClick = { }) {
+        IconButton(onClick = {
+            showMenu = true
+        }) {
             Icon(
                 imageVector = Icons.Default.MoreHoriz,
                 contentDescription = "More options",
-                tint = MaterialTheme.colors.lightBlueToWhite
-            )
+                tint = MaterialTheme.colors
+                    .onSurface
+                    .copy(alpha = .5f),
+
+                )
+            MaterialTheme(shapes = MaterialTheme.shapes.copy(medium = RoundedCornerShape(16.dp))) {
+                DropdownMenu(
+                    expanded = showMenu,
+                    onDismissRequest = {
+                        showMenu = false
+                    },
+                ) {
+                    DropdownMenuItem(onClick = {
+                        openDialog = true
+                        showMenu = false
+                    }) {
+                        Text(
+                            text = "Add song to playlist",
+
+                            )
+                    }
+                    DropdownMenuItem(onClick = {
+                        shareSong.invoke(audio)
+                        showMenu = false
+                    }) {
+                        Text(
+                            text = "Share song",
+                        )
+                    }
+                    DropdownMenuItem(onClick = {
+                        singlePhotoPickerLauncher.launch(
+                            PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
+                        )
+                        showMenu = false
+                    }) {
+                        Text(text = "Change image")
+                    }
+                }
+            }
+            if (openDialog) {
+
+                var selectedIndex by remember {
+                    mutableStateOf("")
+                }
+                var image by remember {
+                    mutableStateOf("")
+                }
+
+                AlertDialog(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(330.dp),
+                    shape = RoundedCornerShape(10.dp),
+                    onDismissRequest = {
+                        openDialog = false
+                    },
+                    title = {
+                        Text(
+                            text = "Choose playlist",
+                            modifier = Modifier.padding(top = 12.dp)
+                        )
+                    },
+                    text = {
+                        LazyColumn(
+                            modifier = Modifier
+                                .padding(top = 12.dp)
+                        ) {
+                            items(playlists) { playlist ->
+                                PlaylistChooser(playlist = playlist,
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .selectable(
+                                            selected = selectedIndex == playlist.playlistName,
+                                            onClick = {
+                                                selectedIndex =
+                                                    if (selectedIndex == playlist.playlistName) "" else playlist.playlistName
+                                                image =
+                                                    if (selectedIndex == playlist.playlistName) playlist.playlistImage else ""
+                                            }
+                                        )
+                                        .background(
+                                            if (selectedIndex == playlist.playlistName) Color.Gray
+                                            else Color.Transparent
+                                        )
+                                )
+                            }
+                        }
+                    },
+                    confirmButton = {
+                        Button(
+                            onClick = {
+                                insertSongIntoPlaylist.invoke(audio, selectedIndex, image)
+                                openDialog = false
+                            },
+                            colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.lightBlueToWhite)
+                        ) {
+                            Text(
+                                "Add",
+                                color = MaterialTheme.colors.whiteToDarkGrey
+                            )
+                        }
+                    },
+                    dismissButton = {
+
+                        Button(
+                            onClick = {
+                                openDialog = false
+                            }
+                        ) {
+                            Text("Cancel")
+                        }
+                    }
+                )
+            }
         }
     }
 }
@@ -197,13 +358,13 @@ fun SongInfo(
                     tint = if (isSelected) Color.Red else Color.Gray
                 )
             }
-                Text(
-                    text = songName,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 22.sp,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
-                )
+            Text(
+                text = songName,
+                fontWeight = FontWeight.Bold,
+                fontSize = 22.sp,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
         }
         Spacer(modifier = Modifier.height(4.dp))
         Text(
