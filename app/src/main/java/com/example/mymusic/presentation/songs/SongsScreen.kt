@@ -44,8 +44,6 @@ import com.example.mymusic.domain.model.Playlist
 import com.example.mymusic.domain.model.Song
 import com.example.mymusic.domain.util.SortOrder
 import com.example.mymusic.presentation.navigation.Screen
-import com.example.mymusic.presentation.util.Marquee
-import com.example.mymusic.presentation.util.defaultMarqueeParams
 import com.example.mymusic.ui.theme.lightBlueToWhite
 import com.example.mymusic.ui.theme.whiteToDarkGrey
 import com.example.mymusic.ui.theme.whiteToDarkestBlue
@@ -639,20 +637,15 @@ fun ArtistInfo(
         Spacer(modifier = Modifier.size(4.dp))
 
         Column {
-            Marquee(
-                modifier = Modifier,
-                params = defaultMarqueeParams(),
-            ) {
-                Text(
-                    text = audio.title,
-                    overflow = TextOverflow.Ellipsis,
-                    fontWeight = FontWeight.Bold,
-                    style = MaterialTheme.typography.h6,
-                    maxLines = 1,
-                    fontSize = 15.sp,
-                    color = MaterialTheme.colors.whiteToDarkestBlue
-                )
-            }
+            Text(
+                text = audio.title,
+                overflow = TextOverflow.Ellipsis,
+                fontWeight = FontWeight.Bold,
+                style = MaterialTheme.typography.h6,
+                maxLines = 1,
+                fontSize = 15.sp,
+                color = MaterialTheme.colors.whiteToDarkestBlue
+            )
             Spacer(modifier = Modifier.size(4.dp))
             Text(
                 text = audio.artist,

@@ -312,6 +312,7 @@ class SongsViewModel @Inject constructor(
         serviceConnection.rewind()
     }
 
+    // TODO: here you need to change logic for skip to next and previous for albums,playlists and artists
     fun skipToNext() {
         serviceConnection.skipToNext()
     }
