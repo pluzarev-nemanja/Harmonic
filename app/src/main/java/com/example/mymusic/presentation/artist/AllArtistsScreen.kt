@@ -131,7 +131,9 @@ fun ArtistItem(
             changeArtistImage.invoke(artist,uri.toString())
         }
     )
-
+    val image by remember {
+        mutableStateOf(artist.artistImage)
+    }
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -149,7 +151,7 @@ fun ArtistItem(
                     .padding(5.dp)
                     .size(150.dp)
                     .clip(CircleShape),
-                imageModel = { if (artist.artistImage != "") artist.artistImage else R.drawable.artist },
+                imageModel = { if (image != "") Uri.parse(image) else R.drawable.artist },
                 imageOptions = ImageOptions(
                     contentScale = ContentScale.Crop,
                     alignment = Alignment.Center

@@ -341,6 +341,10 @@ fun AudioItem(
         }
     )
 
+    val image by remember {
+        mutableStateOf(audio.artUri)
+    }
+
     Card(
         modifier = modifier
             .fillMaxWidth()
@@ -354,7 +358,7 @@ fun AudioItem(
         Row(verticalAlignment = Alignment.CenterVertically) {
 
             GlideImage(
-                imageModel = { if (audio.artUri != "") Uri.parse(audio.artUri) else R.drawable.note },
+                imageModel = { if (image != "") Uri.parse(image) else R.drawable.note },
                 imageOptions = ImageOptions(
                     contentScale = ContentScale.Crop,
                     alignment = Alignment.Center

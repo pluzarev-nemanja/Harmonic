@@ -1,5 +1,9 @@
 package com.example.mymusic.presentation.album
 
+import android.net.Uri
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -14,18 +18,25 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.DropdownMenu
+import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.OutlinedButton
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
+import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.MoreHoriz
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Shuffle
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -39,6 +50,7 @@ import com.example.mymusic.R
 import com.example.mymusic.domain.model.Album
 import com.example.mymusic.domain.model.Playlist
 import com.example.mymusic.domain.model.Song
+import com.example.mymusic.presentation.navigation.Screen
 import com.example.mymusic.presentation.playlist.SongsList
 import com.example.mymusic.presentation.playlist.TopBarPlaylist
 import com.example.mymusic.ui.theme.lightBlueToWhite
@@ -57,13 +69,18 @@ fun AlbumDetailScreen(
     shuffle: (Album) -> Unit,
     onStart: (Song, List<Song>) -> Unit,
     shareSong: (Song) -> Unit,
-    changeSongImage: (Song, String) -> Unit
+    changeSongImage: (Song, String) -> Unit,
+    changeAlbumImage: (Album, String) -> Unit,
 
 ) {
 
     Scaffold(
         topBar = {
-            TopBarPlaylist(navController = navController)
+            TopBarAlbum(
+                navController = navController,
+                album = album!!,
+                changeAlbumImage = changeAlbumImage
+            )
         }
     ) { padding ->
 
@@ -92,6 +109,81 @@ fun AlbumDetailScreen(
 }
 
 @Composable
+fun TopBarAlbum(
+    navController: NavController,
+    changeAlbumImage: (Album, String) -> Unit,
+    album: Album
+) {
+    var showMenu by remember {
+        mutableStateOf(false)
+    }
+
+    var selectedImageUri by remember {
+        mutableStateOf<Uri?>(null)
+    }
+
+    val singlePhotoPickerLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.PickVisualMedia(),
+        onResult = { uri ->
+            selectedImageUri = uri
+            //here update that in database user image
+            changeAlbumImage.invoke(album, uri.toString())
+        }
+    )
+
+    TopAppBar(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(color = MaterialTheme.colors.primary)
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(end = 8.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween,
+        ) {
+
+            IconButton(onClick = {
+                navController.popBackStack()
+            }) {
+                Icon(imageVector = Icons.Filled.ArrowBack, contentDescription = "Back button")
+            }
+
+            IconButton(onClick = {
+                //add more options to playlist
+                showMenu = true
+            }) {
+                MaterialTheme(shapes = MaterialTheme.shapes.copy(medium = RoundedCornerShape(16.dp))) {
+                    DropdownMenu(
+                        expanded = showMenu,
+                        onDismissRequest = {
+                            showMenu = false
+                        },
+                    ) {
+                        DropdownMenuItem(onClick = {
+                            singlePhotoPickerLauncher.launch(
+                                PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
+                            )
+                            showMenu = false
+                        }) {
+                            Text(text = "Change image")
+                        }
+                        DropdownMenuItem(onClick = {
+                            navController.navigate(Screen.SettingsScreen.route)
+                            showMenu = false
+                        }) {
+                            Text(text = "Settings")
+                        }
+                    }
+                }
+                Icon(imageVector = Icons.Filled.MoreHoriz, contentDescription = "More options")
+            }
+        }
+    }
+}
+
+@Composable
 fun AlbumInfo(
     album: Album,
     shuffle: () -> Unit,
@@ -104,6 +196,10 @@ fun AlbumInfo(
         else mutableStateOf("song")
     }
 
+    val image by remember {
+        mutableStateOf(album.albumImage)
+    }
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -112,7 +208,7 @@ fun AlbumInfo(
     ) {
         GlideImage(
             imageModel = {
-                if (album.albumImage != "") album.albumImage
+                if (image != "") Uri.parse(image)
                 else R.drawable.album
             },
             imageOptions = ImageOptions(

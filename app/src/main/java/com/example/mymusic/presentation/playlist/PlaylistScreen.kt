@@ -20,6 +20,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.staggeredgrid.LazyStaggeredGridState
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
@@ -249,6 +250,12 @@ fun PlaylistItem(
             changePlaylistImage.invoke(playlist, uri.toString())
         }
     )
+
+    val image by remember {
+        mutableStateOf(playlist.playlistImage)
+    }
+
+
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -262,13 +269,13 @@ fun PlaylistItem(
             horizontalArrangement = Arrangement.Center
         ) {
             GlideImage(
-                imageModel = { if (playlist.playlistImage != "") playlist.playlistImage else R.drawable.playlist },
+                imageModel = { if (image != "") Uri.parse(image) else R.drawable.playlist },
                 imageOptions = ImageOptions(
                     contentScale = ContentScale.Crop,
                     alignment = Alignment.Center
                 ),
                 modifier = Modifier
-                    .fillMaxWidth()
+                    .size(180.dp)
                     .clip(RoundedCornerShape(25.dp))
                     .shadow(offsetY = 130.dp, blurRadius = 15.dp)
                     .background(Color.DarkGray),

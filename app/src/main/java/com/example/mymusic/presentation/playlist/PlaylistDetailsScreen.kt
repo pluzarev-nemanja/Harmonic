@@ -1,5 +1,9 @@
 package com.example.mymusic.presentation.playlist
 
+import android.net.Uri
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -72,14 +76,16 @@ fun PlaylistDetailsScreen(
     shuffle: (Playlist) -> Unit,
     onStart: (Song, List<Song>) -> Unit,
     shareSong: (Song) -> Unit,
-    changeSongImage: (Song, String) -> Unit
-
+    changeSongImage: (Song, String) -> Unit,
+    changePlaylistImage: (Playlist, String) -> Unit
 ) {
 
     Scaffold(
         topBar = {
             TopBarPlaylist(
-                navController = navController
+                navController = navController,
+                changePlaylistImage = changePlaylistImage,
+                playlist = playlist!!
             )
         }
     ) { paddingValues ->
@@ -114,7 +120,9 @@ fun PlaylistInfo(
     shuffle: () -> Unit,
     onStart: () -> Unit,
 ) {
-
+    val image by remember {
+        mutableStateOf(playlist.playlistImage)
+    }
     Row(
         modifier = Modifier
             .height(180.dp)
@@ -122,7 +130,7 @@ fun PlaylistInfo(
             .padding(15.dp)
     ) {
         GlideImage(
-            imageModel = { if (playlist.playlistImage != "") playlist.playlistImage else R.drawable.playlist },
+            imageModel = { if (image != "") Uri.parse(image) else R.drawable.playlist },
             imageOptions = ImageOptions(
                 contentScale = ContentScale.Crop,
                 alignment = Alignment.Center
@@ -228,11 +236,26 @@ fun SongsList(
 
 @Composable
 fun TopBarPlaylist(
-    navController: NavController
-) {
+    navController: NavController,
+    changePlaylistImage: (Playlist, String) -> Unit,
+    playlist: Playlist,
+    ) {
     var showMenu by remember {
         mutableStateOf(false)
     }
+
+    var selectedImageUri by remember {
+        mutableStateOf<Uri?>(null)
+    }
+    val singlePhotoPickerLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.PickVisualMedia(),
+        onResult = { uri ->
+            selectedImageUri = uri
+            //here update that in database user image
+            changePlaylistImage.invoke(playlist, uri.toString())
+        }
+    )
+
     TopAppBar(
         modifier = Modifier
             .fillMaxWidth()
@@ -263,6 +286,14 @@ fun TopBarPlaylist(
                             showMenu = false
                         },
                     ) {
+                        DropdownMenuItem(onClick = {
+                            singlePhotoPickerLauncher.launch(
+                                PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
+                            )
+                            showMenu = false
+                        }) {
+                            Text(text = "Change image")
+                        }
                         DropdownMenuItem(onClick = {
                             navController.navigate(Screen.SettingsScreen.route)
                             showMenu = false

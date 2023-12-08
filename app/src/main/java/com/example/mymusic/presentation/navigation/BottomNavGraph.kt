@@ -193,6 +193,10 @@ fun BottomNavGraph(
                 shareSong = shareSong,
                 changeSongImage = { song, uri ->
                     songsViewModel.changeSongImage(song, uri)
+                },
+                changePlaylistImage = { playlist, image ->
+                    playlistViewModel.changePlaylistImage(playlist, image)
+
                 }
             )
         }
@@ -219,6 +223,9 @@ fun BottomNavGraph(
                 shareSong,
                 changeSongImage = { song, uri ->
                     songsViewModel.changeSongImage(song, uri)
+                },
+                changeAlbumImage = { album, uri ->
+                    albumsViewModel.changeAlbumImage(album, uri)
                 }
             )
         }
@@ -313,6 +320,10 @@ fun BottomNavGraph(
                 shareSong = shareSong,
                 changeSongImage = { song, uri ->
                     songsViewModel.changeSongImage(song, uri)
+                },
+                changeArtistImage = { artist, uri ->
+                    artistViewModel.changeArtistImage(artist, uri)
+
                 }
             )
         }

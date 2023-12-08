@@ -147,6 +147,9 @@ fun AlbumItem(
             changeAlbumImage.invoke(album, uri.toString())
         }
     )
+    val image by remember {
+        mutableStateOf(album.albumImage)
+    }
 
     Column(
         modifier = modifier
@@ -166,7 +169,7 @@ fun AlbumItem(
                     .size(150.dp)
                     .clip(CircleShape),
                 imageModel = {
-                    if (album.albumImage != "") album.albumImage
+                    if (image != "") Uri.parse(image)
                     else R.drawable.album
                 },
                 imageOptions = ImageOptions(

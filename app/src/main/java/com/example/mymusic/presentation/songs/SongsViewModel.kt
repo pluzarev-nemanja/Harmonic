@@ -313,6 +313,7 @@ class SongsViewModel @Inject constructor(
     }
 
     // TODO: here you need to change logic for skip to next and previous for albums,playlists and artists
+    // TODO: test first skipping in every screen
     fun skipToNext() {
         serviceConnection.skipToNext()
     }
