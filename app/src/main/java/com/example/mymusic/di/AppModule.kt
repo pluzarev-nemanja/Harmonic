@@ -66,7 +66,9 @@ object AppModule {
             insertUser = InsertUser(repository),
             getUser = GetUser(repository),
             updateAlbum = UpdateAlbum(repository),
-            updateArtist = UpdateArtist(repository)
+            updateArtist = UpdateArtist(repository),
+            getPlayer = GetPlayer(repository),
+            insertPlayer = InsertPlayer(repository)
         )
     }
 }

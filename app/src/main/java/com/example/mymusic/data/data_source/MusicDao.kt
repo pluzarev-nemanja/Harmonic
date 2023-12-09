@@ -14,6 +14,7 @@ import com.example.mymusic.domain.model.Album
 import com.example.mymusic.domain.model.Artist
 import com.example.mymusic.domain.model.Favorite
 import com.example.mymusic.domain.model.History
+import com.example.mymusic.domain.model.Player
 import com.example.mymusic.domain.model.Playlist
 import com.example.mymusic.domain.model.Song
 import com.example.mymusic.domain.model.User
@@ -103,6 +104,12 @@ interface MusicDao {
 
      @Upsert
      suspend fun insertUser(user: User)
+
+     @Upsert
+     suspend fun insertPlayer(player: Player)
+
+     @Query("SELECT * FROM player WHERE id = :id ORDER BY id DESC")
+     fun getPlayer(id: Int): Flow<List<Player>>
 
     @Query("SELECT * FROM user WHERE id = :id ORDER BY id DESC")
     fun getUser(id: Int): Flow<List<User>>

@@ -17,6 +17,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.mymusic.domain.model.Album
 import com.example.mymusic.domain.model.Artist
+import com.example.mymusic.domain.model.Player
 import com.example.mymusic.domain.model.Playlist
 import com.example.mymusic.domain.model.Song
 import com.example.mymusic.domain.use_cases.MusicUseCases
@@ -43,6 +44,12 @@ class SongsViewModel @Inject constructor(
 
     var songList = mutableStateListOf<Song>()
     var suggestions = mutableStateListOf<Song>()
+    var player by mutableStateOf(
+        Player(
+            id = 0,
+            songs = songList
+        )
+    )
 
     private var timer by mutableStateOf("")
     private var shuffleMode by mutableStateOf(false)
@@ -76,6 +83,7 @@ class SongsViewModel @Inject constructor(
     init {
         viewModelScope.launch {
             musicUseCases.insertSong()
+            musicUseCases.insertPlayer(player)
         }
         viewModelScope.launch {
             musicUseCases.getAllSongsAsc().collect { songsList ->
@@ -269,13 +277,43 @@ class SongsViewModel @Inject constructor(
         }
     }
 
+    fun playAudio(currentAudio: Song, songs: List<Song>) {
+        viewModelScope.launch {
+            musicUseCases.insertPlayer(player.copy(
+                songs = songs
+            ))
+        }
+            serviceConnection.playAudio(songs)
+            if (currentAudio.id == currentPlayingAudio.value?.id) {
+                if (isAudioPlaying) {
+                    serviceConnection.transportControl.pause()
+                } else {
+                    serviceConnection.transportControl.play()
+                }
+
+
+            } else {
+                serviceConnection.transportControl
+                    .playFromMediaId(
+                        currentAudio.id.toString(),
+                        null
+                    )
+
+            }
+    }
+
     fun playPlaylist(currentAudio: Song, songs: List<Song>) {
-        serviceConnection.playAudio(songs)
-        serviceConnection.transportControl
-            .playFromMediaId(
-                currentAudio.id.toString(),
-                null
-            )
+        viewModelScope.launch {
+            musicUseCases.insertPlayer(player.copy(
+                songs = songs
+            ))
+        }
+            serviceConnection.playAudio(songs)
+            serviceConnection.transportControl
+                .playFromMediaId(
+                    currentAudio.id.toString(),
+                    null
+                )
     }
 
     fun shuffleAlbum(album: Album) {
@@ -300,20 +338,8 @@ class SongsViewModel @Inject constructor(
         playPlaylist(currentAudio = playlist.songs[number], songs = playlist.songs)
     }
 
-    fun stopPlayBack() {
-        serviceConnection.transportControl.stop()
-    }
-
-    fun fastForward() {
-        serviceConnection.fastForward()
-    }
-
-    fun rewind() {
-        serviceConnection.rewind()
-    }
-
-    // TODO: here you need to change logic for skip to next and previous for albums,playlists and artists
-    // TODO: test first skipping in every screen
+    // TODO: sad radi samo na pesmama iz playlisti ali nastavi service da pusta pesme do kraja
+    //mozda je u media source ali probaj custom logic za pustanje pesme
     fun skipToNext() {
         serviceConnection.skipToNext()
     }

@@ -66,7 +66,7 @@ fun ArtistsDetailScreen(
     onStart: (Song, List<Song>) -> Unit,
     allPlaylists: List<Playlist>,
     insertSongIntoPlaylist: (Song, String, String) -> Unit,
-    onItemClick: (Song) -> Unit,
+    onItemClick: (Song,List<Song>) -> Unit,
     currentPlayingAudio: Song?,
     shareSong: (Song) -> Unit,
     changeSongImage: (Song, String) -> Unit,

@@ -180,9 +180,9 @@ fun BottomNavGraph(
                 insertSongIntoPlaylist = { song, playlistName, playlistImage ->
                     playlistViewModel.insertSongIntoPlaylist(song, playlistName, playlistImage)
                 },
-                onItemClick = {
-                    songsViewModel.playAudio(it)
-                    historyViewModel.updateHistory(it)
+                onItemClick = { song,audioList ->
+                    songsViewModel.playAudio(song,audioList)
+                    historyViewModel.updateHistory(song)
                 },
                 shuffle = { playlist ->
                     songsViewModel.shufflePlaylist(playlist = playlist)
@@ -209,9 +209,9 @@ fun BottomNavGraph(
                 insertSongIntoPlaylist = { song, playlistName, playlistImage ->
                     playlistViewModel.insertSongIntoPlaylist(song, playlistName, playlistImage)
                 },
-                onItemClick = {
-                    songsViewModel.playAudio(it)
-                    historyViewModel.updateHistory(it)
+                onItemClick = { song,audioList ->
+                    songsViewModel.playAudio(song,audioList)
+                    historyViewModel.updateHistory(song)
                 },
                 currentPlayingAudio = songsViewModel.currentPlayingAudio.value,
                 shuffle = { album ->
@@ -235,8 +235,8 @@ fun BottomNavGraph(
                 history = historyViewModel.history,
                 navController = navController,
                 currentPlayingAudio = songsViewModel.currentPlayingAudio.value,
-                onItemClick = {
-                    songsViewModel.playAudio(it)
+                onItemClick = { song,audioList ->
+                    songsViewModel.playAudio(song,audioList)
                 },
                 playlists = playlistViewModel.playlists,
                 insertSongIntoPlaylist = { song, playlistName, playlistImage ->
@@ -254,9 +254,9 @@ fun BottomNavGraph(
                 navController = navController,
                 favorite = favoriteViewModel.songList,
                 currentPlayingAudio = songsViewModel.currentPlayingAudio.value,
-                onItemClick = {
-                    songsViewModel.playAudio(it)
-                    historyViewModel.updateHistory(it)
+                onItemClick = { song,audioList ->
+                    songsViewModel.playAudio(song,audioList)
+                    historyViewModel.updateHistory(song)
                 },
                 playlists = playlistViewModel.playlists,
                 insertSongIntoPlaylist = { song, playlistName, playlistImage ->
@@ -306,9 +306,9 @@ fun BottomNavGraph(
                 insertSongIntoPlaylist = { song, playlistName, playlistImage ->
                     playlistViewModel.insertSongIntoPlaylist(song, playlistName, playlistImage)
                 },
-                onItemClick = {
-                    songsViewModel.playAudio(it)
-                    historyViewModel.updateHistory(it)
+                onItemClick = { song,audioList ->
+                    songsViewModel.playAudio(song,audioList)
+                    historyViewModel.updateHistory(song)
                 },
                 currentPlayingAudio = songsViewModel.currentPlayingAudio.value,
                 shuffle = { artist ->

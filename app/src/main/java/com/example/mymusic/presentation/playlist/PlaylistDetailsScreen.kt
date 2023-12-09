@@ -72,7 +72,7 @@ fun PlaylistDetailsScreen(
     playlist: Playlist?,
     allPlaylists: List<Playlist>,
     insertSongIntoPlaylist: (Song, String, String) -> Unit,
-    onItemClick: (Song) -> Unit,
+    onItemClick: (Song,List<Song>) -> Unit,
     shuffle: (Playlist) -> Unit,
     onStart: (Song, List<Song>) -> Unit,
     shareSong: (Song) -> Unit,
@@ -202,7 +202,7 @@ fun SongsList(
     audioList: List<Song>,
     allPlaylists: List<Playlist>,
     insertSongIntoPlaylist: (Song, String, String) -> Unit,
-    onItemClick: (Song) -> Unit,
+    onItemClick: (Song,List<Song>) -> Unit,
     shareSong: (Song) -> Unit,
     changeSongImage: (Song, String) -> Unit
 
@@ -220,7 +220,7 @@ fun SongsList(
         items(audioList) { song ->
             AudioItem(
                 audio = song,
-                onItemClick = { onItemClick.invoke(song) },
+                onItemClick = { onItemClick.invoke(song,audioList) },
                 modifier = Modifier.animateItemPlacement(
                     tween(durationMillis = 450)
                 ),

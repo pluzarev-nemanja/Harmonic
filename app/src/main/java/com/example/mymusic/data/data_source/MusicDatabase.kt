@@ -7,12 +7,13 @@ import com.example.mymusic.domain.model.Album
 import com.example.mymusic.domain.model.Artist
 import com.example.mymusic.domain.model.Favorite
 import com.example.mymusic.domain.model.History
+import com.example.mymusic.domain.model.Player
 import com.example.mymusic.domain.model.Playlist
 import com.example.mymusic.domain.model.Song
 import com.example.mymusic.domain.model.User
 
 @Database(
-    entities = [Song::class,Playlist::class,Album::class,History::class,Favorite::class,Artist::class,User::class],
+    entities = [Song::class,Playlist::class,Album::class,History::class,Favorite::class,Artist::class,User::class, Player::class],
     version = 1
 )
 @TypeConverters(DataConverters::class)

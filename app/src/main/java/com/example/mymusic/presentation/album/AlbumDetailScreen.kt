@@ -64,7 +64,7 @@ fun AlbumDetailScreen(
     album: Album?,
     allPlaylists: List<Playlist>,
     insertSongIntoPlaylist: (Song, String, String) -> Unit,
-    onItemClick: (Song) -> Unit,
+    onItemClick: (Song,List<Song>) -> Unit,
     currentPlayingAudio: Song?,
     shuffle: (Album) -> Unit,
     onStart: (Song, List<Song>) -> Unit,

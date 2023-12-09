@@ -45,8 +45,8 @@ class MediaSource
         state = AudioSourceState.STATE_INITIALIZING
 
         CoroutineScope(Dispatchers.IO).launch {
-            musicUseCases.getAllSongsAsc().collect {
-                data = it
+            musicUseCases.getPlayer(0).collect {player->
+                data = player[0].songs
                 audioMediaMetaData = data.map { song ->
                     MediaMetadataCompat.Builder()
                         .putString(
@@ -57,7 +57,7 @@ class MediaSource
                             song.artist
                         ).putString(
                             MediaMetadataCompat.METADATA_KEY_MEDIA_URI,
-                            song.uri.toString()
+                            song.uri
                         ).putString(
                             MediaMetadataCompat.METADATA_KEY_TITLE,
                             song.title

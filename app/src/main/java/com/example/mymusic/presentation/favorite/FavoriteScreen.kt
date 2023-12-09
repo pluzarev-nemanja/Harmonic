@@ -26,7 +26,7 @@ fun FavoriteScreen(
     navController: NavController,
     favorite: List<Song>,
     currentPlayingAudio: Song?,
-    onItemClick: (Song) -> Unit,
+    onItemClick: (Song,List<Song>) -> Unit,
     playlists: List<Playlist>,
     insertSongIntoPlaylist: (Song, String, String) -> Unit,
     shareSong: (Song) -> Unit,
@@ -58,7 +58,7 @@ fun FavoriteScreen(
                 ) { song: Song ->
                     AudioItem(
                         audio = song,
-                        onItemClick = { onItemClick.invoke(song) },
+                        onItemClick = { onItemClick.invoke(song,favorite) },
                         modifier = Modifier.animateItemPlacement(
                             tween(durationMillis = 450)
                         ),

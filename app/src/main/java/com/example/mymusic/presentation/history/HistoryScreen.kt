@@ -41,7 +41,7 @@ fun HistoryScreen(
     history: History,
     navController: NavController,
     currentPlayingAudio: Song?,
-    onItemClick: (Song) -> Unit,
+    onItemClick: (Song,List<Song>) -> Unit,
     playlists: List<Playlist>,
     insertSongIntoPlaylist: (Song, String, String) -> Unit,
     shareSong: (Song) -> Unit,
@@ -73,7 +73,7 @@ fun HistoryScreen(
                 ) { song: Song ->
                     AudioItem(
                         audio = song,
-                        onItemClick = { onItemClick.invoke(song) },
+                        onItemClick = { onItemClick.invoke(song,history.songs) },
                         modifier = Modifier.animateItemPlacement(
                             tween(durationMillis = 450)
                         ),

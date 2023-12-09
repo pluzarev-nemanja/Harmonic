@@ -15,10 +15,12 @@ import android.support.v4.media.session.PlaybackStateCompat
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.media.MediaBrowserServiceCompat
 import com.example.mymusic.R
 import com.example.mymusic.presentation.exoplayer.MediaSource
 import com.example.mymusic.presentation.exoplayer.MusicPlayerNotificationManager
+import com.example.mymusic.presentation.songs.SongsViewModel
 import com.example.mymusic.presentation.util.Constants
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.PlaybackException

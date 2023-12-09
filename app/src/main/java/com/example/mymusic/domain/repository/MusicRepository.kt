@@ -6,6 +6,7 @@ import com.example.mymusic.domain.model.Album
 import com.example.mymusic.domain.model.Artist
 import com.example.mymusic.domain.model.Favorite
 import com.example.mymusic.domain.model.History
+import com.example.mymusic.domain.model.Player
 import com.example.mymusic.domain.model.Playlist
 import com.example.mymusic.domain.model.Song
 import com.example.mymusic.domain.model.User
@@ -73,4 +74,9 @@ interface MusicRepository {
     suspend fun updateAlbum(album: Album)
 
     suspend fun updateArtist(artist: Artist)
+
+    suspend fun insertPlayer(player: Player)
+
+    fun getPlayer(id: Int): Flow<List<Player>>
+
 }
