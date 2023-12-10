@@ -1,16 +1,19 @@
 package com.example.mymusic.presentation.search
 
+import android.util.Log
 import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.mymusic.domain.model.Album
 import com.example.mymusic.domain.model.Artist
+import com.example.mymusic.domain.model.Playlist
 import com.example.mymusic.domain.model.Song
 import com.example.mymusic.domain.use_cases.MusicUseCases
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
@@ -31,6 +34,7 @@ class SearchViewModel @Inject constructor(
     val searchText = _searchText.asStateFlow()
 
     private val _isSearching = MutableStateFlow(false)
+    val isSearching = _isSearching.asStateFlow()
 
 
     private var _songs = MutableStateFlow(searchList)
@@ -39,7 +43,7 @@ class SearchViewModel @Inject constructor(
 
     val artist = searchText
         .onEach { _isSearching.update { true } }
-        .combine(_artist) { text, artist ->
+        .combine(_artist){ text,artist->
             if (text.isBlank()) {
                 artist
             } else {
@@ -113,13 +117,13 @@ class SearchViewModel @Inject constructor(
             }
         }
         viewModelScope.launch {
-            musicUseCases.getArtists().collect { artists ->
+            musicUseCases.getArtists().collect{ artists ->
                 searchArtist.clear()
                 searchArtist += artists
             }
         }
         viewModelScope.launch {
-            musicUseCases.getAllAlbumsAsc().collect { album ->
+            musicUseCases.getAllAlbumsAsc().collect{ album ->
                 searchAlbum.clear()
                 searchAlbum += album
             }
