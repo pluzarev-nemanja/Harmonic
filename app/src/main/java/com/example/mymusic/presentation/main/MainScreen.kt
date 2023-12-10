@@ -22,6 +22,8 @@ import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.example.mymusic.domain.model.Album
+import com.example.mymusic.domain.model.Artist
 import com.example.mymusic.domain.model.Song
 import com.example.mymusic.presentation.navigation.BottomBarScreen
 import com.example.mymusic.presentation.navigation.BottomNavGraph
@@ -59,7 +61,9 @@ fun MainScreen(
     shareSong: (Song) -> Unit,
     isSnowing: Boolean,
     playlistViewModel: PlaylistViewModel = hiltViewModel(),
-    changeSongImage: (Song, String) -> Unit
+    changeSongImage: (Song, String) -> Unit,
+    albums: List<Album>,
+    artists: List<Artist>
 ) {
 
     val navController = rememberNavController()
@@ -177,7 +181,9 @@ fun MainScreen(
                     searchText = searchText,
                     currentPlayingAudio = currentPlayingAudio,
                     equalizer = equalizer,
-                    shareSong = shareSong
+                    shareSong = shareSong,
+                    albums = albums,
+                    artists = artists
                 )
             }
         }

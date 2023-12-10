@@ -11,4 +11,14 @@ data class Album(
     val songCount: Int,
     val artist : String,
     val albumImage : String
-)
+){
+    fun doesMatchSearchQuery(query: String): Boolean {
+        val matchingCombinations = listOf(
+            albumName
+        )
+
+        return matchingCombinations.any {
+            it.contains(query, ignoreCase = true)
+        }
+    }
+}

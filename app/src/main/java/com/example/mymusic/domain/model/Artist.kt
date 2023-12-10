@@ -10,4 +10,14 @@ data class Artist(
     val numberAlbums: Int,
     var songs : List<Song>,
     val artistImage : String
-    )
+    ){
+    fun doesMatchSearchQuery(query: String): Boolean {
+        val matchingCombinations = listOf(
+            artist
+        )
+
+        return matchingCombinations.any {
+            it.contains(query, ignoreCase = true)
+        }
+    }
+}

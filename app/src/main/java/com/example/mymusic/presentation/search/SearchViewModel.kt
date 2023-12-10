@@ -3,6 +3,8 @@ package com.example.mymusic.presentation.search
 import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.mymusic.domain.model.Album
+import com.example.mymusic.domain.model.Artist
 import com.example.mymusic.domain.model.Song
 import com.example.mymusic.domain.use_cases.MusicUseCases
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -21,16 +23,56 @@ class SearchViewModel @Inject constructor(
     private val musicUseCases: MusicUseCases
 ) : ViewModel() {
 
-    var searchList = mutableStateListOf<Song>()
+    private var searchList = mutableStateListOf<Song>()
+    private var searchAlbum = mutableStateListOf<Album>()
+    private var searchArtist = mutableStateListOf<Artist>()
 
     private val _searchText = MutableStateFlow("")
     val searchText = _searchText.asStateFlow()
 
     private val _isSearching = MutableStateFlow(false)
-    val isSearching = _isSearching.asStateFlow()
 
 
     private var _songs = MutableStateFlow(searchList)
+    private var _albums = MutableStateFlow(searchAlbum)
+    private var _artist = MutableStateFlow(searchArtist)
+
+    val artist = searchText
+        .onEach { _isSearching.update { true } }
+        .combine(_artist) { text, artist ->
+            if (text.isBlank()) {
+                artist
+            } else {
+                artist.filter {
+                    it.doesMatchSearchQuery(text)
+                }
+            }
+        }
+        .onEach { _isSearching.update { false } }
+        .stateIn(
+            viewModelScope,
+            SharingStarted.WhileSubscribed(5000),
+            _artist.value
+        )
+
+    val album = searchText
+        .onEach { _isSearching.update { true } }
+        .combine(_albums) { text, album ->
+            if (text.isBlank()) {
+                album
+            } else {
+                album.filter {
+                    it.doesMatchSearchQuery(text)
+                }
+            }
+        }
+        .onEach { _isSearching.update { false } }
+        .stateIn(
+            viewModelScope,
+            SharingStarted.WhileSubscribed(5000),
+            _albums.value
+        )
+
     val songs = searchText
         .onEach { _isSearching.update { true } }
         .combine(_songs) { text, song ->
@@ -68,6 +110,18 @@ class SearchViewModel @Inject constructor(
                         artist = artist
                     )
                 }
+            }
+        }
+        viewModelScope.launch {
+            musicUseCases.getArtists().collect { artists ->
+                searchArtist.clear()
+                searchArtist += artists
+            }
+        }
+        viewModelScope.launch {
+            musicUseCases.getAllAlbumsAsc().collect { album ->
+                searchAlbum.clear()
+                searchAlbum += album
             }
         }
     }

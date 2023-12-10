@@ -5,6 +5,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.example.mymusic.domain.model.Album
+import com.example.mymusic.domain.model.Artist
 import com.example.mymusic.domain.model.Song
 import com.example.mymusic.presentation.album.AlbumDetailScreen
 import com.example.mymusic.presentation.album.AlbumScreen
@@ -44,7 +46,9 @@ fun BottomNavGraph(
     artistViewModel: ArtistViewModel = hiltViewModel(),
     equalizer: () -> Unit,
     shareSong: (Song) -> Unit,
-    settingsViewModel: SettingsViewModel = hiltViewModel()
+    settingsViewModel: SettingsViewModel = hiltViewModel(),
+    albums: List<Album>,
+    artists: List<Artist>
 ) {
 
     NavHost(
@@ -167,7 +171,16 @@ fun BottomNavGraph(
                 shareSong = shareSong,
                 changeSongImage = { song, uri ->
                     songsViewModel.changeSongImage(song, uri)
-                }
+                },
+                artists = artists,
+                albums = albums,
+                navController = navController,
+                addAlbum = {
+                    albumsViewModel.addAlbum(it)
+                },
+                addArtist = {
+                    artistViewModel.addArtist(it)
+                },
             )
         }
         composable(Screen.PlaylistDetailsScreen.route) {
@@ -180,8 +193,8 @@ fun BottomNavGraph(
                 insertSongIntoPlaylist = { song, playlistName, playlistImage ->
                     playlistViewModel.insertSongIntoPlaylist(song, playlistName, playlistImage)
                 },
-                onItemClick = { song,audioList ->
-                    songsViewModel.playAudio(song,audioList)
+                onItemClick = { song, audioList ->
+                    songsViewModel.playAudio(song, audioList)
                     historyViewModel.updateHistory(song)
                 },
                 shuffle = { playlist ->
@@ -209,8 +222,8 @@ fun BottomNavGraph(
                 insertSongIntoPlaylist = { song, playlistName, playlistImage ->
                     playlistViewModel.insertSongIntoPlaylist(song, playlistName, playlistImage)
                 },
-                onItemClick = { song,audioList ->
-                    songsViewModel.playAudio(song,audioList)
+                onItemClick = { song, audioList ->
+                    songsViewModel.playAudio(song, audioList)
                     historyViewModel.updateHistory(song)
                 },
                 currentPlayingAudio = songsViewModel.currentPlayingAudio.value,
@@ -235,8 +248,8 @@ fun BottomNavGraph(
                 history = historyViewModel.history,
                 navController = navController,
                 currentPlayingAudio = songsViewModel.currentPlayingAudio.value,
-                onItemClick = { song,audioList ->
-                    songsViewModel.playAudio(song,audioList)
+                onItemClick = { song, audioList ->
+                    songsViewModel.playAudio(song, audioList)
                 },
                 playlists = playlistViewModel.playlists,
                 insertSongIntoPlaylist = { song, playlistName, playlistImage ->
@@ -254,8 +267,8 @@ fun BottomNavGraph(
                 navController = navController,
                 favorite = favoriteViewModel.songList,
                 currentPlayingAudio = songsViewModel.currentPlayingAudio.value,
-                onItemClick = { song,audioList ->
-                    songsViewModel.playAudio(song,audioList)
+                onItemClick = { song, audioList ->
+                    songsViewModel.playAudio(song, audioList)
                     historyViewModel.updateHistory(song)
                 },
                 playlists = playlistViewModel.playlists,
@@ -306,8 +319,8 @@ fun BottomNavGraph(
                 insertSongIntoPlaylist = { song, playlistName, playlistImage ->
                     playlistViewModel.insertSongIntoPlaylist(song, playlistName, playlistImage)
                 },
-                onItemClick = { song,audioList ->
-                    songsViewModel.playAudio(song,audioList)
+                onItemClick = { song, audioList ->
+                    songsViewModel.playAudio(song, audioList)
                     historyViewModel.updateHistory(song)
                 },
                 currentPlayingAudio = songsViewModel.currentPlayingAudio.value,

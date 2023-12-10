@@ -295,10 +295,6 @@ class SongsViewModel @Inject constructor(
             }
         }
     }
-    //kada klikcem na songs item iz song screena onda radi,kad prebacim na playlistu i kliknem item baguje
-    // TODO: napravi jednu funkciju za pustanje pesama 
-
-
     fun shuffleAlbum(album: Album) {
         val number = Random.nextInt(from = 0, until = album.songCount)
         playAudio(currentAudio = album.songs[number], songs = album.songs)

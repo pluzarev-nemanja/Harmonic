@@ -132,8 +132,12 @@ class MainActivity : ComponentActivity() {
 
                         val searchText by searchViewModel.searchText.collectAsState()
                         val songs by searchViewModel.songs.collectAsState()
+                        val artists by searchViewModel.artist.collectAsState()
+                        val albums by searchViewModel.album.collectAsState()
 
                         MainScreen(
+                            albums = albums,
+                            artists = artists,
                             audioList = songsViewModel.songList,
                             onStart = {
                                 songsViewModel.playAudio(it, emptyList())
@@ -197,7 +201,7 @@ class MainActivity : ComponentActivity() {
                 intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
                 intent.setType("audio/*")
                 intent.putExtra(Intent.EXTRA_STREAM, uri)
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                 startActivity(intent)
             }
         } catch (e: java.lang.Exception) {
