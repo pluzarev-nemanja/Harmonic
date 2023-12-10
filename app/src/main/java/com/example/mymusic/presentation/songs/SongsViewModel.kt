@@ -257,33 +257,26 @@ class SongsViewModel @Inject constructor(
         return timer
     }
 
-    fun playAudio(currentAudio: Song) {
-        serviceConnection.playAudio(songList)
-        if (currentAudio.id == currentPlayingAudio.value?.id) {
-            if (isAudioPlaying) {
-                serviceConnection.transportControl.pause()
+    fun playAudio(currentAudio: Song, songs: List<Song>) {
+
+        viewModelScope.launch {
+            if (songs.isEmpty()) {
+
+                musicUseCases.insertPlayer(
+                    player.copy(
+                        songs = songList
+                    )
+                )
+                serviceConnection.playAudio(songList)
             } else {
-                serviceConnection.transportControl.play()
+                musicUseCases.insertPlayer(
+                    player.copy(
+                        songs = songs
+                    )
+                )
+                serviceConnection.playAudio(songs)
             }
 
-
-        } else {
-            serviceConnection.transportControl
-                .playFromMediaId(
-                    currentAudio.id.toString(),
-                    null
-                )
-
-        }
-    }
-
-    fun playAudio(currentAudio: Song, songs: List<Song>) {
-        viewModelScope.launch {
-            musicUseCases.insertPlayer(player.copy(
-                songs = songs
-            ))
-        }
-            serviceConnection.playAudio(songs)
             if (currentAudio.id == currentPlayingAudio.value?.id) {
                 if (isAudioPlaying) {
                     serviceConnection.transportControl.pause()
@@ -300,46 +293,34 @@ class SongsViewModel @Inject constructor(
                     )
 
             }
-    }
-
-    fun playPlaylist(currentAudio: Song, songs: List<Song>) {
-        viewModelScope.launch {
-            musicUseCases.insertPlayer(player.copy(
-                songs = songs
-            ))
         }
-            serviceConnection.playAudio(songs)
-            serviceConnection.transportControl
-                .playFromMediaId(
-                    currentAudio.id.toString(),
-                    null
-                )
     }
+    //kada klikcem na songs item iz song screena onda radi,kad prebacim na playlistu i kliknem item baguje
+    // TODO: napravi jednu funkciju za pustanje pesama 
+
 
     fun shuffleAlbum(album: Album) {
         val number = Random.nextInt(from = 0, until = album.songCount)
-        playPlaylist(currentAudio = album.songs[number], songs = album.songs)
+        playAudio(currentAudio = album.songs[number], songs = album.songs)
     }
 
     fun shuffleArtist(artist: Artist) {
         val number = Random.nextInt(from = 0, until = artist.numberSongs)
-        playPlaylist(currentAudio = artist.songs[number], songs = artist.songs)
+        playAudio(currentAudio = artist.songs[number], songs = artist.songs)
     }
 
     fun shuffleSongs() {
         if (songList.size != 0) {
             val number = Random.nextInt(from = 0, until = songList.size)
-            playPlaylist(currentAudio = songList[number], songList)
+            playAudio(currentAudio = songList[number], songList)
         }
     }
 
     fun shufflePlaylist(playlist: Playlist) {
         val number = Random.nextInt(from = 0, until = playlist.songCount)
-        playPlaylist(currentAudio = playlist.songs[number], songs = playlist.songs)
+        playAudio(currentAudio = playlist.songs[number], songs = playlist.songs)
     }
 
-    // TODO: sad radi samo na pesmama iz playlisti ali nastavi service da pusta pesme do kraja
-    //mozda je u media source ali probaj custom logic za pustanje pesme
     fun skipToNext() {
         serviceConnection.skipToNext()
     }

@@ -136,7 +136,7 @@ class MainActivity : ComponentActivity() {
                         MainScreen(
                             audioList = songsViewModel.songList,
                             onStart = {
-                                songsViewModel.playAudio(it)
+                                songsViewModel.playAudio(it, emptyList())
                             },
                             currentPlayingAudio = songsViewModel
                                 .currentPlayingAudio.value,

@@ -63,7 +63,7 @@ fun BottomNavGraph(
                 },
                 suggestions = songsViewModel.suggestions,
                 onItemClick = {
-                    songsViewModel.playAudio(it)
+                    songsViewModel.playAudio(it, emptyList())
                     historyViewModel.updateHistory(it)
                 },
                 albums = albumsViewModel.albums,
@@ -91,7 +91,7 @@ fun BottomNavGraph(
                 currentPlayingAudio = songsViewModel
                     .currentPlayingAudio.value,
                 onItemClick = {
-                    songsViewModel.playAudio(it)
+                    songsViewModel.playAudio(it, emptyList())
                     historyViewModel.updateHistory(it)
                 },
                 sortOrderChange = {
@@ -154,7 +154,7 @@ fun BottomNavGraph(
                 songs,
                 currentPlayingAudio,
                 onItemClick = {
-                    songsViewModel.playAudio(it)
+                    songsViewModel.playAudio(it, emptyList())
                     historyViewModel.updateHistory(it)
                 },
                 playlists = playlistViewModel.playlists,
@@ -188,7 +188,7 @@ fun BottomNavGraph(
                     songsViewModel.shufflePlaylist(playlist = playlist)
                 },
                 onStart = { currentPlayingAudio, songs ->
-                    songsViewModel.playPlaylist(currentPlayingAudio, songs)
+                    songsViewModel.playAudio(currentPlayingAudio, songs)
                 },
                 shareSong = shareSong,
                 changeSongImage = { song, uri ->
@@ -218,7 +218,7 @@ fun BottomNavGraph(
                     songsViewModel.shuffleAlbum(album)
                 },
                 onStart = { currentPlayingAudio, songs ->
-                    songsViewModel.playPlaylist(currentPlayingAudio, songs)
+                    songsViewModel.playAudio(currentPlayingAudio, songs)
                 },
                 shareSong,
                 changeSongImage = { song, uri ->
@@ -315,7 +315,7 @@ fun BottomNavGraph(
                     songsViewModel.shuffleArtist(artist)
                 },
                 onStart = { currentPlayingAudio, songs ->
-                    songsViewModel.playPlaylist(currentPlayingAudio, songs)
+                    songsViewModel.playAudio(currentPlayingAudio, songs)
                 },
                 shareSong = shareSong,
                 changeSongImage = { song, uri ->
