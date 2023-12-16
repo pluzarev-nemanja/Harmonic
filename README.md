@@ -58,6 +58,8 @@ favorite songs.There is also a song recommendation.
 
 ## 👨‍💻 Used technologies
 -  Kotlin programming language
+-  Jetpack Compose
+-  Kotlin Flow
 -  Kotlin coroutines
 -  Room library
 -  Dagger Hilt(dependency injection)
