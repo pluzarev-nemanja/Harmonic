@@ -93,9 +93,9 @@ fun SongsScreen(
                 ) {
                     items(
                         items = audioList,
-//                        key = {
-//                            it.id
-//                        }
+                        key = {
+                            it.id
+                        }
                     ) { song: Song ->
                         AudioItem(
                             audio = song,
