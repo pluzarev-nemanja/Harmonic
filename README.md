@@ -15,14 +15,20 @@
 
 ## 📱 Screenshots
 ### App Themes
-| <img src="fastlane/metadata/android/en-US/images/phoneScreenshots/2.jpg" width="200"/> | <img src="fastlane/metadata/android/en-US/images/phoneScreenshots/3.jpg" width="200"/> | <img src="fastlane/metadata/android/en-US/images/phoneScreenshots/4.jpg" width="200"/> |
-|:---:|:---:|:---:|
-|Clearly white| Kinda dark | Just black|
+| <img src="screenshots/homeBlack.jpg" width="200"/> | <img src="screenshots/homeWhite.jpg" width="200"/> | 
+|:---:|:---:|
+|Dark theme| White theme|
 
-### Player screen
-| <img src="fastlane/metadata/android/en-US/images/phoneScreenshots/2.jpg" width="200"/>| <img src="fastlane/metadata/android/en-US/images/phoneScreenshots/5.jpg" width="200"/>| <img src="fastlane/metadata/android/en-US/images/phoneScreenshots/6.jpg" width="200"/>| <img src="fastlane/metadata/android/en-US/images/phoneScreenshots/7.jpg" width="200"/>| <img src="fastlane/metadata/android/en-US/images/phoneScreenshots/8.jpg" width="200"/>|
-|:---:|:---:|:---:|:---:|:---:|
-| Home | Songs | Albums | Artists | Settings |
+### Navigation screens
+| <img src="screenshots/homeBlack.jpg" width="200"/>| <img src="screenshots/songsBlack.jpg" width="200"/>| <img src="screenshots/albumsWhite.jpg" width="200"/>| <img src="screenshots/settingsWhite.jpg" width="200"/>| <img src="screenshots/searchBlack.jpg" width="200"/>| <img src="screenshots/detailsBlack.jpg" width="200"/>|
+|:---:|:---:|:---:|:---:|:---:|:---:|
+| Home | Songs | Albums | Settings | Search | Album details |
+
+### Player screens
+| <img src="screenshots/playerWhite.jpg" width="200"/>| <img src="screenshots/playerBlack.jpg" width="200"/>| <img src="screenshots/playerBlack2.jpg" width="200"/>|
+|:---:|:---:|:---:|
+| White theme | Dark theme | With snow effect |
+
 
 ## 🧭 Navigation never been made easier 
 Self-explanatory interface without overloaded menus.
@@ -52,6 +58,8 @@ favorite songs.There is also a song recommendation.
 
 ## 👨‍💻 Used technologies
 -  Kotlin programming language
+-  Jetpack Compose
+-  Kotlin Flow
 -  Kotlin coroutines
 -  Room library
 -  Dagger Hilt(dependency injection)
