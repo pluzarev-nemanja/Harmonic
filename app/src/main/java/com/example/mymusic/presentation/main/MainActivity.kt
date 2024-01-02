@@ -7,6 +7,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
@@ -15,8 +16,13 @@ import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
-import androidx.compose.runtime.*
+import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.core.content.FileProvider
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
@@ -37,9 +43,15 @@ import java.io.File
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
+
     private val permissionsToRequest = arrayOf(
-        Manifest.permission.READ_EXTERNAL_STORAGE
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
+            Manifest.permission.READ_MEDIA_AUDIO
+        else
+            Manifest.permission.READ_EXTERNAL_STORAGE
     )
+
+
     private var keepSplashOpened = true
 
     @RequiresApi(Build.VERSION_CODES.M)
@@ -67,7 +79,10 @@ class MainActivity : ComponentActivity() {
                     contract = ActivityResultContracts.RequestPermission(),
                     onResult = { isGranted ->
                         mainViewModel.onPermissionResult(
-                            permission = Manifest.permission.READ_EXTERNAL_STORAGE,
+                            permission = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
+                                Manifest.permission.READ_MEDIA_AUDIO
+                            else
+                                Manifest.permission.READ_EXTERNAL_STORAGE,
                             isGranted = isGranted
                         )
                         granted = isGranted
@@ -88,7 +103,10 @@ class MainActivity : ComponentActivity() {
                 )
                 SideEffect {
                     readStoragePermissionResultLauncher.launch(
-                        Manifest.permission.READ_EXTERNAL_STORAGE
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
+                            Manifest.permission.READ_MEDIA_AUDIO
+                        else
+                            Manifest.permission.READ_EXTERNAL_STORAGE
                     )
                 }
 
@@ -104,6 +122,10 @@ class MainActivity : ComponentActivity() {
                             PermissionDialog(
                                 permissionTextProvider = when (permission) {
                                     Manifest.permission.READ_EXTERNAL_STORAGE -> {
+                                        ReadStoragePermissionTextProvider()
+                                    }
+
+                                    Manifest.permission.READ_MEDIA_AUDIO -> {
                                         ReadStoragePermissionTextProvider()
                                     }
 
@@ -134,7 +156,7 @@ class MainActivity : ComponentActivity() {
                         val songs by searchViewModel.songs.collectAsState()
                         val artists by searchViewModel.artist.collectAsState()
                         val albums by searchViewModel.album.collectAsState()
-
+                        Log.d("LOG", "U MAINU SAM")
                         MainScreen(
                             albums = albums,
                             artists = artists,
