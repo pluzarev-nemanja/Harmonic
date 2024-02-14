@@ -71,7 +71,7 @@ favorite songs.There is also a song recommendation.
 -  Clean architecture
 -  MVVM design pattern
 -  Use cases
--  R8 + Proguard
+-  R8
 
 
 
